@@ -1,0 +1,517 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name=Generator content="FastReport 5.0 http://www.fast-report.com">
+
+<title>Izveštaj o analizi materijala</title>
+<style type="text/css"><!-- 
+.page_break {page-break-before: always;}
+.s0 {
+ font-family: Arial;
+ font-size: 24px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Center; vertical-align: Middle;
+}
+.s1 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s2 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s3 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Top;
+}
+.s4 {
+ font-family: Arial;
+ font-size: 16px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s5 {
+ font-family: Arial;
+ font-size: 16px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Center; vertical-align: Middle;
+}
+.s6 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s7 {
+ font-family: Arial;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Top;
+ padding-top: 1px;
+ padding-left: 2px;
+}
+.s8 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Top;
+ padding-top: 1px;
+ padding-left: 2px;
+}
+.s9 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Top;
+ padding-top: 1px;
+ padding-left: 2px;
+}
+.s10 {
+ font-family: Arial;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Top;
+ padding-top: 1px;
+ padding-left: 2px;
+}
+.s11 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-width: 0px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s12 {
+ font-family: Arial;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-width: 0px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s13 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s14 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-left-width: 0px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s15 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-width: 0px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Top;
+}
+.s16 {
+ font-family: Arial;
+ font-size: 24px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-width: 0px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Center; vertical-align: Middle;
+}
+.s17 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s18 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s19 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-width: 0px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s20 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-width: 0px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s21 {
+ font-family: Arial;
+ font-size: 16px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Center; vertical-align: Middle;
+}
+.s22 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s23 {
+ font-family: Arial;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-width: 0px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-color:#000000; border-top-style: solid; border-top-width: 1px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Top;
+ padding-top: 1px;
+ padding-left: 2px;
+}
+.s24 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Top;
+ padding-top: 1px;
+ padding-left: 2px;
+}
+.s25 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-width: 0px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Top;
+ padding-top: 1px;
+ padding-left: 2px;
+}
+.s26 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-width: 0px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Top;
+ padding-top: 1px;
+ padding-left: 2px;
+}
+.s27 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-width: 0px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s28 {
+ font-family: Arial;
+ font-size: 11px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-width: 0px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s29 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-width: 0px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s30 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-weight: bold; font-style: normal;
+ background-color: transparent;
+ border-left-width: 0px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+.s31 {
+ font-family: Arial;
+ font-size: 13px;
+ color: #000000; font-style: normal;
+ background-color: transparent;
+ border-left-color:#000000; border-left-style: solid; border-left-width: 1px;
+ border-right-color:#000000; border-right-style: solid; border-right-width: 1px;
+ border-top-width: 0px;
+ border-bottom-color:#000000; border-bottom-style: solid; border-bottom-width: 1px;
+ text-align: Left; vertical-align: Middle;
+ padding-left: 2px;
+}
+--></style>
+</head>
+<body
+ bgcolor="#FFFFFF" text="#000000">
+
+<a name="PageN1"></a>
+<table width="1045" border="0" cellspacing="0" cellpadding="0">
+<tr style="height: 1px"><td width="25"/><td width="5"/><td width="105"/><td width="5"/><td width="30"/><td width="5"/><td width="60"/><td width="45"/><td width="5"/><td width="10"/><td width="50"/><td width="10"/><td width="60"/><td width="15"/><td width="45"/><td width="60"/><td width="50"/><td width="5"/><td width="5"/><td width="60"/><td width="15"/><td width="45"/><td width="60"/><td width="55"/><td width="5"/><td width="60"/><td width="60"/><td width="60"/><td width="30"/></tr>
+<tr style="height:34px">
+<td colspan="3" rowspan="2" class="s4">Podaci o postrojenju za doziranje betona</td><td/><td colspan="4" class="s2">Naziv</td><td/><td colspan="5" class="s1" style="font-size:1px">&nbsp;</td><td colspan="7" rowspan="2" class="s15" style="font-size:1px"><img src="Izveštaj o analizi materijala.img0.jpg" width="241" height="71" alt=""></td><td colspan="8" rowspan="2" class="s16">Izveštaj o analizi materijala</td>
+</tr>
+<tr style="height:34px">
+<td/><td colspan="4" class="s17">Telefon</td><td/><td colspan="5" class="s18" style="font-size:1px">&nbsp;</td>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:24px">
+<td colspan="3" rowspan="2" class="s4">Podaci o kupcu</td><td/><td colspan="7" class="s2">Naziv preduzeća</td><td colspan="6" class="s19">AZVIRT</td><td/><td colspan="6" class="s2">Ime vozača</td><td colspan="5" class="s19">Denis Markovic</td>
+</tr>
+<tr style="height:24px">
+<td/><td colspan="7" class="s17">Naziv lokacije</td><td colspan="6" class="s20">Kvanj Tunel</td><td/><td colspan="6" class="s17">Tablice vozila</td><td colspan="5" class="s20">E96-T-647</td>
+</tr>
+<tr style="height:24px">
+<td colspan="3" rowspan="4" class="s21">Informacije o narudžbi</td><td/><td colspan="7" class="s17">Br. otpremnice</td><td colspan="6" class="s20">2447</td><td/><td colspan="6" class="s17">Vreme početka proizvodnje</td><td colspan="5" class="s20">2026.3.10 18:16</td>
+</tr>
+<tr style="height:24px">
+<td/><td colspan="7" class="s17">Naziv recepture</td><td colspan="6" class="s20">TK-02, C25/30, XC2, S4, CI0.2, Dmax 8</td><td/><td colspan="6" class="s17">Vreme završetka proizvodnje</td><td colspan="5" class="s20">2026.3.10 18:33:11</td>
+</tr>
+<tr style="height:24px">
+<td/><td colspan="7" class="s17">Br. Narudžbe</td><td colspan="6" class="s20">SP2568</td><td/><td colspan="6" class="s17">Zapremina betona,m3</td><td colspan="5" class="s20">7</td>
+</tr>
+<tr style="height:24px">
+<td/><td colspan="7" class="s22">Br. Proizvodnje</td><td colspan="6" class="s20">No2516</td><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:5px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:19px">
+<td/><td/><td/><td/><td/><td/><td class="s7">16-32</td><td colspan="3" class="s23">0-4</td><td colspan="2" class="s23">0-4</td><td class="s23">4-8</td><td colspan="2" class="s23">CEMENT 1</td><td class="s23">CEMENT 2</td><td colspan="3" class="s23" style="font-size:1px">&nbsp;</td><td class="s23" style="font-size:1px">&nbsp;</td><td colspan="2" class="s23">SIKA 4077</td><td class="s23">RTD</td><td colspan="2" class="s23">ADING </td><td class="s23">ADITIV MC</td><td class="s23">WATER</td><td class="s23" style="font-size:1px">&nbsp;</td><td/>
+</tr>
+<tr style="height:24px">
+<td colspan="5" class="s10">1 Potrebna količina po ciklusu, kg</td><td/><td class="s24">0</td><td colspan="3" class="s25">0</td><td colspan="2" class="s25">1350</td><td class="s25">337</td><td colspan="2" class="s25">440</td><td class="s25">0</td><td colspan="3" class="s25">0</td><td class="s25">0</td><td colspan="2" class="s26">0,00</td><td class="s26">0,00</td><td colspan="2" class="s26">0,00</td><td class="s26">2,60</td><td class="s25">225</td><td class="s25">0</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">1</td><td colspan="4" class="s28">Ciklus, Aktuelna uzeta količina, kg</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">1354</td><td class="s20">341</td><td colspan="2" class="s20">443</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">2,25</td><td class="s20">229</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">1</td><td colspan="4" class="s28">.razlika cik.</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">-4</td><td class="s20">-4</td><td colspan="2" class="s20">-3</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">0,35</td><td class="s20">-4</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:25px">
+<td class="s27">1</td><td/><td colspan="3" class="s30">%</td><td/><td class="s31">0,00</td><td colspan="3" class="s29">0,00</td><td colspan="2" class="s29">-0,30</td><td class="s29">-1,19</td><td colspan="2" class="s29">-0,68</td><td class="s29">0,00</td><td colspan="3" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">13,46</td><td class="s29">-1,78</td><td class="s29">0,00</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">2</td><td colspan="4" class="s28">Ciklus, Aktuelna uzeta količina, kg</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">1358</td><td class="s20">338</td><td colspan="2" class="s20">439</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">2,79</td><td class="s20">226</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">2</td><td colspan="4" class="s28">.razlika cik.</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">-8</td><td class="s20">-1</td><td colspan="2" class="s20">1</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">-0,19</td><td class="s20">-1</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:25px">
+<td class="s27">2</td><td/><td colspan="3" class="s30">%</td><td/><td class="s31">0,00</td><td colspan="3" class="s29">0,00</td><td colspan="2" class="s29">-0,59</td><td class="s29">-0,30</td><td colspan="2" class="s29">0,23</td><td class="s29">0,00</td><td colspan="3" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">-7,31</td><td class="s29">-0,44</td><td class="s29">0,00</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">3</td><td colspan="4" class="s28">Ciklus, Aktuelna uzeta količina, kg</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">1326</td><td class="s20">359</td><td colspan="2" class="s20">435</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">2,41</td><td class="s20">233</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">3</td><td colspan="4" class="s28">.razlika cik.</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">24</td><td class="s20">-22</td><td colspan="2" class="s20">5</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">0,19</td><td class="s20">-8</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:25px">
+<td class="s27">3</td><td/><td colspan="3" class="s30">%</td><td/><td class="s31">0,00</td><td colspan="3" class="s29">0,00</td><td colspan="2" class="s29">1,78</td><td class="s29">-6,53</td><td colspan="2" class="s29">1,14</td><td class="s29">0,00</td><td colspan="3" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">7,31</td><td class="s29">-3,56</td><td class="s29">0,00</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">4</td><td colspan="4" class="s28">Ciklus, Aktuelna uzeta količina, kg</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">1378</td><td class="s20">319</td><td colspan="2" class="s20">444</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">2,57</td><td class="s20">225</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">4</td><td colspan="4" class="s28">.razlika cik.</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">-28</td><td class="s20">18</td><td colspan="2" class="s20">-4</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">0,03</td><td class="s20">0</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:25px">
+<td class="s27">4</td><td/><td colspan="3" class="s30">%</td><td/><td class="s31">0,00</td><td colspan="3" class="s29">0,00</td><td colspan="2" class="s29">-2,07</td><td class="s29">5,34</td><td colspan="2" class="s29">-0,91</td><td class="s29">0,00</td><td colspan="3" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">1,15</td><td class="s29">0,00</td><td class="s29">0,00</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">5</td><td colspan="4" class="s28">Ciklus, Aktuelna uzeta količina, kg</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">1321</td><td class="s20">325</td><td colspan="2" class="s20">437</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">2,76</td><td class="s20">226</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">5</td><td colspan="4" class="s28">.razlika cik.</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">29</td><td class="s20">12</td><td colspan="2" class="s20">3</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">-0,16</td><td class="s20">-1</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">5</td><td/><td colspan="3" class="s30">%</td><td/><td class="s31">0,00</td><td colspan="3" class="s29">0,00</td><td colspan="2" class="s29">2,15</td><td class="s29">3,56</td><td colspan="2" class="s29">0,68</td><td class="s29">0,00</td><td colspan="3" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">-6,15</td><td class="s29">-0,44</td><td class="s29">0,00</td><td/>
+</tr>
+</table>
+<a name="PageN2"></a>
+<table width="1045" border="0" cellspacing="0" cellpadding="0" class="page_break">
+<tr style="height: 1px"><td width="25"/><td width="5"/><td width="105"/><td width="5"/><td width="30"/><td width="5"/><td width="60"/><td width="45"/><td width="5"/><td width="10"/><td width="50"/><td width="10"/><td width="60"/><td width="15"/><td width="45"/><td width="60"/><td width="50"/><td width="5"/><td width="5"/><td width="60"/><td width="15"/><td width="45"/><td width="60"/><td width="55"/><td width="5"/><td width="60"/><td width="60"/><td width="60"/><td width="30"/></tr>
+<tr style="height:37px">
+<td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
+</tr>
+<tr style="height:34px">
+<td colspan="3" rowspan="2" class="s4">Podaci o postrojenju za doziranje betona</td><td/><td colspan="4" class="s2">Naziv</td><td/><td colspan="5" class="s1" style="font-size:1px">&nbsp;</td><td colspan="7" rowspan="2" class="s15" style="font-size:1px"><img src="Izveštaj o analizi materijala.img1.jpg" width="241" height="71" alt=""></td><td colspan="8" rowspan="2" class="s16">Izveštaj o analizi materijala</td>
+</tr>
+<tr style="height:34px">
+<td/><td colspan="4" class="s17">Telefon</td><td/><td colspan="5" class="s18" style="font-size:1px">&nbsp;</td>
+</tr>
+<tr style="height:24px">
+<td class="s27">6</td><td colspan="4" class="s28">Ciklus, Aktuelna uzeta količina, kg</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">1363</td><td class="s20">352</td><td colspan="2" class="s20">443</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">2,38</td><td class="s20">225</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">6</td><td colspan="4" class="s28">.razlika cik.</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">-13</td><td class="s20">-15</td><td colspan="2" class="s20">-3</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">0,22</td><td class="s20">0</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:25px">
+<td class="s27">6</td><td/><td colspan="3" class="s30">%</td><td/><td class="s31">0,00</td><td colspan="3" class="s29">0,00</td><td colspan="2" class="s29">-0,96</td><td class="s29">-4,45</td><td colspan="2" class="s29">-0,68</td><td class="s29">0,00</td><td colspan="3" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">8,46</td><td class="s29">0,00</td><td class="s29">0,00</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">7</td><td colspan="4" class="s28">Ciklus, Aktuelna uzeta količina, kg</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">1339</td><td class="s20">378</td><td colspan="2" class="s20">435</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">2,76</td><td class="s20">224</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">7</td><td colspan="4" class="s28">.razlika cik.</td><td/><td class="s18">0</td><td colspan="3" class="s20">0</td><td colspan="2" class="s20">11</td><td class="s20">-41</td><td colspan="2" class="s20">5</td><td class="s20">0</td><td colspan="3" class="s20">0</td><td class="s20">0</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">-0,16</td><td class="s20">1</td><td class="s20">0</td><td/>
+</tr>
+<tr style="height:24px">
+<td class="s27">7</td><td/><td colspan="3" class="s30">%</td><td/><td class="s31">0,00</td><td colspan="3" class="s29">0,00</td><td colspan="2" class="s29">0,81</td><td class="s29">-12,17</td><td colspan="2" class="s29">1,14</td><td class="s29">0,00</td><td colspan="3" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">0,00</td><td colspan="2" class="s29">0,00</td><td class="s29">-6,15</td><td class="s29">0,44</td><td class="s29">0,00</td><td/>
+</tr>
+</table>
+</body></html>
+

@@ -1,0 +1,42 @@
+{
+  "name": "@azvirt/api-client",
+  "version": "1.0.0",
+  "description": "Type-safe tRPC client SDK for AzVirt DMS",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.mjs",
+      "require": "./dist/react.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "eslint src"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@trpc/client": "^11.0.0",
+    "@trpc/react-query": "^11.0.0",
+    "@tanstack/react-query": "^5.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "superjson": "^1.13.0"
+  },
+  "peerDependenciesMeta": {
+    "@trpc/react-query": { "optional": true },
+    "@tanstack/react-query": { "optional": true },
+    "react": { "optional": true }
+  }
+}

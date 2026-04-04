@@ -1,0 +1,36 @@
+MachineID,TotalOil,Activities,OilProducts,FuelAmount,Anomaly_FuelMissing,Anomaly_OilMissing
+02014,35.0,Servis,Engine Oil - 15W40,0.0,True,False
+02025,262.0,"Zamena, Dolivanje","Consumable - Antifreeze…, Hydraulic Oil - H 46",0.0,True,False
+0203,5.0,Dolivanje,Consumable - Antifreeze…,0.0,True,False
+02054,35.0,Servis,Engine Oil - 15W40,0.0,True,False
+02104,80.0,Dolivanje,Hydraulic Oil - H 46,0.0,True,False
+02114,65.0,Dolivanje,Transmission oil - SAE 10,0.0,True,False
+02125,40.0,Servis,Engine Oil - AD 15W40,0.0,True,False
+03104,45.0,Servis,Engine Oil - Kom 15W40,0.0,True,False
+03143,12.0,Dolivanje,Hydraulic Oil - H 46,0.0,True,False
+04032,3.0,Dolivanje,Hydraulic Oil - H 46,0.0,True,False
+08213,15.0,Servis,Engine Oil - 10W40,0.0,True,False
+22070,8.0,Dolivanje,Hydraulic Oil - H 46,0.0,True,False
+31013,18.0,Servis,Engine Oil - 15W40,0.0,True,False
+31033,25.0,Dolivanje,Engine Oil - 15W40,0.0,True,False
+45021,6.0,Dolivanje,Engine Oil - 10W40,0.0,True,False
+56251,110.0,"Servis, Dolivanje","Reducer Oil - 75W90, Consumable - Antifreeze…, Engine Oil - 10W40",0.0,True,False
+56301,4.0,Dolivanje,Consumable - Antifreeze…,0.0,True,False
+56351,105.0,"Servis, Dolivanje","Reducer Oil - 75W90, Consumable - Antifreeze…, Engine Oil - 10W40",0.0,True,False
+56371,22.0,Dolivanje,Reducer Oil - 75W90,0.0,True,False
+56431,110.0,"Servis, Dolivanje","Reducer Oil - 75W90, Consumable - Antifreeze…, Engine Oil - 10W40",0.0,True,False
+56441,105.0,"Servis, Zamena, Dolivanje","Reducer Oil - 75W90, Consumable - Antifreeze…, Engine Oil - 10W40",0.0,True,False
+57011,21.0,Dolivanje,"Consumable - Antifreeze…, Engine Oil - 10W40, Engine Oil - 15W40",0.0,True,False
+57061,34.0,"Servis, Dolivanje","Consumable - Antifreeze…, Engine Oil - 10W40",0.0,True,False
+57101,202.0,Zamena,Hydraulic Oil - H 46,0.0,True,False
+80023,10.0,Servis,Engine Oil - 10W40,0.0,True,False
+80025,18.0,Servis,Engine Oil - 10W40,0.0,True,False
+80143,12.0,Servis,Engine Oil - 10W40,0.0,True,False
+Brand,0.0,0,0,0.0,False,False
+EMSA,0.0,0,0,0.0,False,False
+HAULOTTE,0.0,0,0,0.0,False,False
+HYUNDAI,0.0,0,0,0.0,False,False
+Hamm,0.0,0,0,0.0,False,False
+INDEKS,0.0,0,0,0.0,False,False
+Komatsu,0.0,0,0,0.0,False,False
+Mercedes Benz,0.0,0,0,0.0,False,False

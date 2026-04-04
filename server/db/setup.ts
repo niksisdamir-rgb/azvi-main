@@ -1,0 +1,147 @@
+import { eq, desc, like, and, or, gte, lt, sql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import {
+  InsertUser, users,
+  documents, InsertDocument,
+  projects, InsertProject,
+  materials, InsertMaterial,
+  deliveries, InsertDelivery,
+  qualityTests, InsertQualityTest,
+  employees, InsertEmployee,
+  workHours, InsertWorkHour,
+  concreteBases, InsertConcreteBase,
+  machines, InsertMachine,
+  machineMaintenance, InsertMachineMaintenance,
+  machineWorkHours, InsertMachineWorkHour,
+  aggregateInputs, InsertAggregateInput,
+  materialConsumptionHistory, InsertMaterialConsumptionHistory,
+  purchaseOrders, InsertPurchaseOrder,
+  purchaseOrderItems, InsertPurchaseOrderItem,
+  forecastPredictions, InsertForecastPrediction,
+  aiConversations,
+  aiMessages,
+  aiModels,
+  reportSettings,
+  reportRecipients,
+  emailBranding,
+  emailTemplates,
+  notificationTemplates,
+  notificationTriggers,
+  triggerExecutionLog,
+  suppliers, InsertSupplier,
+  deliveryStatusHistory, InsertDeliveryStatusHistory,
+  timesheetUploadHistory, InsertTimesheetUploadHistory,
+} from "../../drizzle/schema";
+import { ENV } from '../lib/env';
+
+import { withReplicas } from "drizzle-orm/pg-core";
+
+let _db: ReturnType<typeof drizzle> | null = null;
+let _client: postgres.Sql | null = null;
+let _replicaClients: postgres.Sql[] = [];
+
+// Mock DB implementation for testing in restricted environments
+const mockData: Record<string, any[]> = {
+  users: [],
+  projects: [],
+  materials: [],
+  deliveries: [],
+  quality_tests: [],
+  documents: [],
+  employees: [],
+  work_hours: [],
+  concrete_bases: [],
+  machines: [],
+  aggregate_inputs: [],
+  timesheetUploadHistory: [],
+};
+
+const getTableName = (table: any): string => {
+  return table?._?.name || table?.name || "unknown";
+};
+
+const mockDb = { transaction: (cb) => cb(mockDb),
+  select: () => ({
+    from: (table: any) => {
+      const tableName = getTableName(table);
+      const data = mockData[tableName] || [];
+      return {
+        where: (condition: any) => ({
+          limit: (n: number) => Promise.resolve(data.slice(0, n)),
+          orderBy: (order: any) => Promise.resolve([...data]),
+        }),
+        orderBy: (order: any) => Promise.resolve([...data]),
+        limit: (n: number) => Promise.resolve(data.slice(0, n)),
+        execute: () => Promise.resolve([...data]),
+        then: (onfulfilled: any) => Promise.resolve([...data]).then(onfulfilled),
+      };
+    },
+  }),
+  insert: (table: any) => ({
+    values: (values: any) => ({
+      onConflictDoUpdate: (config: any) => {
+        const tableName = getTableName(table);
+        if (!mockData[tableName]) mockData[tableName] = [];
+        const result = { ...values, id: Math.floor(Math.random() * 10000) };
+        mockData[tableName].push(result);
+        return Promise.resolve([result]);
+      },
+      returning: () => {
+        const tableName = getTableName(table);
+        if (!mockData[tableName]) mockData[tableName] = [];
+        const result = { ...values, id: Math.floor(Math.random() * 10000) };
+        mockData[tableName].push(result);
+        return Promise.resolve([result]);
+      },
+    }),
+  }),
+  update: (table: any) => ({
+    set: (values: any) => ({
+      where: (condition: any) => Promise.resolve(),
+    }),
+  }),
+  delete: (table: any) => ({
+    where: (condition: any) => Promise.resolve(),
+  }),
+} as unknown as ReturnType<typeof drizzle>;
+
+export async function getDb() {
+  const useMocks = process.env.DMS_USE_MOCKS === "true";
+  if (useMocks) {
+    return mockDb;
+  }
+
+  const connectionString = ENV.databaseUrl;
+  const replicaUrls = ENV.databaseReplicaUrls;
+
+  if (!_db && connectionString) {
+    try {
+      console.log("[DEBUG] Attempting to connect to database...");
+      _client = postgres(connectionString);
+      const primaryDb = drizzle(_client);
+      
+      if (replicaUrls && replicaUrls.length > 0) {
+        console.log(`[DEBUG] Configuring ${replicaUrls.length} read replicas...`);
+        const readReplicas = replicaUrls.map(url => {
+          const client = postgres(url);
+          _replicaClients.push(client);
+          return drizzle(client);
+        });
+        
+        _db = withReplicas(primaryDb, readReplicas) as any;
+      } else {
+        _db = primaryDb;
+      }
+      
+      console.log("[DEBUG] Database connection initialized successfully.");
+    } catch (error) {
+      console.warn("[Database] Failed to connect:", error);
+      _db = null;
+    }
+  } else if (!_db) {
+    console.log("[DEBUG] _db is null and connectionString is empty.");
+  }
+
+  return _db;
+}

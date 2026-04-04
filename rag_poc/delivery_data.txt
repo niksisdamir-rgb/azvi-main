@@ -1,0 +1,20 @@
+Delivery Management Quality Guidelines and SOPs
+
+Section 1: Delivery Delay Protocols
+For Delivery ID 104 specifically, and generally for all construction material deliveries:
+If a delivery is delayed by more than 30 minutes due to traffic, the delivery status must be automatically flagged as "At Risk".
+The system should notify the site manager immediately. If the delay exceeds 60 minutes for perishable materials like ready-mix concrete, the delivery must be rejected upon arrival unless approved by a senior engineer.
+
+Section 2: Quality Score Calculation
+The quality score for concrete materials is calculated using a weighted formula:
+1. Temperature at arrival (40% weight): Must be between 10°C and 32°C.
+2. Slump test result (40% weight): Target slump ± 25mm.
+3. Time since batching (20% weight): Must not exceed 90 minutes.
+A final score below 85/100 triggers an automatic quality review by the QC team.
+
+Section 3: Delivery Failure Criteria
+A delivery is marked as "Failed" if any of the following conditions are met:
+- The material arrives outside the acceptable temperature range and cannot be conditioned.
+- The driver lacks mandatory safety documentation (PPE certification, site induction).
+- The delivery arrives at the wrong site zone and materials are incorrectly unloaded.
+- The quality score calculation yields a result below 70/100, indicating severe structural unsuitability.

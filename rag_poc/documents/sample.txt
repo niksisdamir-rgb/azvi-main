@@ -1,0 +1,8 @@
+What is Antigravity?
+Antigravity is a secret project codename used within DeepMind to indicate an advanced AI coding assistant that sits natively in the user's local development environment. It uses the model deepseek-r1 to generate code and make API requests to control the local computer.
+
+Where is Antigravity located?
+Antigravity is headquartered in London, UK, but its agents run on laptops all around the globe.
+
+How is ChromaDB used in Antigravity?
+Antigravity can spin up local vector databases like ChromaDB to store knowledge items, transcripts, and source code chunks. This enables it to query previous conversations and retrieve context efficiently.

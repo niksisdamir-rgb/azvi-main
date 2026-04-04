@@ -1,0 +1,182 @@
+Podaci o postrojenju za doziranje betona,,,,,,Informacije o mašini,,,,,,
+
+Naziv,,,,,
+,,,,,,Strana za biranjepostrojenja,,,,CM90,
+,,,,,
+Adresa lokacije,,,,,
+,,,,,,Radni nalog,,,,,
+,,,,,
+,,,,,,Šifra table na napajanje,,,,,
+,,,,,
+,,,,,,Šifra kontrolnetable,,,,
+,,,,,
+,,,,,,Šifra hardverkogkljuca,,,,
+
+Telefon,,,,,,Grad/Zemlja,,,,
+
+1.-,,Levak za merenje agregata/Mikser je prihvatio broj ogranicenja pražnjenja kao prazan,,,,,,,,,,,100
+
+2.-,,Dodatno veme rada transportera agregata,,,,,,,,,,,5
+
+3.-,,Levak za merenje agregata/Vreme ravnoteže miksera,,,,,,,,,,,5
+
+4.-,,Levak za merenje agregata/Granica preopterecenja miksera,,,,,,,,,,,0
+
+5.-,,Dodatno radno vreme prenosnog transportera  (sek),,,,,,,,,,,4
+
+6.-,,Potrebna kolicina od kapije za precizno merenje agregata (kg) 1,,,,,,,,,,,550
+
+Potrebna kolicina od kapije za precizno merenje agregata (kg) 2,,,,,,,,,,,100
+7.-,,,,,,,,,,,,,
+,
+
+8.-,,Potrebna kolicina od kapije za precizno merenje agregata(kg) 3,,,,,,,,,,,400
+
+Potrebna kolicina od kapije za precizno merenje agregata(kg) 4,,,,,,,,,,,550
+9.-,,,,,,,,,,,,,
+,
+
+Tražena kolicina agregatnog materijala koja ce da se meri na vibracionom sistemu za preciznomerenje 1 (kg),,,,,,,,,,,0
+10.,,,,,,,,,,,,,
+,
+
+11.,,Tražena kolicina agregatnog materijala koja ce da se meri na vibracionom sistemu za preciznomerenje 2 (kg),,,,,,,,,,,0
+
+Tražena kolicina agregatnog materijala koja ce da se meri na vibracionom sistemu za preciznomerenje 3 (kg),,,,,,,,,,,0
+12.,,,,,,,,,,,,,
+,
+
+Tražena kolicina agregatnog materijala koja ce da se meri na vibracionom sistemu za preciznomerenje 4 (kg),,,,,,,,,,,0
+13.,,,,,,,,,,,,,
+,
+
+14.,,Maksimalno vreme pražnjenja levka za merenje,,,,,,,,,,,45
+
+15.,,Maksimalno vreme rada pneumatskog klipa kapije za pražnjenje miksera,,,,,,,,,,,30
+
+16.,,Maksimalno vreme rada trube,,,,,,,,,,,2
+
+17.,,Maksimalno vreme izvršenja merne trake,,,,,,,,,,,45
+
+18.,,Maksimalno vreme istovara materijala iz levka za merenje cementa (sn),,,,,,,,,,,45
+
+19.,,Maksimalno vreme istovara materijala iz levka za merenje aditiva (sn),,,,,,,,,,,45
+
+20,,Maksimalno vreme istovara materijala iz levka za merenje vode (sn),,,,,,,,,,,45
+
+45
+Maksimalno vreme istovara materijala iz bunkera za agregat  (sek),,,,,,,,,,,
+21,,,,,,,,,,,,,
+,,,,,,,,,,,,
+,
+
+22,,Maksimalno vreme istovara materijala iz levka za merenje cementa (sn),,,,,,,,,,,45
+
+23,,Maksimalno vreme rada motora vijka za cement,,,,,,,,,,,45
+
+24,,Maksimalno radno vreme ventila za vodu (sek.),,,,,,,,,,,0
+
+25,,Maksimalno radno vreme motora pumpe za aditiv (sek.),,,,,,,,,,,30
+
+26,,Ogranicenje pražnjenja levka za merenje se racuna kao prazno,,,,,,,,,,,19
+
+27,,Vreme balansiranja levka za merenje cementa (sek),,,,,,,,,,,3
+
+3
+Dodatno vreme pražnjenja cementa iz levka za merenje (sek),,,,,,,,,,,
+28,,,,,,,,,,,,,
+,,,,,,,,,,,,
+,
+
+29,,Vreme cekanja vazdušnog šoka cementa,,,,,,,,,,,7
+
+Vreme izvršenja vazdušnog šoka cementa,,,,,,,,,,
+,,,,,,,,,,,4
+30,,,,,,,,,,,,,
+,,
+,
+
+Ime - Prezime,,,,,,Ime - Prezime,,,,
+Podaci o postrojenju za doziranje betona,,,,,,,Informacije o mašini,,,,,,,,
+
+Naziv,,,,,,
+,,,,,,,Strana za biranjepostrojenja,,CM90,,,,,
+,,,,,,,
+Adresa lokacije,,,,,,
+,,,,,,,Radni nalog,,,,,,,
+,,,,,,
+,,,,,,,Šifra table na napajanje,,,,,,,
+,,,,,,
+,,,,,,,Šifra kontrolnetable,,,,,,
+,,,,,,
+,,,,,,,Šifra hardverkogkljuca,,,,,,
+
+Telefon,,,,,,,Grad/Zemlja,,,,,,
+
+31,,,Minimalna granica pražnjenja aditiva (kg),,,,,,,,,,2,
+
+32,,,Dodatno vreme pražnjenja levka za merenje aditiva,,,,,,,,,,3,
+
+33,,,Vreme držanja gornje pozicije kofe za agretat,,,,,,,,,,4,
+
+34,,,Vreme srednjeg pomeranja kofe za agregat,,,,,,,,,,7,
+
+Vreme maksimalnog pomeranja kofe za agregat,,,,,,,,,,7,
+35,,,,,,,,,,,,,,
+,,
+
+36,,,Vreme rada pneumatskog klipa kapije za pražnjenje miksera,,,,,,,,,,"0,5",
+
+37,,
+,,,1,
+,,,Vreme zadržavanja pneumatskog klipa kapije za pražnjenje miksera,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,
+
+38,,,Vreme izvršenja motora za podmazivanje,,,,,,,,,,90,
+
+39,,,Vreme zadržavanja motora za podmazivanje,,,,,,,,,,180,
+
+40,,,Maksimalna vrednost indikatora struje miksera,,,,,,,,,,180,
+
+41,,,Minimalna vrednost indikatora struje miksera,,,,,,,,,,10,
+
+42,,,Ogranicenje prekomerne struje indikatora struje miksera,,,,,,,,,,90,
+
+43,,,Ogranicenje nedovoljne struje indikatora struje miksera,,,,,,,,,,15,
+
+44,,,Velicina miksera,,,,,,,,,,"1,5",
+
+45,,,Minimalna granica pražnjenja vode  (kg),,,,,,,,,,10,
+
+46,,,Dodatno vreme pražnjenja vode iz levka za merenje  (sek),,,,,,,,,,3,
+
+10,
+Ogranicenje rada vibracije trake za merenje,,,,,,,,,,,
+47,,,,,,,,,,,,,,
+,,,,,,,,,,,,
+,,
+
+1,
+Vreme cekanja vibracije trake za merenje,,,,,,,,,,,
+48,,,,,,,,,,,,,,
+,,,,,,,,,,,,
+,,
+
+49,,,Rad vibracije trake za merenje,,,,,,,,,,10,
+
+50,,,Vreme cekanja vibratora levka za merenje cementa,,,,,,,,,,1,
+
+51,,,Vreme rada vibratora levka za merenje cementa,,,,,,,,,,10,
+
+52,,,Ogranicenje rada vibratora za cement,,,,,,,,,,50,
+
+53,,,Vreme cekanja vibratora bunkera za agregat (2),,,,,,,,,,3,
+
+54,,,Veme rada vibratora bunkera za agregat (2),,,,,,,,,,5,
+
+55,,,Vreme cekanja vibratora bunkera za agregat (3),,,,,,,,,,3,
+
+56,,,Vreme rada vibratora bunkera za agregat (3),,,,,,,,,,5,
+
+Ime - Prezime,,,,,,,Ime - Prezime,,,,,,,
