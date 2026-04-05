@@ -77,6 +77,16 @@ Settings → Secrets and variables → Actions → New repository secret
 
 ---
 
+## Session Lifetime Policy
+
+**Decision:** The application aligns JWT and Cookie TTLs, rather than rotating ephemeral cookies.
+
+- **JWT Lifespan:** 30 Days (via `jose` token signature)
+- **Cookie `maxAge`:** 30 Days (persists across browser closes)
+- Explicit user logouts instantly invalidate and sever the local cookie.
+
+---
+
 ## Safety Flags (Must be `false` in production)
 
 | Variable | Safe Value | Purpose |

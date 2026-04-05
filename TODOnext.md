@@ -18,14 +18,14 @@
 **Severity:** 🔴 CRITICAL  
 **Risk:** Anyone with repo access knows the admin password (`admin/admin123`).
 
-- [ ] Refactor `create-admin.ts` to accept `--username` and `--password` via CLI args (`process.argv`) or env vars (`ADMIN_USERNAME`, `ADMIN_PASSWORD`)
-- [ ] Add input validation: require password ≥ 12 chars, not in common-password lists
-- [ ] Add a `forcePasswordChange: boolean` column to `users` table schema
-- [ ] Set `forcePasswordChange: true` when creating admin via script
-- [ ] Add server-side middleware to check `forcePasswordChange` flag and return a specific error code to the client
-- [ ] Add client-side handling: redirect to a "Change Password" page when the flag is set
-- [ ] Add a prominent `console.warn` in the script: *"⚠️ Change this password immediately after first login"*
-- [ ] Update `PRODUCTION_SECRETS.md` to document the new admin creation workflow
+- [x] Refactor `create-admin.ts` to accept `--username` and `--password` via CLI args (`process.argv`) or env vars (`ADMIN_USERNAME`, `ADMIN_PASSWORD`)
+- [x] Add input validation: require password ≥ 12 chars, not in common-password lists
+- [x] Add a `forcePasswordChange: boolean` column to `users` table schema
+- [x] Set `forcePasswordChange: true` when creating admin via script
+- [x] Add server-side middleware to check `forcePasswordChange` flag and return a specific error code to the client
+- [x] Add client-side handling: redirect to a "Change Password" page when the flag is set
+- [x] Add a prominent `console.warn` in the script: *"⚠️ Change this password immediately after first login"*
+- [x] Update `PRODUCTION_SECRETS.md` to document the new admin creation workflow
 
 ---
 
@@ -35,14 +35,14 @@
 **Severity:** 🔴 CRITICAL  
 **Risk:** `VITE_ENABLE_DEV_BYPASS` is a `VITE_`-prefixed variable and is included in the client JS bundle, revealing that a bypass mechanism exists.
 
-- [ ] Rename `VITE_ENABLE_DEV_BYPASS` → `SERVER_ENABLE_DEV_BYPASS` in:
-  - [ ] `server/routers/auth/index.ts` (line 64)
-  - [ ] `server/lib/env.ts` (lines 17, 29, 57)
-  - [ ] Any `.env` / `.env.example` files
-- [ ] Audit the client codebase for any references to `VITE_ENABLE_DEV_BYPASS` and remove them:
-  - [ ] `grep -r "VITE_ENABLE_DEV_BYPASS" client/`
-- [ ] Update `PRODUCTION_SECRETS.md` to reflect the new variable name
-- [ ] Add the renamed variable to the startup validator's production guard (env.ts Guard 2)
+- [x] Rename `VITE_ENABLE_DEV_BYPASS` → `SERVER_ENABLE_DEV_BYPASS` in:
+  - [x] `server/routers/auth/index.ts` (line 64)
+  - [x] `server/lib/env.ts` (lines 17, 29, 57)
+  - [x] Any `.env` / `.env.example` files
+- [x] Audit the client codebase for any references to `VITE_ENABLE_DEV_BYPASS` and remove them:
+  - [x] `grep -r "VITE_ENABLE_DEV_BYPASS" client/`
+- [x] Update `PRODUCTION_SECRETS.md` to reflect the new variable name
+- [x] Add the renamed variable to the startup validator's production guard (env.ts Guard 2)
 
 ---
 
@@ -93,12 +93,12 @@
 **Severity:** 🟠 HIGH  
 **Risk:** JWT is valid 30 days, but cookie is session-scoped (lost on browser close). Or worse: JWT extracted from DevTools remains usable for 30 days after logout.
 
-- [ ] Add `maxAge: 30 * 24 * 60 * 60 * 1000` (30 days) to cookie options in `cookies.ts`
-- [ ] OR: Reduce JWT expiration from `30d` to `24h` in `sdk.ts` and add refresh token rotation
-- [ ] Decision: document chosen approach in `PRODUCTION_SECRETS.md`
-- [ ] Consider adding JWT rotation / sliding window expiry
-- [ ] Verify logout clears cookie properly (existing test: `auth.logout.test.ts`)
-- [ ] Write test: cookie has correct `maxAge` set
+- [x] Add `maxAge: 30 * 24 * 60 * 60 * 1000` (30 days) to cookie options in `cookies.ts`
+- [x] OR: Reduce JWT expiration from `30d` to `24h` in `sdk.ts` and add refresh token rotation
+- [x] Decision: document chosen approach in `PRODUCTION_SECRETS.md`
+- [x] Consider adding JWT rotation / sliding window expiry
+- [x] Verify logout clears cookie properly (existing test: `auth.logout.test.ts`)
+- [x] Write test: cookie has correct `maxAge` set
 
 ---
 
