@@ -13,7 +13,7 @@ export async function createDelivery(delivery: schema.InsertDelivery) {
 
 export async function getDeliveries(filters?: { 
   projectId?: number; 
-  status?: string; 
+  status?: schema.Delivery["status"];
   statusGroup?: 'active' | 'completed';
   startDate?: Date; 
   endDate?: Date 
@@ -21,14 +21,14 @@ export async function getDeliveries(filters?: {
   const db = await getDb();
   if (!db) return [];
 
-  let conditions: any[] = [];
+  const conditions = [];
 
   if (filters?.projectId) {
     conditions.push(eq(schema.deliveries.projectId, filters.projectId));
   }
 
   if (filters?.status) {
-    conditions.push(eq(schema.deliveries.status, filters.status as any));
+    conditions.push(eq(schema.deliveries.status, filters.status));
   }
 
   if (filters?.statusGroup === 'active') {

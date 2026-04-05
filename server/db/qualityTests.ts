@@ -11,11 +11,11 @@ export async function createQualityTest(test: schema.InsertQualityTest) {
   return result;
 }
 
-export async function getQualityTests(filters?: { projectId?: number; deliveryId?: number; testType?: string; status?: string; startDate?: Date; endDate?: Date }) {
+export async function getQualityTests(filters?: { projectId?: number; deliveryId?: number; testType?: schema.QualityTest["testType"]; status?: schema.QualityTest["status"]; startDate?: Date; endDate?: Date }) {
   const db = await getDb();
   if (!db) return [];
 
-  let conditions: any[] = [];
+  const conditions = [];
 
   if (filters?.projectId) {
     conditions.push(eq(schema.qualityTests.projectId, filters.projectId));
@@ -26,11 +26,11 @@ export async function getQualityTests(filters?: { projectId?: number; deliveryId
   }
 
   if (filters?.testType) {
-    conditions.push(eq(schema.qualityTests.testType, filters.testType as any));
+    conditions.push(eq(schema.qualityTests.testType, filters.testType));
   }
 
   if (filters?.status) {
-    conditions.push(eq(schema.qualityTests.status, filters.status as any));
+    conditions.push(eq(schema.qualityTests.status, filters.status));
   }
 
   if (filters?.startDate) {
@@ -79,9 +79,9 @@ export async function getHistoricalQualityData(projectId?: number, concreteType?
   // Only include completed tests with results
   conditions.push(and(sql`${schema.qualityTests.result} != ''`, eq(schema.qualityTests.status, 'pass')));
 
-  query = query.where(and(...conditions)) as any;
+  const whereClause = and(...conditions);
 
-  return await query.orderBy(desc(schema.qualityTests.createdAt)).limit(limit);
+  return await query.where(whereClause).orderBy(desc(schema.qualityTests.createdAt)).limit(limit);
 }
 
 export async function updateQualityTest(id: number, data: Partial<schema.InsertQualityTest>) {
