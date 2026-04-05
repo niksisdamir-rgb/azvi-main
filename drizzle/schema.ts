@@ -238,18 +238,18 @@ export type InsertQualityTest = typeof qualityTests.$inferInsert;
  */
 export const employees = pgTable("employees", {
   id: serial("id").primaryKey(),
-  firstName: varchar("firstName", { length: 100 }).notNull(),
-  lastName: varchar("lastName", { length: 100 }).notNull(),
-  employeeNumber: varchar("employeeNumber", { length: 50 }).notNull().unique(),
+  firstName: varchar("first_name", { length: 100 }).notNull(),
+  lastName: varchar("last_name", { length: 100 }).notNull(),
+  employeeNumber: varchar("employee_number", { length: 50 }).notNull().unique(),
   position: varchar("position", { length: 100 }).notNull(),
   department: departmentEnum("department").default("construction").notNull(),
-  phoneNumber: varchar("phoneNumber", { length: 50 }),
+  phoneNumber: varchar("phone_number", { length: 50 }),
   email: varchar("email", { length: 320 }),
-  hourlyRate: integer("hourlyRate"),
+  hourlyRate: integer("hourly_rate"),
   status: employeeStatusEnum("status").default("active").notNull(),
-  hireDate: timestamp("hireDate"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  hireDate: timestamp("hire_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => {
   return {
     departmentIdx: index("employee_department_idx").on(table.department),
@@ -263,21 +263,21 @@ export type InsertEmployee = typeof employees.$inferInsert;
 /**
  * Work hours table for tracking employee working hours
  */
-export const workHours = pgTable("workHours", {
+export const workHours = pgTable("work_hours", {
   id: serial("id").primaryKey(),
-  employeeId: integer("employeeId").references(() => employees.id).notNull(),
-  projectId: integer("projectId").references(() => projects.id),
+  employeeId: integer("employee_id").references(() => employees.id).notNull(),
+  projectId: integer("project_id").references(() => projects.id),
   date: timestamp("date").notNull(),
-  startTime: timestamp("startTime").notNull(),
-  endTime: timestamp("endTime"),
-  hoursWorked: integer("hoursWorked"),
-  overtimeHours: integer("overtimeHours").default(0),
-  workType: workTypeEnum("workType").default("regular").notNull(),
+  startTime: timestamp("start_time").notNull(),
+  endTime: timestamp("end_time"),
+  hoursWorked: integer("hours_worked"),
+  overtimeHours: integer("overtime_hours").default(0),
+  workType: workTypeEnum("work_type").default("regular").notNull(),
   notes: text("notes"),
-  approvedBy: integer("approvedBy").references(() => users.id),
+  approvedBy: integer("approved_by").references(() => users.id),
   status: workStatusEnum("status").default("pending").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => {
   return {
     employeeIdIdx: index("work_hour_employee_id_idx").on(table.employeeId),
@@ -292,16 +292,16 @@ export type InsertWorkHour = typeof workHours.$inferInsert;
 /**
  * Concrete bases table for concrete mixing plant management
  */
-export const concreteBases = pgTable("concreteBases", {
+export const concreteBases = pgTable("concrete_bases", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   location: varchar("location", { length: 500 }).notNull(),
   capacity: integer("capacity").notNull(),
   status: baseStatusEnum("status").default("operational").notNull(),
-  managerName: varchar("managerName", { length: 255 }),
-  phoneNumber: varchar("phoneNumber", { length: 50 }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  managerName: varchar("manager_name", { length: 255 }),
+  phoneNumber: varchar("phone_number", { length: 50 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type ConcreteBase = typeof concreteBases.$inferSelect;
@@ -313,18 +313,18 @@ export type InsertConcreteBase = typeof concreteBases.$inferInsert;
 export const machines = pgTable("machines", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
-  machineNumber: varchar("machineNumber", { length: 100 }).notNull().unique(),
+  machineNumber: varchar("machine_number", { length: 100 }).notNull().unique(),
   type: machineTypeEnum("type").default("other").notNull(),
   manufacturer: varchar("manufacturer", { length: 255 }),
   model: varchar("model", { length: 255 }),
   year: integer("year"),
-  concreteBaseId: integer("concreteBaseId").references(() => concreteBases.id),
+  concreteBaseId: integer("concrete_base_id").references(() => concreteBases.id),
   status: machineStatusEnum("status").default("operational").notNull(),
-  totalWorkingHours: integer("totalWorkingHours").default(0),
-  lastMaintenanceDate: timestamp("lastMaintenanceDate"),
-  nextMaintenanceDate: timestamp("nextMaintenanceDate"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  totalWorkingHours: integer("total_working_hours").default(0),
+  lastMaintenanceDate: timestamp("last_maintenance_date"),
+  nextMaintenanceDate: timestamp("next_maintenance_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type Machine = typeof machines.$inferSelect;
@@ -333,22 +333,22 @@ export type InsertMachine = typeof machines.$inferInsert;
 /**
  * Machine maintenance table for tracking lubrication, fuel, and maintenance
  */
-export const machineMaintenance = pgTable("machineMaintenance", {
+export const machineMaintenance = pgTable("machine_maintenance", {
   id: serial("id").primaryKey(),
-  machineId: integer("machineId").references(() => machines.id).notNull(),
+  machineId: integer("machine_id").references(() => machines.id).notNull(),
   date: timestamp("date").notNull(),
-  maintenanceType: maintenanceTypeEnum("maintenanceType").default("other").notNull(),
+  maintenanceType: maintenanceTypeEnum("maintenance_type").default("other").notNull(),
   description: text("description"),
-  lubricationType: varchar("lubricationType", { length: 100 }),
-  lubricationAmount: integer("lubricationAmount"),
-  fuelType: varchar("fuelType", { length: 100 }),
-  fuelAmount: integer("fuelAmount"),
+  lubricationType: varchar("lubrication_type", { length: 100 }),
+  lubricationAmount: integer("lubrication_amount"),
+  fuelType: varchar("fuel_type", { length: 100 }),
+  fuelAmount: integer("fuel_amount"),
   cost: integer("cost"),
-  performedBy: varchar("performedBy", { length: 255 }),
-  hoursAtMaintenance: integer("hoursAtMaintenance"),
+  performedBy: varchar("performed_by", { length: 255 }),
+  hoursAtMaintenance: integer("hours_at_maintenance"),
   notes: text("notes"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type MachineMaintenance = typeof machineMaintenance.$inferSelect;
@@ -357,19 +357,19 @@ export type InsertMachineMaintenance = typeof machineMaintenance.$inferInsert;
 /**
  * Machine working hours table for tracking equipment usage
  */
-export const machineWorkHours = pgTable("machineWorkHours", {
+export const machineWorkHours = pgTable("machine_work_hours", {
   id: serial("id").primaryKey(),
-  machineId: integer("machineId").references(() => machines.id).notNull(),
-  projectId: integer("projectId").references(() => projects.id),
+  machineId: integer("machine_id").references(() => machines.id).notNull(),
+  projectId: integer("project_id").references(() => projects.id),
   date: timestamp("date").notNull(),
-  startTime: timestamp("startTime").notNull(),
-  endTime: timestamp("endTime"),
-  hoursWorked: integer("hoursWorked"),
-  operatorId: integer("operatorId").references(() => employees.id),
-  operatorName: varchar("operatorName", { length: 255 }),
+  startTime: timestamp("start_time").notNull(),
+  endTime: timestamp("end_time"),
+  hoursWorked: integer("hours_worked"),
+  operatorId: integer("operator_id").references(() => employees.id),
+  operatorName: varchar("operator_name", { length: 255 }),
   notes: text("notes"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type MachineWorkHour = typeof machineWorkHours.$inferSelect;
@@ -378,20 +378,20 @@ export type InsertMachineWorkHour = typeof machineWorkHours.$inferInsert;
 /**
  * Aggregate input table for tracking raw material input at concrete bases
  */
-export const aggregateInputs = pgTable("aggregateInputs", {
+export const aggregateInputs = pgTable("aggregate_inputs", {
   id: serial("id").primaryKey(),
-  concreteBaseId: integer("concreteBaseId").references(() => concreteBases.id).notNull(),
+  concreteBaseId: integer("concrete_base_id").references(() => concreteBases.id).notNull(),
   date: timestamp("date").notNull(),
-  materialType: aggregateTypeEnum("materialType").default("other").notNull(),
-  materialName: varchar("materialName", { length: 255 }).notNull(),
+  materialType: aggregateTypeEnum("material_type").default("other").notNull(),
+  materialName: varchar("material_name", { length: 255 }).notNull(),
   quantity: integer("quantity").notNull(),
   unit: varchar("unit", { length: 50 }).notNull(),
   supplier: varchar("supplier", { length: 255 }),
-  batchNumber: varchar("batchNumber", { length: 100 }),
-  receivedBy: varchar("receivedBy", { length: 255 }),
+  batchNumber: varchar("batch_number", { length: 100 }),
+  receivedBy: varchar("received_by", { length: 255 }),
   notes: text("notes"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type AggregateInput = typeof aggregateInputs.$inferSelect;
@@ -402,13 +402,13 @@ export type InsertAggregateInput = typeof aggregateInputs.$inferInsert;
  */
 export const materialConsumptionHistory = pgTable("material_consumption_history", {
   id: serial("id").primaryKey(),
-  materialId: integer("materialId").references(() => materials.id).notNull(),
-  quantityUsed: integer("quantityUsed").notNull(),
+  materialId: integer("material_id").references(() => materials.id).notNull(),
+  quantityUsed: integer("quantity_used").notNull(),
   date: timestamp("date").notNull(),
-  projectId: integer("projectId"),
-  deliveryId: integer("deliveryId").references(() => deliveries.id),
+  projectId: integer("project_id"),
+  deliveryId: integer("delivery_id").references(() => deliveries.id),
   notes: text("notes"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type MaterialConsumptionHistory = typeof materialConsumptionHistory.$inferSelect;
@@ -419,16 +419,16 @@ export type InsertMaterialConsumptionHistory = typeof materialConsumptionHistory
  */
 export const purchaseOrders = pgTable("purchase_orders", {
   id: serial("id").primaryKey(),
-  supplierId: integer("supplierId").references(() => suppliers.id).notNull(),
+  supplierId: integer("supplier_id").references(() => suppliers.id).notNull(),
   status: poStatusEnum("status").default("pending").notNull(),
-  orderDate: timestamp("orderDate").defaultNow().notNull(),
-  expectedDelivery: timestamp("expectedDelivery"),
-  actualDelivery: timestamp("actualDelivery"),
-  totalCost: integer("totalCost"),
+  orderDate: timestamp("order_date").defaultNow().notNull(),
+  expectedDelivery: timestamp("expected_delivery"),
+  actualDelivery: timestamp("actual_delivery"),
+  totalCost: integer("total_cost"),
   notes: text("notes"),
-  createdBy: integer("createdBy").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  createdBy: integer("created_by").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type PurchaseOrder = typeof purchaseOrders.$inferSelect;
@@ -439,10 +439,10 @@ export type InsertPurchaseOrder = typeof purchaseOrders.$inferInsert;
  */
 export const purchaseOrderItems = pgTable("purchase_order_items", {
   id: serial("id").primaryKey(),
-  purchaseOrderId: integer("purchaseOrderId").references(() => purchaseOrders.id).notNull(),
-  materialId: integer("materialId").references(() => materials.id).notNull(),
+  purchaseOrderId: integer("purchase_order_id").references(() => purchaseOrders.id).notNull(),
+  materialId: integer("material_id").references(() => materials.id).notNull(),
   quantity: integer("quantity").notNull(),
-  unitPrice: integer("unitPrice"),
+  unitPrice: integer("unit_price"),
 });
 
 export type PurchaseOrderItem = typeof purchaseOrderItems.$inferSelect;
@@ -472,14 +472,14 @@ export type InsertForecastPrediction = typeof forecastPredictions.$inferInsert;
  */
 export const reportSettings = pgTable("report_settings", {
   id: serial("id").primaryKey(),
-  userId: integer("userId").references(() => users.id).notNull().unique(),
-  includeProduction: boolean("includeProduction").default(true).notNull(),
-  includeDeliveries: boolean("includeDeliveries").default(true).notNull(),
-  includeMaterials: boolean("includeMaterials").default(true).notNull(),
-  includeQualityControl: boolean("includeQualityControl").default(true).notNull(),
-  reportTime: varchar("reportTime", { length: 10 }).default("18:00").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  userId: integer("user_id").references(() => users.id).notNull().unique(),
+  includeProduction: boolean("include_production").default(true).notNull(),
+  includeDeliveries: boolean("include_deliveries").default(true).notNull(),
+  includeMaterials: boolean("include_materials").default(true).notNull(),
+  includeQualityControl: boolean("include_quality_control").default(true).notNull(),
+  reportTime: varchar("report_time", { length: 10 }).default("18:00").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type ReportSettings = typeof reportSettings.$inferSelect;
@@ -493,7 +493,7 @@ export const reportRecipients = pgTable("report_recipients", {
   email: varchar("email", { length: 320 }).notNull(),
   name: varchar("name", { length: 255 }),
   active: boolean("active").default(true).notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type ReportRecipient = typeof reportRecipients.$inferSelect;
@@ -507,11 +507,11 @@ export const emailTemplates = pgTable("email_templates", {
   name: varchar("name", { length: 255 }).notNull(),
   type: varchar("type", { length: 100 }).notNull().unique(),
   subject: varchar("subject", { length: 500 }).notNull(),
-  htmlTemplate: text("htmlTemplate").notNull(),
+  htmlTemplate: text("html_template").notNull(),
   variables: text("variables"), // JSON string of available variables
-  isActive: boolean("isActive").default(true).notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type EmailTemplate = typeof emailTemplates.$inferSelect;
@@ -522,13 +522,13 @@ export type InsertEmailTemplate = typeof emailTemplates.$inferInsert;
  */
 export const emailBranding = pgTable("email_branding", {
   id: serial("id").primaryKey(),
-  logoUrl: varchar("logoUrl", { length: 500 }),
-  primaryColor: varchar("primaryColor", { length: 20 }).default("#f97316").notNull(),
-  secondaryColor: varchar("secondaryColor", { length: 20 }).default("#ea580c").notNull(),
-  companyName: varchar("companyName", { length: 255 }).default("AzVirt").notNull(),
-  footerText: text("footerText"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  logoUrl: varchar("logo_url", { length: 500 }),
+  primaryColor: varchar("primary_color", { length: 20 }).default("#f97316").notNull(),
+  secondaryColor: varchar("secondary_color", { length: 20 }).default("#ea580c").notNull(),
+  companyName: varchar("company_name", { length: 255 }).default("AzVirt").notNull(),
+  footerText: text("footer_text"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type EmailBranding = typeof emailBranding.$inferSelect;
@@ -538,11 +538,11 @@ export type InsertEmailBranding = typeof emailBranding.$inferInsert;
 // AI Assistant Tables
 export const aiConversations = pgTable("ai_conversations", {
   id: serial("id").primaryKey(),
-  userId: integer("userId").references(() => users.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
   title: varchar("title", { length: 255 }),
-  modelName: varchar("modelName", { length: 100 }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  modelName: varchar("model_name", { length: 100 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type AiConversation = typeof aiConversations.$inferSelect;
