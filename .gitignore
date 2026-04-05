@@ -53,3 +53,4 @@ prompt
 server.log
 # Local Netlify folder
 .netlify
+*.bak
