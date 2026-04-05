@@ -1,7 +1,7 @@
 import { getDb } from "../db";
 import { jobsLogger } from "./logger";
-import { dailyTasks, users } from "../../drizzle/schema";
-import { eq, lt, and, ne } from "drizzle-orm";
+import { users, dailyTasks } from "../../drizzle/schema";
+import { eq, lt, and, ne, inArray } from "drizzle-orm";
 import {
   sendEmailNotification,
   sendSmsNotification,
@@ -46,19 +46,30 @@ export async function checkAndNotifyOverdueTasks() {
       `[NotificationJobs] Found ${overdueTasks.length} overdue tasks`
     );
 
+    // 1. Batch fetch all unique users involved
+    const userIds = [...new Set(overdueTasks.map(t => t.userId))].filter(id => id !== null) as number[];
+    if (userIds.length === 0) {
+      jobsLogger.info("[NotificationJobs] No users to notify for overdue tasks");
+      return;
+    }
+
+    const allUsers = await db.select().from(users).where(inArray(users.id, userIds));
+    const userMap = new Map(allUsers.map(u => [u.id, u]));
+
+    // 2. Batch fetch ALL preferences for these users (getNotificationPreferences currently only takes one ID)
+    // We'll use the recordNotifyHistory-style query logic or just map getNotificationPreferences
+    // Actually, let's just fetch them in bulk here
+    const { notificationPreferences } = await import("../../drizzle/schema");
+    const allPrefs = await db.select().from(notificationPreferences).where(inArray(notificationPreferences.userId, userIds));
+    const prefsMap = new Map(allPrefs.map(p => [p.userId, p]));
+
     for (const task of overdueTasks) {
       try {
-        // Get user details
-        const userResult = await db
-          .select()
-          .from(users)
-          .where(eq(users.id, task.userId))
-          .limit(1);
+        if (!task.userId) continue;
+        const user = userMap.get(task.userId);
+        if (!user) continue;
 
-        if (userResult.length === 0) continue;
-
-        const user = userResult[0];
-        const prefs = await getNotificationPreferences(task.userId);
+        const prefs = prefsMap.get(task.userId);
 
         // Check if user wants overdue reminders
         if (!prefs?.overdueReminders) {
@@ -176,8 +187,7 @@ export async function checkAndNotifyOverdueTasks() {
 export async function notifyTaskCompletion(
   taskId: number,
   taskTitle: string,
-  userId: number,
-  completedBy: number
+  userId: number
 ) {
   try {
     jobsLogger.info(
@@ -330,12 +340,15 @@ export async function checkAndNotifyDelayedDeliveries() {
       )
     );
 
+    // Move admin fetch outside the loop to avoid N+1
+    const admins = await db.select().from(users).where(eq(users.role, 'admin'));
+    if (admins.length === 0) {
+      jobsLogger.info("[NotificationJobs] No admins found to notify for delayed deliveries");
+      return;
+    }
+
     for (const delivery of delayedDeliveries) {
       if (delivery.delayNotificationSent) continue; // Avoid spamming
-
-      // Find users with push config or managers to alert
-      // Usually project creator or global admins
-      let admins = await db.select().from(users).where(eq(users.role, 'admin'));
       
       const delayDuration = Math.round((now - (delivery.estimatedArrival || now)) / 60);
 
@@ -384,7 +397,7 @@ export async function checkAndNotifyForecasting() {
     const predictions = await generateForecastPredictions();
     
     // Filter for anything ≤ 7 days
-    const criticalShortages = predictions.filter((p: any) => p.daysUntilStockout <= 7);
+    const criticalShortages = predictions.filter(p => p.daysUntilStockout <= 7);
     
     if (criticalShortages.length > 0) {
       jobsLogger.info(`[NotificationJobs] Found ${criticalShortages.length} critical shortages.`);
