@@ -341,18 +341,18 @@
 **File:** `server/lib/email.ts`  
 **Severity:** 🟡 MEDIUM
 
-- [ ] Create `escapeHtml()` utility function:
+- [x] Create `escapeHtml()` utility function:
   ```typescript
   function escapeHtml(str: string): string {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
               .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
   ```
-- [ ] Apply `escapeHtml()` to all user-supplied values in:
-  - [ ] `generateLowStockEmailHTML()` — material names
-  - [ ] `generatePurchaseOrderEmailHTML()` — supplier name, material name, notes
-  - [ ] `generateDailyProductionReportHTML()` — material names
-- [ ] Write test: verify HTML entities are properly escaped in output
+- [x] Apply `escapeHtml()` to all user-supplied values in:
+  - [x] `generateLowStockEmailHTML()` — material names
+  - [x] `generatePurchaseOrderEmailHTML()` — supplier name, material name, notes
+  - [x] `generateDailyProductionReportHTML()` — material names
+- [x] Write test: verify HTML entities are properly escaped in output
 
 ---
 

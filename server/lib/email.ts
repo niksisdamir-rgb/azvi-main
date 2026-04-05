@@ -6,6 +6,19 @@ interface EmailOptions {
 }
 
 /**
+ * Escape HTML special characters
+ */
+function escapeHtml(str: string): string {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
  * Send email using SendGrid
  */
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
@@ -62,11 +75,11 @@ export function generateLowStockEmailHTML(materials: Array<{
 }>): string {
   const materialRows = materials.map(m => `
     <tr>
-      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">${m.name}</td>
+      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">${escapeHtml(m.name)}</td>
       <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center;">
-        <span style="color: #dc2626; font-weight: bold;">${m.quantity} ${m.unit}</span>
+        <span style="color: #dc2626; font-weight: bold;">${m.quantity} ${escapeHtml(m.unit)}</span>
       </td>
-      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center;">${m.reorderLevel} ${m.unit}</td>
+      <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center;">${m.reorderLevel} ${escapeHtml(m.unit)}</td>
     </tr>
   `).join('');
 
@@ -148,8 +161,8 @@ export function generatePurchaseOrderEmailHTML(po: {
   
   <div style="background: #ffffff; padding: 30px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
     <p style="font-size: 16px; margin-bottom: 20px;">
-      Dear ${po.supplier},<br>
-      <em>Poštovani ${po.supplier},</em>
+      Dear ${escapeHtml(po.supplier)},<br>
+      <em>Poštovani ${escapeHtml(po.supplier)},</em>
     </p>
     
     <p>
@@ -161,20 +174,20 @@ export function generatePurchaseOrderEmailHTML(po: {
       <table style="width: 100%;">
         <tr>
           <td style="padding: 8px 0; font-weight: bold;">Material / Materijal:</td>
-          <td style="padding: 8px 0; text-align: right;">${po.materialName}</td>
+          <td style="padding: 8px 0; text-align: right;">${escapeHtml(po.materialName)}</td>
         </tr>
         <tr>
           <td style="padding: 8px 0; font-weight: bold;">Quantity / Količina:</td>
-          <td style="padding: 8px 0; text-align: right; font-size: 20px; color: #2563eb;">${po.quantity} ${po.unit}</td>
+          <td style="padding: 8px 0; text-align: right; font-size: 20px; color: #2563eb;">${po.quantity} ${escapeHtml(po.unit)}</td>
         </tr>
         <tr>
           <td style="padding: 8px 0; font-weight: bold;">Order Date / Datum narudžbe:</td>
-          <td style="padding: 8px 0; text-align: right;">${po.orderDate}</td>
+          <td style="padding: 8px 0; text-align: right;">${escapeHtml(po.orderDate)}</td>
         </tr>
         ${po.expectedDelivery ? `
         <tr>
           <td style="padding: 8px 0; font-weight: bold;">Expected Delivery / Očekivana isporuka:</td>
-          <td style="padding: 8px 0; text-align: right;">${po.expectedDelivery}</td>
+          <td style="padding: 8px 0; text-align: right;">${escapeHtml(po.expectedDelivery)}</td>
         </tr>
         ` : ''}
       </table>
@@ -183,7 +196,7 @@ export function generatePurchaseOrderEmailHTML(po: {
     ${po.notes ? `
     <div style="margin: 20px 0;">
       <p style="font-weight: bold; margin-bottom: 10px;">Additional Notes / Dodatne napomene:</p>
-      <p style="background: #fef3c7; padding: 15px; border-radius: 4px; margin: 0;">${po.notes}</p>
+      <p style="background: #fef3c7; padding: 15px; border-radius: 4px; margin: 0;">${escapeHtml(po.notes)}</p>
     </div>
     ` : ''}
     
@@ -232,8 +245,8 @@ export function generateDailyProductionReportHTML(report: {
 
   const materialRows = report.materialConsumption.map(m => `
     <tr>
-      <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${m.name}</td>
-      <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: bold;">${m.quantity} ${m.unit}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #e5e7eb;">${escapeHtml(m.name)}</td>
+      <td style="padding: 8px; border-bottom: 1px solid #e5e7eb; text-align: right; font-weight: bold;">${m.quantity} ${escapeHtml(m.unit)}</td>
     </tr>
   `).join('');
 
@@ -314,7 +327,7 @@ export function generateDailyProductionReportHTML(report: {
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px;">
   <div style="background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0;">
     <h1 style="color: white; margin: 0; font-size: 28px;">📊 Daily Production Report</h1>
-    <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 18px;">${report.date}</p>
+    <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 18px;">${escapeHtml(report.date)}</p>
   </div>
   
   <div style="background: #ffffff; padding: 30px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
