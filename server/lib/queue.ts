@@ -27,6 +27,7 @@ const connection = parseRedisConnection();
  * import time, so the server boots even without Redis.
  * ──────────────────────────────────────────────── */
 let _queue: Queue | null = null;
+let _notificationQueue: Queue | null = null;
 let _events: QueueEvents | null = null;
 
 function getQueue(): Queue {
@@ -51,7 +52,23 @@ function getQueueEvents(): QueueEvents {
   return _events;
 }
 
+function getNotificationsQueue(): Queue {
+  if (!_notificationQueue) {
+    _notificationQueue = new Queue("notifications", {
+      connection,
+      defaultJobOptions: {
+        attempts: 3,
+        backoff: { type: "exponential", delay: 5000 },
+        removeOnComplete: { count: 100 },
+        removeOnFail: { count: 100 },
+      },
+    });
+  }
+  return _notificationQueue;
+}
+
 export type AnalyticsJobName = "cost-analysis" | "turnover-rate" | "abc-analysis";
+export type NotificationJobName = "overdue-tasks" | "delayed-deliveries" | "forecasting";
 
 export interface AnalyticsJobData {
   jobType: AnalyticsJobName;
@@ -82,5 +99,5 @@ export async function enqueueAndAwait<T>(
   }
 }
 
-export { connection as redisConnection };
+export { connection as redisConnection, getNotificationsQueue };
 export type { Job } from "bullmq";
