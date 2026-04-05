@@ -47,6 +47,7 @@ Settings → Secrets and variables → Actions → New repository secret
 | `JWT_SECRET` | Signs session cookies — empty = forgeable tokens | `openssl rand -hex 32` |
 | `DATABASE_URL` | PostgreSQL connection | Your hosting provider (Neon, Railway, Supabase, etc.) |
 | `NODE_ENV` | Must be `production` on prod | Hardcode to `production` |
+| `ALLOWED_ORIGINS` | Comma-separated list of allowed CORS origins | Your frontend URL |
 
 ---
 

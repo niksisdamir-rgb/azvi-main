@@ -59,6 +59,14 @@ function validateEnvironment(): void {
     );
   }
 
+  const allowedOrigins = process.env.ALLOWED_ORIGINS;
+  if (isProduction && (!allowedOrigins || allowedOrigins.trim() === "")) {
+    warnings.push(
+      "ALLOWED_ORIGINS is empty. CORS will block all cross-origin requests. " +
+      "Set this to your production frontend URL (e.g. 'https://azvirt.com')."
+    );
+  }
+
   // ── Emit warnings ────────────────────────────────────────────────────────────
   if (warnings.length > 0) {
     console.warn("\n⚠️  AzVirt DMS — Environment Warnings:");
@@ -97,4 +105,5 @@ export const ENV = {
   auth0Audience: process.env.AUTH0_AUDIENCE ?? "",
   auth0Domain:   process.env.AUTH0_DOMAIN ?? "",
   auth0ClientId: process.env.AUTH0_CLIENT_ID ?? "",
+  allowedOrigins: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(",").map(s => s.trim()).filter(Boolean) : [],
 };

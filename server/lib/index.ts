@@ -45,6 +45,8 @@ async function startServer() {
   // Attach pino-http logger middleware
   app.use(pinoHttp({ logger }));
 
+import { corsMiddleware } from "./cors";
+
   // Prometheus configuration
   client.collectDefaultMetrics();
   app.get('/metrics', async (_req, res) => {
@@ -55,6 +57,9 @@ async function startServer() {
       res.status(500).end(String(ex));
     }
   });
+
+  // CORS Middleware
+  app.use(corsMiddleware);
 
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
@@ -78,6 +83,9 @@ async function startServer() {
 
   // Global error handler middleware
   app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    if (err.message && err.message.startsWith("CORS error")) {
+      return res.status(403).send("Forbidden: Cross-Origin Request Blocked");
+    }
     logger.error({ err, req }, "Unhandled Application Error");
     res.status(500).send("Internal Server Error");
   });
