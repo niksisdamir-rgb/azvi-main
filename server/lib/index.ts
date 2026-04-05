@@ -2,6 +2,17 @@ import "dotenv/config";
 import { logger } from "./logger";
 import pinoHttp from "pino-http";
 import * as client from "prom-client";
+import express from "express";
+import { createServer } from "http";
+import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import { appRouter } from "../routers";
+import { createContext } from "./context";
+import { serveStatic, setupVite } from "./vite";
+import { startAnalyticsWorker } from "./workers/analyticsWorker";
+import { startNotificationWorker } from "./workers/notificationWorker";
+import type { Worker } from "bullmq";
+import { corsMiddleware } from "./cors";
+import { ENV } from "./env";
 
 process.on("uncaughtException", (err) => {
   logger.error({ err }, "Uncaught Exception");
@@ -9,34 +20,9 @@ process.on("uncaughtException", (err) => {
 process.on("unhandledRejection", (reason, promise) => {
   logger.error({ reason, promise }, "Unhandled Rejection");
 });
-import express from "express";
-import { createServer } from "http";
-import net from "net";
-import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { appRouter } from "../routers";
-import { createContext } from "./context";
-import { serveStatic, setupVite } from "./vite";
-import { scheduleOverdueTaskCheck, scheduleDelayedDeliveryCheck, scheduleForecastingJob } from "./notificationJobs";
-import { startAnalyticsWorker } from "./workers/analyticsWorker";
 
-function isPortAvailable(port: number): Promise<boolean> {
-  return new Promise(resolve => {
-    const server = net.createServer();
-    server.listen(port, () => {
-      server.close(() => resolve(true));
-    });
-    server.on("error", () => resolve(false));
-  });
-}
-
-async function findAvailablePort(startPort: number = 3000): Promise<number> {
-  for (let port = startPort; port < startPort + 20; port++) {
-    if (await isPortAvailable(port)) {
-      return port;
-    }
-  }
-  throw new Error(`No available port found starting from ${startPort}`);
-}
+let analyticsWorker: Worker | null = null;
+let notificationWorker: Worker | null = null;
 
 async function startServer() {
   const app = express();
@@ -44,8 +30,6 @@ async function startServer() {
   
   // Attach pino-http logger middleware
   app.use(pinoHttp({ logger }));
-
-import { corsMiddleware } from "./cors";
 
   // Prometheus configuration
   client.collectDefaultMetrics();
@@ -73,6 +57,7 @@ import { corsMiddleware } from "./cors";
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  
   // tRPC API
   app.use(
     "/api/trpc",
@@ -81,6 +66,7 @@ import { corsMiddleware } from "./cors";
       createContext,
     })
   );
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
@@ -91,7 +77,8 @@ import { corsMiddleware } from "./cors";
   const port = parseInt(process.env.PORT || "4000");
 
   // Global error handler middleware
-  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  app.use((err: Error | any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
     if (err.message && err.message.startsWith("CORS error")) {
       return res.status(403).send("Forbidden: Cross-Origin Request Blocked");
     }
@@ -102,21 +89,45 @@ import { corsMiddleware } from "./cors";
   server.listen(port, () => {
     logger.info(`Server running on http://localhost:${port}/`);
     
-    // Start background jobs
-    scheduleOverdueTaskCheck();
-    scheduleDelayedDeliveryCheck();
-    null;
-    
-    // Only start the analytics worker if Redis is available,
+    // Only start the workers if Redis is available,
     // otherwise it will spew continuous ETIMEDOUT errors.
     import("./redis").then(({ redis }) => {
-      redis.ping().then(() => {
-        startAnalyticsWorker();
+      redis.ping().then(async () => {
+        analyticsWorker = await startAnalyticsWorker();
+        notificationWorker = await startNotificationWorker();
       }).catch(() => {
-        logger.warn("Redis is unavailable, skipping AnalyticsWorker boot. Analytics will fall back to inline computation.");
+        logger.warn("Redis is unavailable, skipping Background Workers boot.");
       });
     });
   });
+
+  // Graceful shutdown
+  const shutdown = async (signal: string) => {
+    logger.info(`[Server] ${signal} received. Closing workers and server...`);
+    
+    if (analyticsWorker) {
+      await analyticsWorker.close();
+      logger.info("[Server] Analytics worker closed");
+    }
+    if (notificationWorker) {
+      await notificationWorker.close();
+      logger.info("[Server] Notification worker closed");
+    }
+
+    server.close(() => {
+      logger.info("[Server] HTTP server closed");
+      process.exit(0);
+    });
+
+    // Force exit after 10s if not closed
+    setTimeout(() => {
+      logger.error("[Server] Could not close connections in time, forcefully shutting down");
+      process.exit(1);
+    }, 10000);
+  };
+
+  process.on("SIGTERM", () => shutdown("SIGTERM"));
+  process.on("SIGINT", () => shutdown("SIGINT"));
 }
 
 startServer().catch((err) => logger.error({ err }, "Failed to start server"));
