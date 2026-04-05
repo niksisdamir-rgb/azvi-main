@@ -2,6 +2,7 @@ import { logger } from '../../lib/logger';
 import { z } from "zod";
 import { router, protectedProcedure } from "../../lib/trpc";
 import * as db from "../../db";
+import { machineTypeEnum, machineStatusEnum, maintenanceTypeEnum } from "../../../drizzle/schema";
 import { ollamaService } from "../../lib/ollama";
 
 export const machinesRouter = router({
@@ -19,12 +20,12 @@ export const machinesRouter = router({
     .input(z.object({
       name: z.string(),
       machineNumber: z.string(),
-      type: z.enum(["mixer", "pump", "truck", "excavator", "crane", "other"]),
+      type: z.enum(machineTypeEnum.enumValues),
       manufacturer: z.string().optional(),
       model: z.string().optional(),
       year: z.number().optional(),
       concreteBaseId: z.number().optional(),
-      status: z.enum(["operational", "maintenance", "repair", "inactive"]).default("operational"),
+      status: z.enum(machineStatusEnum.enumValues).default("operational"),
     }))
     .mutation(async ({ input }) => {
       return await db.createMachine(input);
@@ -35,8 +36,8 @@ export const machinesRouter = router({
       id: z.number(),
       data: z.object({
         name: z.string().optional(),
-        type: z.enum(["mixer", "pump", "truck", "excavator", "crane", "other"]).optional(),
-        status: z.enum(["operational", "maintenance", "repair", "inactive"]).optional(),
+        type: z.enum(machineTypeEnum.enumValues).optional(),
+        status: z.enum(machineStatusEnum.enumValues).optional(),
         totalWorkingHours: z.number().optional(),
         lastMaintenanceDate: z.date().optional(),
         nextMaintenanceDate: z.date().optional(),
@@ -68,7 +69,7 @@ export const machinesRouter = router({
       .input(z.object({
         machineId: z.number(),
         date: z.date(),
-        maintenanceType: z.enum(["lubrication", "fuel", "oil_change", "repair", "inspection", "other"]),
+        maintenanceType: z.enum(maintenanceTypeEnum.enumValues),
         description: z.string().optional(),
         lubricationType: z.string().optional(),
         lubricationAmount: z.number().optional(),

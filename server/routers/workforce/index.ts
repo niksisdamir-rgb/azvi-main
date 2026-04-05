@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { router, protectedProcedure } from "../../lib/trpc";
 import * as db from "../../db";
+import { departmentEnum, employeeStatusEnum } from "../../../drizzle/schema";
 
 export const employeesRouter = router({
   list: protectedProcedure
@@ -18,11 +19,11 @@ export const employeesRouter = router({
       lastName: z.string(),
       employeeNumber: z.string(),
       position: z.string(),
-      department: z.enum(["construction", "maintenance", "quality", "administration", "logistics"]),
+      department: z.enum(departmentEnum.enumValues),
       phoneNumber: z.string().optional(),
       email: z.string().optional(),
       hourlyRate: z.number().optional(),
-      status: z.enum(["active", "inactive", "on_leave"]).default("active"),
+      status: z.enum(employeeStatusEnum.enumValues).default("active"),
       hireDate: z.date().optional(),
     }))
     .mutation(async ({ input }) => {
@@ -36,11 +37,11 @@ export const employeesRouter = router({
         firstName: z.string().optional(),
         lastName: z.string().optional(),
         position: z.string().optional(),
-        department: z.enum(["construction", "maintenance", "quality", "administration", "logistics"]).optional(),
+        department: z.enum(departmentEnum.enumValues).optional(),
         phoneNumber: z.string().optional(),
         email: z.string().optional(),
         hourlyRate: z.number().optional(),
-        status: z.enum(["active", "inactive", "on_leave"]).optional(),
+        status: z.enum(employeeStatusEnum.enumValues).optional(),
       }),
     }))
     .mutation(async ({ input }) => {

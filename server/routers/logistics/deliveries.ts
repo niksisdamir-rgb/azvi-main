@@ -4,7 +4,7 @@ import { router, protectedProcedure, publicProcedure } from "../../lib/trpc";
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { getDb } from "../../db";
-import { deliveries, deliveryStatusHistory, projects } from "../../../drizzle/schema";
+import { deliveries, deliveryStatusHistory, projects, deliveryStatusEnum } from "../../../drizzle/schema";
 import { storagePut } from "../../storage";
 import { sendSMS } from "../../lib/sms";
 import { nanoid } from "nanoid";
@@ -107,7 +107,7 @@ export const deliveriesRouter = router({
       concreteType: z.string(),
       volume: z.number(),
       scheduledTime: z.date(),
-      status: z.enum(["scheduled", "loaded", "en_route", "arrived", "delivered", "returning", "completed", "cancelled"]).default("scheduled"),
+      status: z.enum(deliveryStatusEnum.enumValues).default("scheduled"),
       driverName: z.string().optional(),
       vehicleNumber: z.string().optional(),
       notes: z.string().optional(),
@@ -138,7 +138,7 @@ export const deliveriesRouter = router({
       volume: z.number().optional(),
       scheduledTime: z.date().optional(),
       actualTime: z.date().optional(),
-      status: z.enum(["scheduled", "loaded", "en_route", "arrived", "delivered", "returning", "completed", "cancelled"]).optional(),
+      status: z.enum(deliveryStatusEnum.enumValues).optional(),
       driverName: z.string().optional(),
       vehicleNumber: z.string().optional(),
       notes: z.string().optional(),
@@ -161,7 +161,7 @@ export const deliveriesRouter = router({
   updateStatus: protectedProcedure
     .input(z.object({
       id: z.number(),
-      status: z.enum(["scheduled", "loaded", "en_route", "arrived", "delivered", "returning", "completed", "cancelled"]),
+      status: z.enum(deliveryStatusEnum.enumValues),
       gpsLocation: z.string().optional(),
       driverNotes: z.string().optional(),
     }))
@@ -229,7 +229,7 @@ export const deliveriesRouter = router({
     .input(z.object({
       deliveryId: z.number(),
       vehicleNumber: z.string(),
-      status: z.enum(["loaded", "en_route", "arrived", "delivered", "returning", "completed"]),
+      status: z.enum(deliveryStatusEnum.enumValues),
       latitude: z.number().min(-90).max(90).optional(),
       longitude: z.number().min(-180).max(180).optional(),
       driverNotes: z.string().max(1000).optional(),
@@ -316,7 +316,7 @@ export const deliveriesRouter = router({
   updateDeliveryStatus: protectedProcedure
     .input(z.object({
       deliveryId: z.number(),
-      status: z.enum(["scheduled", "loaded", "en_route", "arrived", "delivered", "returning", "completed", "cancelled"]),
+      status: z.enum(deliveryStatusEnum.enumValues),
       latitude: z.number().optional(),
       longitude: z.number().optional(),
       notes: z.string().optional()

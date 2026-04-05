@@ -4,6 +4,7 @@ import { router, protectedProcedure, permissionProcedure } from "../../lib/trpc"
 import { storagePut } from "../../storage";
 import { nanoid } from "nanoid";
 import * as db from "../../db";
+import { documentCategoryEnum } from "../../../drizzle/schema";
 
 import { TRPCError } from "@trpc/server";
 
@@ -11,7 +12,7 @@ export const documentsRouter = router({
   list: protectedProcedure
     .input(z.object({
       projectId: z.number().optional(),
-      category: z.string().optional(),
+      category: z.enum(documentCategoryEnum.enumValues).optional(),
       search: z.string().optional(),
     }).optional())
     .query(async ({ input, ctx }) => {
@@ -35,7 +36,7 @@ export const documentsRouter = router({
       fileData: z.string(),
       mimeType: z.string(),
       fileSize: z.number(),
-      category: z.enum(["contract", "blueprint", "report", "certificate", "invoice", "other"]),
+      category: z.enum(documentCategoryEnum.enumValues),
       projectId: z.number().optional(),
     }))
     .mutation(async ({ input, ctx }) => {

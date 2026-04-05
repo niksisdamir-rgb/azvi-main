@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { router, protectedProcedure } from "../../lib/trpc";
 import * as db from "../../db";
+import { workTypeEnum, workStatusEnum } from "../../../drizzle/schema";
 
 export const workHoursRouter = router({
   list: protectedProcedure
@@ -22,9 +23,9 @@ export const workHoursRouter = router({
       endTime: z.date().optional(),
       hoursWorked: z.number().optional(),
       overtimeHours: z.number().optional(),
-      workType: z.enum(["regular", "overtime", "weekend", "holiday"]).default("regular"),
+      workType: z.enum(workTypeEnum.enumValues).default("regular"),
       notes: z.string().optional(),
-      status: z.enum(["pending", "approved", "rejected"]).default("pending"),
+      status: z.enum(workStatusEnum.enumValues).default("pending"),
     }))
     .mutation(async ({ input }) => {
       return await db.createWorkHour(input);
@@ -38,7 +39,7 @@ export const workHoursRouter = router({
         hoursWorked: z.number().optional(),
         overtimeHours: z.number().optional(),
         notes: z.string().optional(),
-        status: z.enum(["pending", "approved", "rejected"]).optional(),
+        status: z.enum(workStatusEnum.enumValues).optional(),
         approvedBy: z.number().optional(),
       }),
     }))
