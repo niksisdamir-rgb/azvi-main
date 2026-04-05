@@ -1,3 +1,4 @@
+import { logger } from '../../lib/logger';
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../../lib/trpc";
 import * as db from "../../db";
@@ -143,7 +144,7 @@ Be helpful, accurate, and professional. Use tools to fetch real data and perform
           model: input.model,
         };
       } catch (error: any) {
-        console.error('AI chat error:', error);
+        logger.error({ err: error }, 'AI chat error:');
         throw new Error(`Chat failed: ${error.message || 'Unknown error'}`);
       }
     }),
@@ -213,7 +214,7 @@ Be helpful, accurate, and professional. Use tools to fetch real data and perform
           sources: data.sources || []
         };
       } catch (error: any) {
-        console.error('RAG chat error:', error);
+        logger.error({ err: error }, 'RAG chat error:');
         throw new Error(`RAG Chat failed: ${error.message || 'Unknown error'}`);
       }
     }),
@@ -276,7 +277,7 @@ Be helpful, accurate, and professional. Use tools to fetch real data and perform
           try {
             summary = await summarizationService.summarizeTranscription(result.text);
           } catch (error) {
-            console.error("Summarization error:", error);
+            logger.error({ err: error }, "Summarization error:");
             // Don't fail the whole request if only summarization fails
           }
         }
@@ -288,7 +289,7 @@ Be helpful, accurate, and professional. Use tools to fetch real data and perform
           summary,
         };
       } catch (error: any) {
-        console.error("Voice transcription error:", error);
+        logger.error({ err: error }, "Voice transcription error:");
         throw new Error(`Transcription failed: ${error.message}`);
       }
     }),
@@ -369,7 +370,7 @@ Be helpful, accurate, and professional. Use tools to fetch real data and perform
         parameterSize: model.details?.parameter_size || "unknown",
       }));
     } catch (error: any) {
-      console.error("Failed to list models:", error);
+      logger.error({ err: error }, "Failed to list models:");
       return [];
     }
   }),
@@ -384,7 +385,7 @@ Be helpful, accurate, and professional. Use tools to fetch real data and perform
         const success = await ollamaService.pullModel(input.modelName);
         return { success, message: success ? "Model pulled successfully" : "Failed to pull model" };
       } catch (error: any) {
-        console.error("Failed to pull model:", error);
+        logger.error({ err: error }, "Failed to pull model:");
         return { success: false, message: error.message };
       }
     }),
@@ -399,7 +400,7 @@ Be helpful, accurate, and professional. Use tools to fetch real data and perform
         const success = await ollamaService.deleteModel(input.modelName);
         return { success, message: success ? "Model deleted successfully" : "Failed to delete model" };
       } catch (error: any) {
-        console.error("Failed to delete model:", error);
+        logger.error({ err: error }, "Failed to delete model:");
         return { success: false, message: error.message };
       }
     }),
@@ -462,7 +463,7 @@ Be helpful, accurate, and professional. Use tools to fetch real data and perform
         );
         return result;
       } catch (error: any) {
-        console.error("Tool execution error:", error);
+        logger.error({ err: error }, "Tool execution error:");
         // Return error response instead of throwing
         return {
           success: false,
@@ -498,7 +499,7 @@ Be helpful, accurate, and professional. Use tools to fetch real data and perform
         const summary = await summarizationService.summarizeConversation(history);
         return { summary };
       } catch (error: any) {
-        console.error("Conversation summarization error:", error);
+        logger.error({ err: error }, "Conversation summarization error:");
         throw new Error(`Failed to summarize conversation: ${error.message}`);
       }
     }),
@@ -525,7 +526,7 @@ Be helpful, accurate, and professional. Use tools to fetch real data and perform
           results: response.data.results,
         };
       } catch (error) {
-        console.error("RAG Service error:", error);
+        logger.error({ err: error }, "RAG Service error:");
         return {
           status: "error",
           results: [],
@@ -558,7 +559,7 @@ Be helpful, accurate, and professional. Use tools to fetch real data and perform
           document: response.data.document,
         };
       } catch (error) {
-        console.error("RAG Document creation error:", error);
+        logger.error({ err: error }, "RAG Document creation error:");
         return {
           status: "error",
           message: "Failed to create document in RAG service",

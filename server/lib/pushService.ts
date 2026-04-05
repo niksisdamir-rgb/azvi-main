@@ -1,3 +1,4 @@
+import { logger } from './logger';
 import webPush from 'web-push';
 
 const VAPID_PUBLIC_KEY = process.env.VAPID_PUBLIC_KEY || "BNprpveZnyHtp8Ovu-ybpHTWHAOctfC2tUzY8yUxmsyCcjaFttzzQNYlD2i6zNcS_0sVXOtca-mepyfL6oOeZiA";
@@ -14,7 +15,7 @@ export async function sendWebPush(subscription: webPush.PushSubscription, payloa
     await webPush.sendNotification(subscription, JSON.stringify(payload));
     return { success: true };
   } catch (error) {
-    console.error("[WebPush] Error sending push notification:", error);
+    logger.error({ err: error }, "[WebPush] Error sending push notification:");
     return { success: false, error };
   }
 }

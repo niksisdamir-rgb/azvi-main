@@ -1,3 +1,4 @@
+import { logger } from '../logger';
 import { Worker } from "bullmq";
 import { redisConnection } from "../queue";
 import { cache } from "../redis";
@@ -238,17 +239,17 @@ export function startAnalyticsWorker() {
     );
 
     worker.on("failed", (job, err) => {
-      console.error(`[AnalyticsWorker] Job ${job?.id} failed:`, err.message);
+      logger.error(`[AnalyticsWorker] Job ${job?.id} failed:`, err.message);
     });
 
     worker.on("completed", (job) => {
-      console.info(`[AnalyticsWorker] Job ${job.id} completed`);
+      logger.info(`[AnalyticsWorker] Job ${job.id} completed`);
     });
 
-    console.info("[AnalyticsWorker] Started successfully");
+    logger.info("[AnalyticsWorker] Started successfully");
     return worker;
   } catch (err) {
-    console.warn("[AnalyticsWorker] Failed to start (Redis may be unavailable):", err);
+    logger.warn({ err: err }, "[AnalyticsWorker] Failed to start (Redis may be unavailable):");
     return null;
   }
 }

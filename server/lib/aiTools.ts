@@ -1,3 +1,4 @@
+import { logger } from './logger';
 /**
  * AI Tools Framework
  * Provides agentic capabilities for AI assistant to interact with DMS data
@@ -1038,7 +1039,7 @@ const sensorAnomalyTool: Tool = {
         message: response.data.message,
       };
     } catch (error: any) {
-      console.error("Sensor anomaly detection error:", error);
+      logger.error({ err: error }, "Sensor anomaly detection error:");
       return {
         success: false,
         error: error.message || "Failed to detect sensor anomalies",
@@ -1082,7 +1083,7 @@ const ragQueryTool: Tool = {
         totalResults: response.data.results.length,
       };
     } catch (error: any) {
-      console.error("RAG query error:", error);
+      logger.error({ err: error }, "RAG query error:");
       return {
         success: false,
         error: error.message || "Failed to query RAG service",
@@ -1139,7 +1140,7 @@ export async function executeTool(
       result,
     };
   } catch (error) {
-    console.error(`Tool execution failed for ${toolName}:`, error);
+    logger.error({ err: error }, `Tool execution failed for ${toolName}:`);
     return {
       success: false,
       toolName,

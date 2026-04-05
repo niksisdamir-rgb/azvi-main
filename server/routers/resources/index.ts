@@ -1,3 +1,4 @@
+import { logger } from '../../lib/logger';
 import { z } from "zod";
 import { router, protectedProcedure, permissionProcedure } from "../../lib/trpc";
 import { storagePut } from "../../storage";
@@ -65,7 +66,7 @@ export const documentsRouter = router({
           body: JSON.stringify({ user_id: ctx.user.id, filename: safeName })
         });
       } catch (e) {
-        console.error("Failed to save local copy or trigger RAG ingest", e);
+        logger.error({ err: e }, "Failed to save local copy or trigger RAG ingest");
       }
 
       await db.createDocument({

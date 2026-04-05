@@ -1,3 +1,4 @@
+import { logger } from '../../lib/logger';
 import { z } from "zod";
 import { router, protectedProcedure } from "../../lib/trpc";
 import * as db from "../../db";
@@ -152,7 +153,7 @@ export const materialsRouter = router({
             phoneNumber: user.phoneNumber!,
             message: smsMessage,
           }).catch((err: any) => {
-            console.error(`Failed to send SMS to ${user.phoneNumber}:`, err);
+            logger.error({ err: err }, `Failed to send SMS to ${user.phoneNumber}:`);
             return { success: false };
           })
         )

@@ -1,3 +1,4 @@
+import { logger } from './logger';
 /**
  * Ollama Integration Service
  * Provides interface to local Ollama instance for AI model inference
@@ -125,7 +126,7 @@ class OllamaService {
             const data = JSON.parse(line);
             yield data;
           } catch (e) {
-            console.error('Failed to parse Ollama stream chunk:', e);
+            logger.error({ err: e }, 'Failed to parse Ollama stream chunk:');
           }
         }
       }
@@ -136,7 +137,7 @@ class OllamaService {
         const data = JSON.parse(buffer);
         yield data;
       } catch (e) {
-        console.error('Failed to parse final Ollama chunk:', e);
+        logger.error({ err: e }, 'Failed to parse final Ollama chunk:');
       }
     }
   }
@@ -173,7 +174,7 @@ class OllamaService {
       const response = await this.client.get<{ models: OllamaModel[] }>('/api/tags');
       return response.data.models || [];
     } catch (error) {
-      console.error('Failed to list Ollama models:', error);
+      logger.error({ err: error }, 'Failed to list Ollama models:');
       return [];
     }
   }
@@ -188,7 +189,7 @@ class OllamaService {
       });
       return response.data;
     } catch (error) {
-      console.error(`Failed to get info for model ${modelName}:`, error);
+      logger.error({ err: error }, `Failed to get info for model ${modelName}:`);
       return null;
     }
   }
@@ -223,7 +224,7 @@ class OllamaService {
                 return true;
               }
             } catch (e) {
-              console.error('Failed to parse pull progress:', e);
+              logger.error({ err: e }, 'Failed to parse pull progress:');
             }
           }
         }
@@ -231,7 +232,7 @@ class OllamaService {
 
       return true;
     } catch (error) {
-      console.error(`Failed to pull model ${modelName}:`, error);
+      logger.error({ err: error }, `Failed to pull model ${modelName}:`);
       return false;
     }
   }
@@ -246,7 +247,7 @@ class OllamaService {
       });
       return true;
     } catch (error) {
-      console.error(`Failed to delete model ${modelName}:`, error);
+      logger.error({ err: error }, `Failed to delete model ${modelName}:`);
       return false;
     }
   }

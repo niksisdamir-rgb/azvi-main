@@ -1,3 +1,4 @@
+import { logger } from './logger';
 /**
  * File Parser Utilities
  * Handles CSV and Excel file parsing for bulk imports
@@ -214,7 +215,7 @@ export function transformRow(
       try {
         transformed[column.name] = column.transform(transformed[column.name]);
       } catch (error) {
-        console.error(`Transform error for ${column.name}:`, error);
+        logger.error({ err: error }, `Transform error for ${column.name}:`);
       }
     }
   }

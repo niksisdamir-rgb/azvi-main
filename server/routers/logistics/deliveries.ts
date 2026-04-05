@@ -1,3 +1,4 @@
+import { logger } from '../../lib/logger';
 import { z } from "zod";
 import { router, protectedProcedure, publicProcedure } from "../../lib/trpc";
 import { TRPCError } from "@trpc/server";
@@ -75,7 +76,7 @@ async function sendAutomatedNotification(dbConn: any, deliveryId: number, type: 
       })
       .where(eq(deliveries.id, deliveryId));
   } catch (error) {
-    console.error(`Failed to send automated ${type} notification:`, error);
+    logger.error({ err: error }, `Failed to send automated ${type} notification:`);
   }
 }
 
@@ -280,7 +281,7 @@ export const deliveriesRouter = router({
         phoneNumber: delivery.customerPhone,
         message: input.message,
       }).catch((err: unknown) => {
-        console.error('[SMS] Failed to send customer notification:', err);
+        logger.error({ err: err }, '[SMS] Failed to send customer notification:');
         return { success: false };
       });
 

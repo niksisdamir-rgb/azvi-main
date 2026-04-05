@@ -1,3 +1,4 @@
+import { logger } from './logger';
 import { ENV } from './env';
 import { sendEmail } from './email';
 
@@ -83,7 +84,7 @@ export async function sendEmailNotification(
 
     return { success: true };
   } catch (error) {
-    console.error('[NotificationService] Email send failed:', error);
+    logger.error({ err: error }, '[NotificationService] Email send failed:');
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
@@ -105,7 +106,7 @@ export async function sendSmsNotification(
 
     // TODO: Integrate with SMS service (Twilio, AWS SNS, etc.)
     // For now, this is a placeholder that logs the SMS
-    console.log(`[NotificationService] SMS to ${phoneNumber}: ${message}`);
+    logger.info(`[NotificationService] SMS to ${phoneNumber}: ${message}`);
 
     // In production, you would call your SMS service here:
     // const result = await twilioClient.messages.create({
@@ -116,7 +117,7 @@ export async function sendSmsNotification(
 
     return { success: true };
   } catch (error) {
-    console.error('[NotificationService] SMS send failed:', error);
+    logger.error({ err: error }, '[NotificationService] SMS send failed:');
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',

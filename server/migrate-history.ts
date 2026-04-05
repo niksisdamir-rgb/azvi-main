@@ -1,37 +1,39 @@
-import postgres from "postgres";
+import { logger } from './lib/logger';
+import { db } from "./db/setup";
+import { timesheetUploadHistory } from "../drizzle/schema";
+import { sql } from "drizzle-orm";
 
-async function run() {
-  const connectionString = process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL;
-  if (!connectionString) {
-    console.error("No DATABASE_URL found");
+async function main() {
+  if (!process.env.DATABASE_URL) {
+    logger.error("No DATABASE_URL found");
     process.exit(1);
   }
 
-  const sql = postgres(connectionString);
-  console.log("Connected to database, running migration...");
+  logger.info("Connected to database, running migration...");
 
   try {
-    await sql`
+    await db.execute(sql`
       CREATE TABLE IF NOT EXISTS "timesheetUploadHistory" (
         "id" serial PRIMARY KEY NOT NULL,
-        "uploadedBy" integer NOT NULL,
-        "fileName" varchar(512) NOT NULL,
-        "fileType" varchar(32) NOT NULL,
-        "totalRows" integer DEFAULT 0 NOT NULL,
-        "insertedRows" integer DEFAULT 0 NOT NULL,
-        "failedRows" integer DEFAULT 0 NOT NULL,
-        "errors" jsonb DEFAULT '[]'::jsonb,
-        "status" varchar(32) DEFAULT 'completed' NOT NULL,
-        "createdAt" timestamp DEFAULT now() NOT NULL
+        "filename" text NOT NULL,
+        "uploadedAt" timestamp DEFAULT now() NOT NULL,
+        "processedCount" integer DEFAULT 0 NOT NULL,
+        "errorCount" integer DEFAULT 0 NOT NULL,
+        "status" text DEFAULT 'processing' NOT NULL,
+        "summary" text,
+        "errorLog" jsonb,
+        "uploadedBy" integer
       );
-    `;
-    console.log("Successfully created timesheetUploadHistory table.");
+    `);
+    
+    logger.info("Successfully created timesheetUploadHistory table.");
   } catch (err) {
-    console.error("Migration failed:", err);
+    logger.error({ err }, "Migration failed:");
     process.exit(1);
-  } finally {
-    await sql.end();
   }
 }
 
-run();
+main().catch(err => {
+  logger.error({ err }, "Unexpected error:");
+  process.exit(1);
+});

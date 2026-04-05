@@ -1,3 +1,4 @@
+import { logger } from '../lib/logger';
 import { eq, desc, like, and, or, gte, lt, sql, inArray } from "drizzle-orm";
 import * as schema from "../../drizzle/schema";
 import { getDb } from "./setup";
@@ -150,7 +151,7 @@ export async function updateUserSMSSettings(userId: number, phoneNumber: string,
       .where(eq(schema.users.id, userId));
     return true;
   } catch (error) {
-    console.error("Failed to update SMS settings:", error);
+    logger.error({ err: error }, "Failed to update SMS settings:");
     return false;
   }
 }

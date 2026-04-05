@@ -1,3 +1,4 @@
+import { logger } from '../../lib/logger';
 import { z } from "zod";
 import { router, protectedProcedure } from "../../lib/trpc";
 import { storagePut } from "../../storage";
@@ -201,7 +202,7 @@ export const qualityTestsRouter = router({
           cached: true // Not entirely accurate now if it was just set, but it satisfies the response
         };
       } catch (error: any) {
-        console.error('Predictive QC error:', error);
+        logger.error({ err: error }, 'Predictive QC error:');
         throw new Error(`Prediction failed: ${error.message}`);
       }
     }),

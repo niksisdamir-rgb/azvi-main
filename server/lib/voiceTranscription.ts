@@ -1,3 +1,4 @@
+import { logger } from './logger';
 /**
  * Voice transcription helper using internal Speech-to-Text service
  *
@@ -11,9 +12,9 @@
  * // Frontend component
  * const transcribeMutation = trpc.voice.transcribe.useMutation({
  *   onSuccess: (data) => {
- *     console.log(data.text); // Full transcription
- *     console.log(data.language); // Detected language
- *     console.log(data.segments); // Timestamped segments
+ *     logger.info(data.text); // Full transcription
+ *     logger.info(data.language); // Detected language
+ *     logger.info(data.segments); // Timestamped segments
  *   }
  * });
  * 

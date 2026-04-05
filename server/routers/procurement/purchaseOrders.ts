@@ -1,3 +1,4 @@
+import { logger } from '../../lib/logger';
 import { z } from "zod";
 import { router, protectedProcedure } from "../../lib/trpc";
 import { TRPCError } from "@trpc/server";
@@ -95,7 +96,7 @@ export const purchaseOrdersRouter = router({
             message: `AzVirt PO #${order.id}: ${quantity} ${unit} ${materialName}. Expected by: ${order.expectedDelivery ? new Date(order.expectedDelivery).toISOString().split('T')[0] : 'TBD'}`
           });
         } catch (e) {
-          console.warn('[SMS] Failed to send SMS to supplier:', e);
+          logger.warn({ err: e }, '[SMS] Failed to send SMS to supplier:');
         }
       }
 

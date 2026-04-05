@@ -1,3 +1,4 @@
+import { logger } from '../../lib/logger';
 import { z } from "zod";
 import { router, protectedProcedure } from "../../lib/trpc";
 import * as db from "../../db";
@@ -223,7 +224,7 @@ export const anomalyDetectionRouter = router({
           message: response.data.message,
         };
       } catch (error) {
-        console.error("ML Service error:", error);
+        logger.error({ err: error }, "ML Service error:");
         return {
           status: "error",
           anomalies: [],

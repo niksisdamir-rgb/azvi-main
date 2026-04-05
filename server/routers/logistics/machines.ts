@@ -1,3 +1,4 @@
+import { logger } from '../../lib/logger';
 import { z } from "zod";
 import { router, protectedProcedure } from "../../lib/trpc";
 import * as db from "../../db";
@@ -143,7 +144,7 @@ export const machinesRouter = router({
             (profile as any).aiRecommendation = response.message.content;
           }
         } catch (error) {
-          console.error("AI Recommendation Error:", error);
+          logger.error({ err: error }, "AI Recommendation Error:");
           (profile as any).aiRecommendation = "AI recommendations temporarily unavailable. Please perform manual check.";
         }
       }

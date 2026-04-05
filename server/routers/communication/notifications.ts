@@ -1,3 +1,4 @@
+import { logger } from '../../lib/logger';
 import { router, protectedProcedure } from "../../lib/trpc";
 import { z } from "zod";
 import {
@@ -27,7 +28,7 @@ export const notificationsRouter = router({
         const notifications = await getNotifications(ctx.user.id, input.limit);
         return notifications;
       } catch (error) {
-        console.error("[Notifications] Failed to fetch notifications:", error);
+        logger.error({ err: error }, "[Notifications] Failed to fetch notifications:");
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to fetch notifications",
@@ -41,7 +42,7 @@ export const notificationsRouter = router({
       const unread = await getUnreadNotifications(ctx.user.id);
       return { count: unread.length };
     } catch (error) {
-      console.error("[Notifications] Failed to get unread count:", error);
+      logger.error({ err: error }, "[Notifications] Failed to get unread count:");
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to get unread count",
@@ -57,7 +58,7 @@ export const notificationsRouter = router({
         await markNotificationAsRead(input.id);
         return { success: true };
       } catch (error) {
-        console.error("[Notifications] Failed to mark notification as read:", error);
+        logger.error({ err: error }, "[Notifications] Failed to mark notification as read:");
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to mark notification as read",
@@ -74,7 +75,7 @@ export const notificationsRouter = router({
       );
       return { success: true, count: unread.length };
     } catch (error) {
-      console.error("[Notifications] Failed to mark all notifications as read:", error);
+      logger.error({ err: error }, "[Notifications] Failed to mark all notifications as read:");
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to mark all notifications as read",
@@ -87,7 +88,7 @@ export const notificationsRouter = router({
     try {
       return await getOrCreateNotificationPreferences(ctx.user.id);
     } catch (error) {
-      console.error("[Notifications] Failed to get preferences:", error);
+      logger.error({ err: error }, "[Notifications] Failed to get preferences:");
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Failed to get notification preferences",
@@ -113,7 +114,7 @@ export const notificationsRouter = router({
         await updateNotificationPreferences(ctx.user.id, input);
         return { success: true };
       } catch (error) {
-        console.error("[Notifications] Failed to update preferences:", error);
+        logger.error({ err: error }, "[Notifications] Failed to update preferences:");
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to update notification preferences",
@@ -171,7 +172,7 @@ export const notificationsRouter = router({
         await Promise.all(results);
         return { success: true };
       } catch (error) {
-        console.error("[Notifications] Failed to send notification:", error);
+        logger.error({ err: error }, "[Notifications] Failed to send notification:");
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to send notification",

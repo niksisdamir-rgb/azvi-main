@@ -1,3 +1,4 @@
+import { logger } from './logger';
 /**
  * Summarization Service
  * Provides functionality to generate concise summaries from text using Ollama.
@@ -41,7 +42,7 @@ export class SummarizationService {
       const response = await ollamaService.chat(SUMMARIZATION_MODEL, messages) as OllamaResponse;
       return response.message.content.trim();
     } catch (error) {
-      console.error('Failed to generate summary using Ollama:', error);
+      logger.error({ err: error }, 'Failed to generate summary using Ollama:');
       throw new Error('Summarization failed');
     }
   }
@@ -83,7 +84,7 @@ export class SummarizationService {
       const response = await ollamaService.chat(SUMMARIZATION_MODEL, messages) as OllamaResponse;
       return response.message.content.trim();
     } catch (error) {
-      console.error('Failed to generate conversation summary:', error);
+      logger.error({ err: error }, 'Failed to generate conversation summary:');
       throw new Error('Conversation summarization failed');
     }
   }
