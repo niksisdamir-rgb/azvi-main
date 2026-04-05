@@ -144,8 +144,7 @@ export const notificationsRouter = router({
             title: input.title,
             message: input.content,
             type: input.type,
-            link: input.link,
-          });
+          } as any);
         }
 
         // 2. Send other channel notifications based on user preferences

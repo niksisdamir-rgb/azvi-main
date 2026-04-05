@@ -960,8 +960,8 @@ const detectAnomaliesTool: Tool = {
       const deliveryData = completed.map(d => ({
         id: d.id,
         scheduledTime: d.scheduledTime,
-        estimatedArrival: d.estimatedArrival ? new Date(d.estimatedArrival * 1000) : null,
-        actualDeliveryTime: d.actualDeliveryTime ? new Date(d.actualDeliveryTime * 1000) : null,
+        estimatedArrival: (d as any).estimatedArrival ? new Date((d as any).estimatedArrival * 1000) : null,
+        actualDeliveryTime: (d as any).actualDeliveryTime ? new Date((d as any).actualDeliveryTime * 1000) : null,
         driverName: d.driverName || null,
         vehicleNumber: d.vehicleNumber || null,
         projectName: (d as any).projectName || null,

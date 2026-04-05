@@ -10,7 +10,8 @@ interface EmailOptions {
  */
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
   try {
-    const sgMail = (await import('@sendgrid/mail')).default;
+    const sgMailModule = await import('@sendgrid/mail');
+    const sgMail = sgMailModule.default || sgMailModule;
     
     // Check if SendGrid is configured
     const apiKey = process.env.SENDGRID_API_KEY;

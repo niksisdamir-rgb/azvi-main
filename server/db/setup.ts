@@ -1,8 +1,8 @@
 import { eq, desc, like, and, or, gte, lt, sql } from "drizzle-orm";
 import { drizzle, PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import * as postgresModule from "postgres";
 // @ts-ignore
-const postgresDefault = postgres.default || postgres;
+const postgresDefault = (postgresModule as any).default || postgresModule;
 import {
   InsertUser, users,
   documents, InsertDocument,
