@@ -72,7 +72,7 @@ export const projects = pgTable("projects", {
   notifyOnEnRoute: boolean("notifyOnEnRoute").default(true).notNull(),
   notifyOnDelay: boolean("notifyOnDelay").default(true).notNull(),
   notifyOnCompletion: boolean("notifyOnCompletion").default(false).notNull(),
-  createdBy: integer("createdBy").notNull(),
+  createdBy: integer("createdBy").references(() => users.id).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 }, (table) => {
@@ -96,8 +96,8 @@ export const documents = pgTable("documents", {
   mimeType: varchar("mimeType", { length: 100 }),
   fileSize: integer("fileSize"),
   category: documentCategoryEnum("category").default("other").notNull(),
-  projectId: integer("projectId"),
-  uploadedBy: integer("uploadedBy").notNull(),
+  projectId: integer("projectId").references(() => projects.id),
+  uploadedBy: integer("uploadedBy").references(() => users.id).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 }, (table) => {
@@ -144,7 +144,7 @@ export type InsertMaterial = typeof materials.$inferInsert;
  */
 export const deliveries = pgTable("deliveries", {
   id: serial("id").primaryKey(),
-  projectId: integer("projectId"),
+  projectId: integer("projectId").references(() => projects.id),
   projectName: varchar("projectName", { length: 255 }).notNull(),
   concreteType: varchar("concreteType", { length: 100 }).notNull(),
   volume: integer("volume").notNull(),
@@ -167,7 +167,7 @@ export const deliveries = pgTable("deliveries", {
   customerPhone: varchar("customerPhone", { length: 50 }),
   smsNotificationSent: boolean("smsNotificationSent").default(false),
   delayNotificationSent: boolean("delayNotificationSent").default(false),
-  createdBy: integer("createdBy").notNull(),
+  createdBy: integer("createdBy").references(() => users.id).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 }, (table) => {
@@ -187,7 +187,7 @@ export type InsertDelivery = typeof deliveries.$inferInsert;
  */
 export const deliveryStatusHistory = pgTable("delivery_status_history", {
   id: serial("id").primaryKey(),
-  deliveryId: integer("deliveryId").notNull(),
+  deliveryId: integer("deliveryId").references(() => deliveries.id).notNull(),
   userId: integer("userId"),    // who made the status change (null = driver app)
   status: varchar("status", { length: 50 }).notNull(),
   timestamp: timestamp("timestamp").defaultNow().notNull(),
@@ -210,8 +210,8 @@ export const qualityTests = pgTable("qualityTests", {
   result: varchar("result", { length: 255 }).notNull(),
   unit: varchar("unit", { length: 50 }),
   status: testStatusEnum("status").default("pending").notNull(),
-  deliveryId: integer("deliveryId"),
-  projectId: integer("projectId"),
+  deliveryId: integer("deliveryId").references(() => deliveries.id),
+  projectId: integer("projectId").references(() => projects.id),
   testedBy: varchar("testedBy", { length: 255 }),
   notes: text("notes"),
   photoUrls: text("photoUrls"), // JSON array of S3 photo URLs
@@ -266,8 +266,8 @@ export type InsertEmployee = typeof employees.$inferInsert;
  */
 export const workHours = pgTable("workHours", {
   id: serial("id").primaryKey(),
-  employeeId: integer("employeeId").notNull(),
-  projectId: integer("projectId"),
+  employeeId: integer("employeeId").references(() => employees.id).notNull(),
+  projectId: integer("projectId").references(() => projects.id),
   date: timestamp("date").notNull(),
   startTime: timestamp("startTime").notNull(),
   endTime: timestamp("endTime"),
@@ -275,7 +275,7 @@ export const workHours = pgTable("workHours", {
   overtimeHours: integer("overtimeHours").default(0),
   workType: workTypeEnum("workType").default("regular").notNull(),
   notes: text("notes"),
-  approvedBy: integer("approvedBy"),
+  approvedBy: integer("approvedBy").references(() => users.id),
   status: workStatusEnum("status").default("pending").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
@@ -319,7 +319,7 @@ export const machines = pgTable("machines", {
   manufacturer: varchar("manufacturer", { length: 255 }),
   model: varchar("model", { length: 255 }),
   year: integer("year"),
-  concreteBaseId: integer("concreteBaseId"),
+  concreteBaseId: integer("concreteBaseId").references(() => concreteBases.id),
   status: machineStatusEnum("status").default("operational").notNull(),
   totalWorkingHours: integer("totalWorkingHours").default(0),
   lastMaintenanceDate: timestamp("lastMaintenanceDate"),
@@ -336,7 +336,7 @@ export type InsertMachine = typeof machines.$inferInsert;
  */
 export const machineMaintenance = pgTable("machineMaintenance", {
   id: serial("id").primaryKey(),
-  machineId: integer("machineId").notNull(),
+  machineId: integer("machineId").references(() => machines.id).notNull(),
   date: timestamp("date").notNull(),
   maintenanceType: maintenanceTypeEnum("maintenanceType").default("other").notNull(),
   description: text("description"),
@@ -360,13 +360,13 @@ export type InsertMachineMaintenance = typeof machineMaintenance.$inferInsert;
  */
 export const machineWorkHours = pgTable("machineWorkHours", {
   id: serial("id").primaryKey(),
-  machineId: integer("machineId").notNull(),
-  projectId: integer("projectId"),
+  machineId: integer("machineId").references(() => machines.id).notNull(),
+  projectId: integer("projectId").references(() => projects.id),
   date: timestamp("date").notNull(),
   startTime: timestamp("startTime").notNull(),
   endTime: timestamp("endTime"),
   hoursWorked: integer("hoursWorked"),
-  operatorId: integer("operatorId"),
+  operatorId: integer("operatorId").references(() => employees.id),
   operatorName: varchar("operatorName", { length: 255 }),
   notes: text("notes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -381,7 +381,7 @@ export type InsertMachineWorkHour = typeof machineWorkHours.$inferInsert;
  */
 export const aggregateInputs = pgTable("aggregateInputs", {
   id: serial("id").primaryKey(),
-  concreteBaseId: integer("concreteBaseId").notNull(),
+  concreteBaseId: integer("concreteBaseId").references(() => concreteBases.id).notNull(),
   date: timestamp("date").notNull(),
   materialType: aggregateTypeEnum("materialType").default("other").notNull(),
   materialName: varchar("materialName", { length: 255 }).notNull(),
@@ -473,7 +473,7 @@ export type InsertForecastPrediction = typeof forecastPredictions.$inferInsert;
  */
 export const reportSettings = pgTable("report_settings", {
   id: serial("id").primaryKey(),
-  userId: integer("userId").notNull().unique(),
+  userId: integer("userId").references(() => users.id).notNull().unique(),
   includeProduction: boolean("includeProduction").default(true).notNull(),
   includeDeliveries: boolean("includeDeliveries").default(true).notNull(),
   includeMaterials: boolean("includeMaterials").default(true).notNull(),
@@ -539,7 +539,7 @@ export type InsertEmailBranding = typeof emailBranding.$inferInsert;
 // AI Assistant Tables
 export const aiConversations = pgTable("ai_conversations", {
   id: serial("id").primaryKey(),
-  userId: integer("userId").notNull(),
+  userId: integer("userId").references(() => users.id).notNull(),
   title: varchar("title", { length: 255 }),
   modelName: varchar("modelName", { length: 100 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -551,7 +551,7 @@ export type InsertAiConversation = typeof aiConversations.$inferInsert;
 
 export const aiMessages = pgTable("ai_messages", {
   id: serial("id").primaryKey(),
-  conversationId: integer("conversationId").notNull(),
+  conversationId: integer("conversationId").references(() => aiConversations.id).notNull(),
   role: aiRoleEnum("role").notNull(),
   content: text("content").notNull(),
   model: varchar("model", { length: 100 }),
@@ -587,13 +587,13 @@ export type InsertAiModel = typeof aiModels.$inferInsert;
  */
 export const dailyTasks = pgTable("daily_tasks", {
   id: serial("id").primaryKey(),
-  userId: integer("userId").notNull(),
+  userId: integer("userId").references(() => users.id).notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
   dueDate: timestamp("dueDate").notNull(),
   priority: taskPriorityEnum("priority").default("medium").notNull(),
   status: taskStatusEnum("status").default("pending").notNull(),
-  assignedTo: integer("assignedTo"),
+  assignedTo: integer("assignedTo").references(() => users.id),
   category: varchar("category", { length: 100 }),
   tags: jsonb("tags"),
   attachments: jsonb("attachments"),
@@ -610,9 +610,9 @@ export type InsertDailyTask = typeof dailyTasks.$inferInsert;
  */
 export const taskAssignments = pgTable("task_assignments", {
   id: serial("id").primaryKey(),
-  taskId: integer("taskId").notNull(),
-  assignedTo: integer("assignedTo").notNull(),
-  assignedBy: integer("assignedBy").notNull(),
+  taskId: integer("taskId").references(() => dailyTasks.id).notNull(),
+  assignedTo: integer("assignedTo").references(() => users.id).notNull(),
+  assignedBy: integer("assignedBy").references(() => users.id).notNull(),
   responsibility: varchar("responsibility", { length: 255 }).notNull(),
   completionPercentage: integer("completionPercentage").default(0).notNull(),
   notes: text("notes"),
@@ -628,10 +628,10 @@ export type InsertTaskAssignment = typeof taskAssignments.$inferInsert;
  */
 export const taskStatusHistory = pgTable("task_status_history", {
   id: serial("id").primaryKey(),
-  taskId: integer("taskId").notNull(),
+  taskId: integer("taskId").references(() => dailyTasks.id).notNull(),
   previousStatus: varchar("previousStatus", { length: 50 }),
   newStatus: varchar("newStatus", { length: 50 }).notNull(),
-  changedBy: integer("changedBy").notNull(),
+  changedBy: integer("changedBy").references(() => users.id).notNull(),
   reason: text("reason"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -645,8 +645,8 @@ export type InsertTaskStatusHistory = typeof taskStatusHistory.$inferInsert;
  */
 export const taskNotifications = pgTable("task_notifications", {
   id: serial("id").primaryKey(),
-  taskId: integer("taskId").notNull(),
-  userId: integer("userId").notNull(),
+  taskId: integer("taskId").references(() => dailyTasks.id).notNull(),
+  userId: integer("userId").references(() => users.id).notNull(),
   type: notificationTypeEnum("type").notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
@@ -667,7 +667,7 @@ export type InsertTaskNotification = typeof taskNotifications.$inferInsert;
  */
 export const notificationPreferences = pgTable("notification_preferences", {
   id: serial("id").primaryKey(),
-  userId: integer("userId").notNull().unique(),
+  userId: integer("userId").references(() => users.id).notNull().unique(),
   emailEnabled: boolean("emailEnabled").default(true).notNull(),
   smsEnabled: boolean("smsEnabled").default(false).notNull(),
   inAppEnabled: boolean("inAppEnabled").default(true).notNull(),
@@ -690,8 +690,8 @@ export type InsertNotificationPreference = typeof notificationPreferences.$infer
  */
 export const notificationHistory = pgTable("notification_history", {
   id: serial("id").primaryKey(),
-  notificationId: integer("notificationId").notNull(),
-  userId: integer("userId").notNull(),
+  notificationId: integer("notificationId").references(() => taskNotifications.id).notNull(),
+  userId: integer("userId").references(() => users.id).notNull(),
   channel: channelEnum("channel").notNull(),
   status: historyStatusEnum("status").notNull(),
   recipient: varchar("recipient", { length: 255 }).notNull(),
@@ -710,7 +710,7 @@ export type InsertNotificationHistory = typeof notificationHistory.$inferInsert;
  */
 export const notificationTemplates = pgTable("notification_templates", {
   id: serial("id").primaryKey(),
-  createdBy: integer("createdBy").notNull(),
+  createdBy: integer("createdBy").references(() => users.id).notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   subject: varchar("subject", { length: 255 }).notNull(),
@@ -732,8 +732,8 @@ export type InsertNotificationTemplate = typeof notificationTemplates.$inferInse
  */
 export const notificationTriggers = pgTable("notification_triggers", {
   id: serial("id").primaryKey(),
-  createdBy: integer("createdBy").notNull(),
-  templateId: integer("templateId").notNull(),
+  createdBy: integer("createdBy").references(() => users.id).notNull(),
+  templateId: integer("templateId").references(() => notificationTemplates.id).notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   eventType: varchar("eventType", { length: 100 }).notNull(),
@@ -766,7 +766,7 @@ export type InsertNotificationTrigger = typeof notificationTriggers.$inferInsert
  */
 export const triggerExecutionLog = pgTable("trigger_execution_log", {
   id: serial("id").primaryKey(),
-  triggerId: integer("triggerId").notNull(),
+  triggerId: integer("triggerId").references(() => notificationTriggers.id).notNull(),
   entityType: varchar("entityType", { length: 100 }).notNull(),
   entityId: integer("entityId").notNull(),
   conditionsMet: boolean("conditionsMet").notNull(),
@@ -802,7 +802,7 @@ export type InsertSupplier = typeof suppliers.$inferInsert;
  */
 export const timesheetUploadHistory = pgTable("timesheetUploadHistory", {
   id: serial("id").primaryKey(),
-  uploadedBy: integer("uploadedBy").notNull(),         // FK → users.id
+  uploadedBy: integer("uploadedBy").references(() => users.id).notNull(),
   fileName: varchar("fileName", { length: 512 }).notNull(),
   fileType: varchar("fileType", { length: 32 }).notNull(), // xlsx | csv | pdf
   totalRows: integer("totalRows").notNull().default(0),

@@ -114,54 +114,54 @@
 **Severity:** 🟠 HIGH  
 **Impact:** Without FK constraints, the database allows orphaned records (e.g., deliveries referencing deleted projects).
 
-- [ ] Add `.references(() => projects.id)` to:
-  - [ ] `deliveries.projectId`
-  - [ ] `qualityTests.projectId`
-  - [ ] `workHours.projectId`
-  - [ ] `machineWorkHours.projectId`
-  - [ ] `documents.projectId`
-- [ ] Add `.references(() => users.id)` to:
-  - [ ] `deliveries.createdBy`
-  - [ ] `projects.createdBy`
-  - [ ] `documents.uploadedBy`
-  - [ ] `dailyTasks.userId`
-  - [ ] `dailyTasks.assignedTo`
-  - [ ] `workHours.approvedBy`
-  - [ ] `aiConversations.userId`
-  - [ ] `notificationPreferences.userId`
-  - [ ] `taskAssignments.assignedTo`
-  - [ ] `taskAssignments.assignedBy`
-  - [ ] `taskStatusHistory.changedBy`
-  - [ ] `taskNotifications.userId`
-  - [ ] `notificationHistory.userId`
-  - [ ] `reportSettings.userId`
-  - [ ] `notificationTemplates.createdBy`
-  - [ ] `notificationTriggers.createdBy`
-  - [ ] `timesheetUploadHistory.uploadedBy`
-- [ ] Add `.references(() => employees.id)` to:
-  - [ ] `workHours.employeeId`
-  - [ ] `machineWorkHours.operatorId`
-- [ ] Add `.references(() => machines.id)` to:
-  - [ ] `machineMaintenance.machineId`
-  - [ ] `machineWorkHours.machineId`
-- [ ] Add `.references(() => concreteBases.id)` to:
-  - [ ] `machines.concreteBaseId`
-  - [ ] `aggregateInputs.concreteBaseId`
-- [ ] Add `.references(() => deliveries.id)` to:
-  - [ ] `qualityTests.deliveryId`
-  - [ ] `deliveryStatusHistory.deliveryId`
-- [ ] Add `.references(() => dailyTasks.id)` to:
-  - [ ] `taskAssignments.taskId`
-  - [ ] `taskStatusHistory.taskId`
-  - [ ] `taskNotifications.taskId`
-- [ ] Add `.references(() => aiConversations.id)` to:
-  - [ ] `aiMessages.conversationId`
-- [ ] Add `.references(() => taskNotifications.id)` to:
-  - [ ] `notificationHistory.notificationId`
-- [ ] Add `.references(() => notificationTemplates.id)` to:
-  - [ ] `notificationTriggers.templateId`
-- [ ] Add `.references(() => notificationTriggers.id)` to:
-  - [ ] `triggerExecutionLog.triggerId`
+- [x] Add `.references(() => projects.id)` to:
+  - [x] `deliveries.projectId`
+  - [x] `qualityTests.projectId`
+  - [x] `workHours.projectId`
+  - [x] `machineWorkHours.projectId`
+  - [x] `documents.projectId`
+- [x] Add `.references(() => users.id)` to:
+  - [x] `deliveries.createdBy`
+  - [x] `projects.createdBy`
+  - [x] `documents.uploadedBy`
+  - [x] `dailyTasks.userId`
+  - [x] `dailyTasks.assignedTo`
+  - [x] `workHours.approvedBy`
+  - [x] `aiConversations.userId`
+  - [x] `notificationPreferences.userId`
+  - [x] `taskAssignments.assignedTo`
+  - [x] `taskAssignments.assignedBy`
+  - [x] `taskStatusHistory.changedBy`
+  - [x] `taskNotifications.userId`
+  - [x] `notificationHistory.userId`
+  - [x] `reportSettings.userId`
+  - [x] `notificationTemplates.createdBy`
+  - [x] `notificationTriggers.createdBy`
+  - [x] `timesheetUploadHistory.uploadedBy`
+- [x] Add `.references(() => employees.id)` to:
+  - [x] `workHours.employeeId`
+  - [x] `machineWorkHours.operatorId`
+- [x] Add `.references(() => machines.id)` to:
+  - [x] `machineMaintenance.machineId`
+  - [x] `machineWorkHours.machineId`
+- [x] Add `.references(() => concreteBases.id)` to:
+  - [x] `machines.concreteBaseId`
+  - [x] `aggregateInputs.concreteBaseId`
+- [x] Add `.references(() => deliveries.id)` to:
+  - [x] `qualityTests.deliveryId`
+  - [x] `deliveryStatusHistory.deliveryId`
+- [x] Add `.references(() => dailyTasks.id)` to:
+  - [x] `taskAssignments.taskId`
+  - [x] `taskStatusHistory.taskId`
+  - [x] `taskNotifications.taskId`
+- [x] Add `.references(() => aiConversations.id)` to:
+  - [x] `aiMessages.conversationId`
+- [x] Add `.references(() => taskNotifications.id)` to:
+  - [x] `notificationHistory.notificationId`
+- [x] Add `.references(() => notificationTemplates.id)` to:
+  - [x] `notificationTriggers.templateId`
+- [x] Add `.references(() => notificationTriggers.id)` to:
+  - [x] `triggerExecutionLog.triggerId`
 - [ ] Generate migration: `pnpm db:push`
 - [ ] Test migration against a copy of production data (check for constraint violations)
 - [ ] Fix any existing orphaned data before applying migration
