@@ -550,16 +550,16 @@ export type InsertAiConversation = typeof aiConversations.$inferInsert;
 
 export const aiMessages = pgTable("ai_messages", {
   id: serial("id").primaryKey(),
-  conversationId: integer("conversationId").references(() => aiConversations.id).notNull(),
+  conversationId: integer("conversation_id").references(() => aiConversations.id).notNull(),
   role: aiRoleEnum("role").notNull(),
   content: text("content").notNull(),
   model: varchar("model", { length: 100 }),
-  audioUrl: text("audioUrl"),
-  imageUrl: text("imageUrl"),
-  thinkingProcess: text("thinkingProcess"), // JSON string
-  toolCalls: text("toolCalls"), // JSON string
+  audioUrl: text("audio_url"),
+  imageUrl: text("image_url"),
+  thinkingProcess: text("thinking_process"), // JSON string
+  toolCalls: text("tool_calls"), // JSON string
   metadata: text("metadata"), // JSON string for additional data
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type AiMessage = typeof aiMessages.$inferSelect;
@@ -568,13 +568,13 @@ export type InsertAiMessage = typeof aiMessages.$inferInsert;
 export const aiModels = pgTable("ai_models", {
   id: serial("id").primaryKey(),
   name: varchar("name", { length: 100 }).notNull().unique(),
-  displayName: varchar("displayName", { length: 255 }).notNull(),
+  displayName: varchar("display_name", { length: 255 }).notNull(),
   type: aiModelTypeEnum("type").notNull(),
   size: varchar("size", { length: 20 }),
-  isAvailable: boolean("isAvailable").default(false),
-  lastUsed: timestamp("lastUsed"),
+  isAvailable: boolean("is_available").default(false),
+  lastUsed: timestamp("last_used"),
   description: text("description"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type AiModel = typeof aiModels.$inferSelect;
@@ -586,19 +586,19 @@ export type InsertAiModel = typeof aiModels.$inferInsert;
  */
 export const dailyTasks = pgTable("daily_tasks", {
   id: serial("id").primaryKey(),
-  userId: integer("userId").references(() => users.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
-  dueDate: timestamp("dueDate").notNull(),
+  dueDate: timestamp("due_date").notNull(),
   priority: taskPriorityEnum("priority").default("medium").notNull(),
   status: taskStatusEnum("status").default("pending").notNull(),
-  assignedTo: integer("assignedTo").references(() => users.id),
+  assignedTo: integer("assigned_to").references(() => users.id),
   category: varchar("category", { length: 100 }),
   tags: jsonb("tags"),
   attachments: jsonb("attachments"),
-  completedAt: timestamp("completedAt"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type DailyTask = typeof dailyTasks.$inferSelect;
@@ -609,14 +609,14 @@ export type InsertDailyTask = typeof dailyTasks.$inferInsert;
  */
 export const taskAssignments = pgTable("task_assignments", {
   id: serial("id").primaryKey(),
-  taskId: integer("taskId").references(() => dailyTasks.id).notNull(),
-  assignedTo: integer("assignedTo").references(() => users.id).notNull(),
-  assignedBy: integer("assignedBy").references(() => users.id).notNull(),
+  taskId: integer("task_id").references(() => dailyTasks.id).notNull(),
+  assignedTo: integer("assigned_to").references(() => users.id).notNull(),
+  assignedBy: integer("assigned_by").references(() => users.id).notNull(),
   responsibility: varchar("responsibility", { length: 255 }).notNull(),
-  completionPercentage: integer("completionPercentage").default(0).notNull(),
+  completionPercentage: integer("completion_percentage").default(0).notNull(),
   notes: text("notes"),
-  assignedAt: timestamp("assignedAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  assignedAt: timestamp("assigned_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type TaskAssignment = typeof taskAssignments.$inferSelect;
@@ -627,12 +627,12 @@ export type InsertTaskAssignment = typeof taskAssignments.$inferInsert;
  */
 export const taskStatusHistory = pgTable("task_status_history", {
   id: serial("id").primaryKey(),
-  taskId: integer("taskId").references(() => dailyTasks.id).notNull(),
-  previousStatus: varchar("previousStatus", { length: 50 }),
-  newStatus: varchar("newStatus", { length: 50 }).notNull(),
-  changedBy: integer("changedBy").references(() => users.id).notNull(),
+  taskId: integer("task_id").references(() => dailyTasks.id).notNull(),
+  previousStatus: varchar("previous_status", { length: 50 }),
+  newStatus: varchar("new_status", { length: 50 }).notNull(),
+  changedBy: integer("changed_by").references(() => users.id).notNull(),
   reason: text("reason"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type TaskStatusHistory = typeof taskStatusHistory.$inferSelect;
@@ -644,18 +644,18 @@ export type InsertTaskStatusHistory = typeof taskStatusHistory.$inferInsert;
  */
 export const taskNotifications = pgTable("task_notifications", {
   id: serial("id").primaryKey(),
-  taskId: integer("taskId").references(() => dailyTasks.id).notNull(),
-  userId: integer("userId").references(() => users.id).notNull(),
+  taskId: integer("task_id").references(() => dailyTasks.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
   type: notificationTypeEnum("type").notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
   status: notificationStatusEnum("status").default("pending").notNull(),
   channels: jsonb("channels"), // Array of 'email', 'sms', 'in_app'
-  scheduledFor: timestamp("scheduledFor"),
-  sentAt: timestamp("sentAt"),
-  readAt: timestamp("readAt"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  scheduledFor: timestamp("scheduled_for"),
+  sentAt: timestamp("sent_at"),
+  readAt: timestamp("read_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type TaskNotification = typeof taskNotifications.$inferSelect;
@@ -666,19 +666,19 @@ export type InsertTaskNotification = typeof taskNotifications.$inferInsert;
  */
 export const notificationPreferences = pgTable("notification_preferences", {
   id: serial("id").primaryKey(),
-  userId: integer("userId").references(() => users.id).notNull().unique(),
-  emailEnabled: boolean("emailEnabled").default(true).notNull(),
-  smsEnabled: boolean("smsEnabled").default(false).notNull(),
-  inAppEnabled: boolean("inAppEnabled").default(true).notNull(),
-  overdueReminders: boolean("overdueReminders").default(true).notNull(),
-  completionNotifications: boolean("completionNotifications").default(true).notNull(),
-  assignmentNotifications: boolean("assignmentNotifications").default(true).notNull(),
-  statusChangeNotifications: boolean("statusChangeNotifications").default(true).notNull(),
-  quietHoursStart: varchar("quietHoursStart", { length: 5 }), // HH:MM format
-  quietHoursEnd: varchar("quietHoursEnd", { length: 5 }), // HH:MM format
+  userId: integer("user_id").references(() => users.id).notNull().unique(),
+  emailEnabled: boolean("email_enabled").default(true).notNull(),
+  smsEnabled: boolean("sms_enabled").default(false).notNull(),
+  inAppEnabled: boolean("in_app_enabled").default(true).notNull(),
+  overdueReminders: boolean("overdue_reminders").default(true).notNull(),
+  completionNotifications: boolean("completion_notifications").default(true).notNull(),
+  assignmentNotifications: boolean("assignment_notifications").default(true).notNull(),
+  statusChangeNotifications: boolean("status_change_notifications").default(true).notNull(),
+  quietHoursStart: varchar("quiet_hours_start", { length: 5 }), // HH:MM format
+  quietHoursEnd: varchar("quiet_hours_end", { length: 5 }), // HH:MM format
   timezone: varchar("timezone", { length: 50 }).default("UTC").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type NotificationPreference = typeof notificationPreferences.$inferSelect;
@@ -689,14 +689,14 @@ export type InsertNotificationPreference = typeof notificationPreferences.$infer
  */
 export const notificationHistory = pgTable("notification_history", {
   id: serial("id").primaryKey(),
-  notificationId: integer("notificationId").references(() => taskNotifications.id).notNull(),
-  userId: integer("userId").references(() => users.id).notNull(),
+  notificationId: integer("notification_id").references(() => taskNotifications.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
   channel: channelEnum("channel").notNull(),
   status: historyStatusEnum("status").notNull(),
   recipient: varchar("recipient", { length: 255 }).notNull(),
-  errorMessage: text("errorMessage"),
-  sentAt: timestamp("sentAt").defaultNow().notNull(),
-  openedAt: timestamp("openedAt"),
+  errorMessage: text("error_message"),
+  sentAt: timestamp("sent_at").defaultNow().notNull(),
+  openedAt: timestamp("opened_at"),
   metadata: jsonb("metadata"), // Additional tracking data
 });
 
@@ -709,18 +709,18 @@ export type InsertNotificationHistory = typeof notificationHistory.$inferInsert;
  */
 export const notificationTemplates = pgTable("notification_templates", {
   id: serial("id").primaryKey(),
-  createdBy: integer("createdBy").references(() => users.id).notNull(),
+  createdBy: integer("created_by").references(() => users.id).notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
   subject: varchar("subject", { length: 255 }).notNull(),
-  bodyText: text("bodyText").notNull(),
-  bodyHtml: text("bodyHtml"),
+  bodyText: text("body_text").notNull(),
+  bodyHtml: text("body_html"),
   channels: jsonb("channels").$type<("email" | "sms" | "in_app")[]>().notNull(),
   variables: jsonb("variables").$type<string[]>(),
   tags: jsonb("tags").$type<string[]>(),
-  isActive: boolean("isActive").notNull().default(true),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type NotificationTemplate = typeof notificationTemplates.$inferSelect;
@@ -731,12 +731,12 @@ export type InsertNotificationTemplate = typeof notificationTemplates.$inferInse
  */
 export const notificationTriggers = pgTable("notification_triggers", {
   id: serial("id").primaryKey(),
-  createdBy: integer("createdBy").references(() => users.id).notNull(),
-  templateId: integer("templateId").references(() => notificationTemplates.id).notNull(),
+  createdBy: integer("created_by").references(() => users.id).notNull(),
+  templateId: integer("template_id").references(() => notificationTemplates.id).notNull(),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
-  eventType: varchar("eventType", { length: 100 }).notNull(),
-  triggerCondition: jsonb("triggerCondition").$type<{
+  eventType: varchar("event_type", { length: 100 }).notNull(),
+  triggerCondition: jsonb("trigger_condition").$type<{
     operator: "and" | "or";
     conditions: Array<{
       field: string;
@@ -750,11 +750,11 @@ export const notificationTriggers = pgTable("notification_triggers", {
     delayMinutes?: number;
     maxNotificationsPerDay?: number;
   }>().notNull(),
-  isActive: boolean("isActive").notNull().default(true),
-  lastTriggeredAt: timestamp("lastTriggeredAt"),
-  triggerCount: integer("triggerCount").notNull().default(0),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  lastTriggeredAt: timestamp("last_triggered_at"),
+  triggerCount: integer("trigger_count").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type NotificationTrigger = typeof notificationTriggers.$inferSelect;
@@ -765,13 +765,13 @@ export type InsertNotificationTrigger = typeof notificationTriggers.$inferInsert
  */
 export const triggerExecutionLog = pgTable("trigger_execution_log", {
   id: serial("id").primaryKey(),
-  triggerId: integer("triggerId").references(() => notificationTriggers.id).notNull(),
-  entityType: varchar("entityType", { length: 100 }).notNull(),
-  entityId: integer("entityId").notNull(),
-  conditionsMet: boolean("conditionsMet").notNull(),
-  notificationsSent: integer("notificationsSent").notNull().default(0),
+  triggerId: integer("trigger_id").references(() => notificationTriggers.id).notNull(),
+  entityType: varchar("entity_type", { length: 100 }).notNull(),
+  entityId: integer("entity_id").notNull(),
+  conditionsMet: boolean("conditions_met").notNull(),
+  notificationsSent: integer("notifications_sent").notNull().default(0),
   error: text("error"),
-  executedAt: timestamp("executedAt").defaultNow().notNull(),
+  executedAt: timestamp("executed_at").defaultNow().notNull(),
 });
 
 export type TriggerExecutionLog = typeof triggerExecutionLog.$inferSelect;
@@ -786,10 +786,10 @@ export const suppliers = pgTable("suppliers", {
   contactPerson: varchar("contact", { length: 255 }),
   email: varchar("email", { length: 320 }),
   phone: varchar("phone", { length: 50 }),
-  leadTimeDays: integer("leadTimeDays").default(7),
-  onTimeDeliveryRate: integer("onTimeDeliveryRate").default(100), // Percent 0-100
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  leadTimeDays: integer("lead_time_days").default(7),
+  onTimeDeliveryRate: integer("on_time_delivery_rate").default(100), // Percent 0-100
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export type Supplier = typeof suppliers.$inferSelect;
@@ -799,17 +799,17 @@ export type InsertSupplier = typeof suppliers.$inferInsert;
  * Timesheet upload history — audit log for every bulk import.
  * Tracks file name, row counts, errors, and who triggered the import.
  */
-export const timesheetUploadHistory = pgTable("timesheetUploadHistory", {
+export const timesheetUploadHistory = pgTable("timesheet_upload_history", {
   id: serial("id").primaryKey(),
-  uploadedBy: integer("uploadedBy").references(() => users.id).notNull(),
-  fileName: varchar("fileName", { length: 512 }).notNull(),
-  fileType: varchar("fileType", { length: 32 }).notNull(), // xlsx | csv | pdf
-  totalRows: integer("totalRows").notNull().default(0),
-  insertedRows: integer("insertedRows").notNull().default(0),
-  failedRows: integer("failedRows").notNull().default(0),
+  uploadedBy: integer("uploaded_by").references(() => users.id).notNull(),
+  fileName: varchar("file_name", { length: 512 }).notNull(),
+  fileType: varchar("file_type", { length: 32 }).notNull(), // xlsx | csv | pdf
+  totalRows: integer("total_rows").notNull().default(0),
+  insertedRows: integer("inserted_rows").notNull().default(0),
+  failedRows: integer("failed_rows").notNull().default(0),
   errors: jsonb("errors").default([]),                 // UploadError[]
   status: varchar("status", { length: 32 }).notNull().default("completed"), // completed | partial | failed
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export type TimesheetUploadHistory = typeof timesheetUploadHistory.$inferSelect;
