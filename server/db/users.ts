@@ -1,4 +1,4 @@
-import { eq, desc, like, and, or, gte, lt, sql } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import * as schema from "../../drizzle/schema";
 import { getDb } from "./setup";
 import { ENV } from '../lib/env';
@@ -153,5 +153,39 @@ export async function updateUser(userId: number, data: Partial<schema.InsertUser
   if (!db) throw new Error("Database not available");
 
   await db.update(schema.users).set(data).where(eq(schema.users.id, userId));
+}
+
+export async function getAdminUsersWithSMS() {
+  const db = await getDb();
+  if (!db) return [];
+
+  return await db
+    .select()
+    .from(schema.users)
+    .where(and(
+      eq(schema.users.role, 'admin'),
+      eq(schema.users.smsNotificationsEnabled, true),
+      sql`${schema.users.phoneNumber} IS NOT NULL`
+    ));
+}
+
+export async function updateUserSMSSettings(userId: number, phoneNumber: string, enabled: boolean) {
+  const db = await getDb();
+  if (!db) return false;
+
+  try {
+    await db
+      .update(schema.users)
+      .set({
+        phoneNumber,
+        smsNotificationsEnabled: enabled,
+        updatedAt: new Date(),
+      })
+      .where(eq(schema.users.id, userId));
+    return true;
+  } catch (error) {
+    dbLogger.error({ err: error }, "Failed to update SMS settings:");
+    return false;
+  }
 }
 

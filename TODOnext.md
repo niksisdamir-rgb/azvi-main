@@ -308,30 +308,10 @@
 
 ---
 
-### 3.3 Migrate Background Jobs to BullMQ Repeatable Jobs
-
-**Files:** `server/lib/notificationJobs.ts`, `server/lib/index.ts`, `server/lib/queue.ts`  
-**Severity:** 🟡 MEDIUM
-
-- [ ] Define job names in `queue.ts`:
-  ```typescript
-  type JobName = "overdue-task-check" | "delayed-delivery-check" | "forecasting-check" | ...;
-  ```
-- [ ] Create worker handler in `server/lib/workers/notificationWorker.ts`
-- [ ] Register repeatable jobs on server start:
-  - `overdue-task-check`: every 24h, first run at 9:00 AM
-  - `delayed-delivery-check`: every 5 minutes
-  - `forecasting-check`: every 24h
-- [ ] Add job deduplication (BullMQ handles this with repeatable job IDs)
-- [ ] Remove all `setInterval` / `setTimeout` calls from `notificationJobs.ts`
-- [ ] Update `index.ts` to register repeatable jobs instead of calling `schedule*` functions
-- [ ] Add graceful shutdown: drain queues on `SIGTERM`
-- [ ] Fallback: if Redis is unavailable, fall back to `setInterval` with a logged warning
-- [ ] Write test: verify jobs are registered with correct intervals
-
----
-
-### 3.4 Add Pagination to Unbounded Queries
+- [x] Migrate Background 
+  - [x] Standardize job names in `queue.ts`
+  - [x] Implement idempotent job registration in `notificationWorker.ts`
+  - [x] Relocate user functions to `users.ts` (Task 4.5)
 
 **Files:** Various DB query functions  
 **Severity:** 🟡 MEDIUM
@@ -482,10 +462,10 @@
 **Files:** `server/db/aggregateInputs.ts`, `server/db/users.ts`  
 **Severity:** 🟡 MEDIUM
 
-- [ ] Move `updateUserSMSSettings()` from `aggregateInputs.ts` → `users.ts`
-- [ ] Update all imports referencing the old location
-- [ ] Move any other user-related helpers found in non-user files to `users.ts`
-- [ ] Verify `server/db/index.ts` barrel export still re-exports correctly
+- [x] Move `updateUserSMSSettings()` from `aggregateInputs.ts` → `users.ts`
+- [x] Update all imports referencing the old location
+- [x] Move any other user-related helpers found in non-user files to `users.ts`
+- [x] Verify `server/db/index.ts` barrel export still re-exports correctly
 
 ---
 

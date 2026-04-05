@@ -1,5 +1,4 @@
-import { logger } from '../lib/logger';
-import { eq, desc, like, and, or, gte, lt, sql, inArray } from "drizzle-orm";
+import { eq, desc, and, gte, lt, sql, inArray } from "drizzle-orm";
 import * as schema from "../../drizzle/schema";
 import { getDb } from "./setup";
 import { updateMaterial } from "./materials";
@@ -123,39 +122,6 @@ export async function getCriticalStockMaterials() {
     .where(sql`${schema.materials.quantity} <= ${schema.materials.criticalThreshold} AND ${schema.materials.criticalThreshold} > 0`);
 }
 
-export async function getAdminUsersWithSMS() {
-  const db = await getDb();
-  if (!db) return [];
-
-  return await db
-    .select()
-    .from(schema.users)
-    .where(and(
-      eq(schema.users.role, 'admin'),
-      eq(schema.users.smsNotificationsEnabled, true),
-      sql`${schema.users.phoneNumber} IS NOT NULL`
-    ));
-}
-
-export async function updateUserSMSSettings(userId: number, phoneNumber: string, enabled: boolean) {
-  const db = await getDb();
-  if (!db) return false;
-
-  try {
-    await db
-      .update(schema.users)
-      .set({
-        phoneNumber,
-        smsNotificationsEnabled: enabled,
-        updatedAt: new Date(),
-      })
-      .where(eq(schema.users.id, userId));
-    return true;
-  } catch (error) {
-    logger.error({ err: error }, "Failed to update SMS settings:");
-    return false;
-  }
-}
 
 
 // Material Consumption Tracking
