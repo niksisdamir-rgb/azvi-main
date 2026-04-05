@@ -45,8 +45,8 @@ const combinedSchema = { ...schema, ...relations };
 import { withReplicas } from "drizzle-orm/pg-core";
 
 let _db: PostgresJsDatabase<typeof combinedSchema> | null = null;
-let _client: postgres.Sql | null = null;
-let _replicaClients: postgres.Sql[] = [];
+let _client: any = null;
+let _replicaClients: any[] = [];
 
 // Mock DB implementation for testing in restricted environments
 const mockData: Record<string, any[]> = {

@@ -871,46 +871,8 @@ const updateMaterialQuantityTool: Tool = {
   },
 };
 
-// Import work hours and machine work hours from schema
-import { workHours, machineWorkHours } from '../../drizzle/schema';
 
-const bulkImportTool: Tool = {
-  name: 'bulk_import_data',
-  description: 'Import bulk data from CSV or Excel files for work hours, materials, or documents.',
-  parameters: {
-    type: 'object',
-    properties: {
-      filePath: {
-        type: 'string',
-        description: 'Path to the CSV or Excel file to import',
-      },
-      importType: {
-        type: 'string',
-        enum: ['work_hours', 'materials', 'documents'],
-        description: 'Type of data to import',
-      },
-      sheetName: {
-        type: 'string',
-        description: 'Sheet name for Excel files (optional)',
-      },
-    },
-    required: ['filePath', 'importType'],
-  },
-  execute: async (params, userId) => {
-    const { filePath, importType } = params;
-    if (!filePath || !importType) {
-      return { error: 'filePath and importType are required' };
-    }
-    return {
-      success: true,
-      message: 'Use bulkImport procedures to complete the import',
-    };
-  },
-};
-
-/**
- * Detect anomalies across quality, delivery, and consumption data
- */
+// Detect anomalies across quality, delivery, and consumption data
 const detectAnomaliesTool: Tool = {
   name: 'detect_anomalies',
   description: 'Scan for anomalies across quality tests, deliveries, and material consumption. Returns detected issues like failure rate spikes, delivery delays, and consumption surges.',
@@ -932,6 +894,7 @@ const detectAnomaliesTool: Tool = {
   execute: async (params, _userId) => {
     const { detectQualityAnomalies, detectDeliveryAnomalies, detectConsumptionAnomalies, aggregateScanResults } = await import('./anomalyDetection');
     const db = await getDb();
+    if (!db) return { error: "Database not available" };
     const windowDays = parseInt(params.windowDays) || 30;
     const scanType = params.scanType || 'all';
 
