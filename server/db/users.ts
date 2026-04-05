@@ -82,9 +82,19 @@ export async function getUserByUsername(username: string) {
       id: 1,
       username,
       name: username === "admin" ? "System Admin" : "Developer Admin",
-      role: "admin",
-      createdAt: new Date().toISOString(),
-    } as any;
+      role: "admin" as const,
+      createdAt: new Date(),
+      passwordHash: null,
+      openId: null,
+      email: null,
+      loginMethod: null,
+      forcePasswordChange: false,
+      phoneNumber: null,
+      smsNotificationsEnabled: false,
+      pushSubscription: null,
+      updatedAt: new Date(),
+      lastSignedIn: new Date(),
+    } satisfies schema.User;
   }
 
   const db = await getDb();
@@ -100,9 +110,19 @@ export async function getUserById(id: number) {
       id,
       username: "developer",
       name: "Developer Admin",
-      role: "admin",
-      createdAt: new Date().toISOString(),
-    } as any;
+      role: "admin" as const,
+      createdAt: new Date(),
+      passwordHash: null,
+      openId: null,
+      email: null,
+      loginMethod: null,
+      forcePasswordChange: false,
+      phoneNumber: null,
+      smsNotificationsEnabled: false,
+      pushSubscription: null,
+      updatedAt: new Date(),
+      lastSignedIn: new Date(),
+    } satisfies schema.User;
   }
   const db = await getDb();
   if (!db) return undefined;

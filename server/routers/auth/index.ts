@@ -41,7 +41,7 @@ export const authRouter = router({
         name: input.name || null,
         email: input.email || null,
         role: "user",
-      }) as any;
+      });
 
       const userId = result.id;
       const sessionToken = await sdk.createSessionToken(userId);
@@ -76,7 +76,7 @@ export const authRouter = router({
             passwordHash: hashPassword(input.password),
             name: "Developer Admin",
             role: "admin",
-          }) as any;
+          });
           user = result;
         }
 

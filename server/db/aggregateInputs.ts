@@ -11,7 +11,7 @@ export async function createAggregateInput(input: schema.InsertAggregateInput) {
   return result;
 }
 
-export async function getAggregateInputs(filters?: { concreteBaseId?: number; materialType?: string }) {
+export async function getAggregateInputs(filters?: { concreteBaseId?: number; materialType?: schema.AggregateInput["materialType"] }) {
   const db = await getDb();
   if (!db) return [];
 
@@ -20,7 +20,7 @@ export async function getAggregateInputs(filters?: { concreteBaseId?: number; ma
     conditions.push(eq(schema.aggregateInputs.concreteBaseId, filters.concreteBaseId));
   }
   if (filters?.materialType) {
-    conditions.push(eq(schema.aggregateInputs.materialType, filters.materialType as any));
+    conditions.push(eq(schema.aggregateInputs.materialType, filters.materialType));
   }
 
   const result = conditions.length > 0
@@ -197,7 +197,8 @@ export async function getConsumptionHistory(materialId?: number, days: number = 
   }
 
   if (conditions.length > 0) {
-    query = query.where(and(...conditions)) as any;
+    const result = await query.where(and(...conditions)).orderBy(desc(schema.materialConsumptionHistory.date));
+    return result;
   }
 
   const result = await query.orderBy(desc(schema.materialConsumptionHistory.date));
@@ -367,14 +368,14 @@ export async function createPurchaseOrder(order: schema.InsertPurchaseOrder, ite
   });
 }
 
-export async function getPurchaseOrders(filters?: { status?: string; supplierId?: number }) {
+export async function getPurchaseOrders(filters?: { status?: schema.PurchaseOrder["status"]; supplierId?: number }) {
   const db = await getDb();
   if (!db) return [];
 
-  let conditions: any[] = [];
+  const conditions = [];
 
   if (filters?.status) {
-    conditions.push(eq(schema.purchaseOrders.status, filters.status as any));
+    conditions.push(eq(schema.purchaseOrders.status, filters.status));
   }
 
   if (filters?.supplierId) {

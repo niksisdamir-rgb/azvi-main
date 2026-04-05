@@ -129,7 +129,7 @@ class SDKServer {
             email: email || null,
             role: "user",
             loginMethod: "auth0",
-          }) as any;
+          });
           user = newUser;
         }
       } else {

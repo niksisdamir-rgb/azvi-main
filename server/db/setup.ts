@@ -129,7 +129,7 @@ export async function getDb() {
           return drizzle(client);
         });
         
-        _db = withReplicas(primaryDb, readReplicas) as any;
+        _db = withReplicas(primaryDb, readReplicas);
       } else {
         _db = primaryDb;
       }
