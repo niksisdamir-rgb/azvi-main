@@ -33,7 +33,11 @@ import {
   deliveryStatusHistory, InsertDeliveryStatusHistory,
   timesheetUploadHistory, InsertTimesheetUploadHistory,
 } from "../../drizzle/schema";
+import * as schema from "../../drizzle/schema";
+import * as relations from "../../drizzle/relations";
 import { ENV } from '../lib/env';
+
+const combinedSchema = { ...schema, ...relations };
 
 import { withReplicas } from "drizzle-orm/pg-core";
 
@@ -119,14 +123,14 @@ export async function getDb() {
     try {
       console.log("[DEBUG] Attempting to connect to database...");
       _client = postgres(connectionString);
-      const primaryDb = drizzle(_client);
+      const primaryDb = drizzle(_client, { schema: combinedSchema });
       
       if (replicaUrls && replicaUrls.length > 0) {
         console.log(`[DEBUG] Configuring ${replicaUrls.length} read replicas...`);
         const readReplicas = replicaUrls.map(url => {
           const client = postgres(url);
           _replicaClients.push(client);
-          return drizzle(client);
+          return drizzle(client, { schema: combinedSchema });
         });
         
         const [first, ...rest] = readReplicas;
