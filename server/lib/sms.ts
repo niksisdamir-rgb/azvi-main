@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server";
+import { smsLogger } from "./logger";
 import { ENV } from "./env";
 
 export type SMSPayload = {
@@ -96,7 +97,7 @@ export async function sendSMS(
 
     if (!response.ok) {
       const detail = await response.text().catch(() => "");
-      console.warn(
+      smsLogger.warn(
         `[SMS] Failed to send SMS to ${phoneNumber} (${response.status} ${response.statusText})${
           detail ? `: ${detail}` : ""
         }`
@@ -106,7 +107,7 @@ export async function sendSMS(
 
     return { success: true };
   } catch (error) {
-    console.warn(`[SMS] Error calling SMS service for ${phoneNumber}:`, error);
+    smsLogger.warn({ err: error }, `[SMS] Error calling SMS service for ${phoneNumber}`);
     return { success: false };
   }
 }
