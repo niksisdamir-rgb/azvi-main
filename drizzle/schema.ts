@@ -127,11 +127,11 @@ export const materials = pgTable("materials", {
   lowStockEmailSent: boolean("lowStockEmailSent").default(false),
   lastEmailSentAt: timestamp("lastEmailSentAt"),
   supplierEmail: varchar("supplierEmail", { length: 255 }),
-  leadTimeDays: integer("lead_time_days").default(7),
-  reorderPoint: integer("reorder_point"),
-  optimalOrderQuantity: integer("optimal_order_quantity"),
-  supplierId: integer("supplier_id").references(() => suppliers.id),
-  lastOrderDate: timestamp("last_order_date"),
+  leadTimeDays: integer("leadTimeDays").default(7),
+  reorderPoint: integer("reorderPoint"),
+  optimalOrderQuantity: integer("optimalOrderQuantity"),
+  supplierId: integer("supplierId").references(() => suppliers.id),
+  lastOrderDate: timestamp("lastOrderDate"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
@@ -403,11 +403,11 @@ export type InsertAggregateInput = typeof aggregateInputs.$inferInsert;
  */
 export const materialConsumptionHistory = pgTable("material_consumption_history", {
   id: serial("id").primaryKey(),
-  materialId: integer("material_id").references(() => materials.id).notNull(),
-  quantityUsed: integer("quantity_used").notNull(),
+  materialId: integer("materialId").references(() => materials.id).notNull(),
+  quantityUsed: integer("quantityUsed").notNull(),
   date: timestamp("date").notNull(),
   projectId: integer("projectId"),
-  deliveryId: integer("delivery_id").references(() => deliveries.id),
+  deliveryId: integer("deliveryId").references(() => deliveries.id),
   notes: text("notes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
@@ -420,12 +420,12 @@ export type InsertMaterialConsumptionHistory = typeof materialConsumptionHistory
  */
 export const purchaseOrders = pgTable("purchase_orders", {
   id: serial("id").primaryKey(),
-  supplierId: integer("supplier_id").references(() => suppliers.id).notNull(),
+  supplierId: integer("supplierId").references(() => suppliers.id).notNull(),
   status: poStatusEnum("status").default("pending").notNull(),
-  orderDate: timestamp("order_date").defaultNow().notNull(),
-  expectedDelivery: timestamp("expected_delivery"),
+  orderDate: timestamp("orderDate").defaultNow().notNull(),
+  expectedDelivery: timestamp("expectedDelivery"),
   actualDelivery: timestamp("actualDelivery"),
-  totalCost: integer("total_cost"),
+  totalCost: integer("totalCost"),
   notes: text("notes"),
   createdBy: integer("createdBy").notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -440,10 +440,10 @@ export type InsertPurchaseOrder = typeof purchaseOrders.$inferInsert;
  */
 export const purchaseOrderItems = pgTable("purchase_order_items", {
   id: serial("id").primaryKey(),
-  purchaseOrderId: integer("purchase_order_id").references(() => purchaseOrders.id).notNull(),
-  materialId: integer("material_id").references(() => materials.id).notNull(),
+  purchaseOrderId: integer("purchaseOrderId").references(() => purchaseOrders.id).notNull(),
+  materialId: integer("materialId").references(() => materials.id).notNull(),
   quantity: integer("quantity").notNull(),
-  unitPrice: integer("unit_price"),
+  unitPrice: integer("unitPrice"),
 });
 
 export type PurchaseOrderItem = typeof purchaseOrderItems.$inferSelect;
@@ -787,7 +787,7 @@ export const suppliers = pgTable("suppliers", {
   contactPerson: varchar("contact", { length: 255 }),
   email: varchar("email", { length: 320 }),
   phone: varchar("phone", { length: 50 }),
-  averageLeadTimeDays: integer("lead_time").default(7),
+  leadTimeDays: integer("leadTimeDays").default(7),
   onTimeDeliveryRate: integer("onTimeDeliveryRate").default(100), // Percent 0-100
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),

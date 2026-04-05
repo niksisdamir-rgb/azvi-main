@@ -19,7 +19,7 @@ export const suppliersRouter = router({
       contactPerson: z.string().optional(),
       email: z.string().email().optional(),
       phone: z.string().optional(),
-      averageLeadTimeDays: z.number().default(7),
+      leadTimeDays: z.number().default(7),
       onTimeDeliveryRate: z.number().min(0).max(100).default(100),
     }))
     .mutation(async ({ input }) => {
@@ -35,7 +35,7 @@ export const suppliersRouter = router({
         contactPerson: z.string().optional(),
         email: z.string().email().optional(),
         phone: z.string().optional(),
-        averageLeadTimeDays: z.number().optional(),
+        leadTimeDays: z.number().optional(),
         onTimeDeliveryRate: z.number().min(0).max(100).optional(),
       }),
     }))

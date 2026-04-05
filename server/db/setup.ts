@@ -1,5 +1,5 @@
 import { eq, desc, like, and, or, gte, lt, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
+import { drizzle, PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import {
   InsertUser, users,
@@ -41,7 +41,7 @@ const combinedSchema = { ...schema, ...relations };
 
 import { withReplicas } from "drizzle-orm/pg-core";
 
-let _db: ReturnType<typeof drizzle> | null = null;
+let _db: PostgresJsDatabase<typeof combinedSchema> | null = null;
 let _client: postgres.Sql | null = null;
 let _replicaClients: postgres.Sql[] = [];
 
@@ -108,7 +108,7 @@ const mockDb = { transaction: (cb: (tx: typeof mockDb) => unknown) => cb(mockDb)
   delete: (table: any) => ({
     where: (condition: any) => Promise.resolve(),
   }),
-} as unknown as ReturnType<typeof drizzle>;
+} as unknown as PostgresJsDatabase<typeof combinedSchema>;
 
 export async function getDb() {
   const useMocks = process.env.DMS_USE_MOCKS === "true";

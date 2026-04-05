@@ -24,7 +24,7 @@ export default function Suppliers() {
     contactPerson: "",
     email: "",
     phone: "",
-    averageLeadTimeDays: 7,
+    leadTimeDays: 7,
   });
 
   const [selectedAnalyticsSupplier, setSelectedAnalyticsSupplier] = useState<number | null>(null);
@@ -82,7 +82,7 @@ AzVirt Logistics Team`);
       contactPerson: "",
       email: "",
       phone: "",
-      averageLeadTimeDays: 7,
+      leadTimeDays: 7,
     });
   };
 
@@ -105,7 +105,7 @@ AzVirt Logistics Team`);
       contactPerson: supplier.contactPerson || "",
       email: supplier.email || "",
       phone: supplier.phone || "",
-      averageLeadTimeDays: supplier.averageLeadTimeDays || 7,
+      leadTimeDays: supplier.leadTimeDays || 7,
     });
     setIsDialogOpen(true);
   };
@@ -186,8 +186,8 @@ AzVirt Logistics Team`);
                     <Input 
                       id="leadTime" 
                       type="number" 
-                      value={formData.averageLeadTimeDays} 
-                      onChange={e => setFormData({...formData, averageLeadTimeDays: parseInt(e.target.value)})} 
+                      value={formData.leadTimeDays} 
+                      onChange={e => setFormData({...formData, leadTimeDays: parseInt(e.target.value)})} 
                     />
                   </div>
                 </div>
@@ -240,7 +240,7 @@ AzVirt Logistics Team`);
                       </div>
                       <Badge variant="outline" className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
-                        {supplier.averageLeadTimeDays}d lead
+                        {supplier.leadTimeDays}d lead
                       </Badge>
                     </div>
                   </CardHeader>
