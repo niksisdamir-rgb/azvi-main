@@ -1,4 +1,5 @@
 import { getDb } from "../db";
+import { jobsLogger } from "./logger";
 import { dailyTasks, users } from "../../drizzle/schema";
 import { eq, lt, and, ne } from "drizzle-orm";
 import {
@@ -21,11 +22,11 @@ import { sendWebPush } from "./pushService";
  */
 export async function checkAndNotifyOverdueTasks() {
   try {
-    console.log("[NotificationJobs] Starting overdue task check...");
+    jobsLogger.info("[NotificationJobs] Starting overdue task check...");
 
     const db = await getDb();
     if (!db) {
-      console.error("[NotificationJobs] Database not available");
+      jobsLogger.error("[NotificationJobs] Database not available");
       return;
     }
 
@@ -41,7 +42,7 @@ export async function checkAndNotifyOverdueTasks() {
         )
       );
 
-    console.log(
+    jobsLogger.info(
       `[NotificationJobs] Found ${overdueTasks.length} overdue tasks`
     );
 
@@ -61,7 +62,7 @@ export async function checkAndNotifyOverdueTasks() {
 
         // Check if user wants overdue reminders
         if (!prefs?.overdueReminders) {
-          console.log(
+          jobsLogger.info(
             `[NotificationJobs] User ${task.userId} has overdue reminders disabled`
           );
           continue;
@@ -71,7 +72,7 @@ export async function checkAndNotifyOverdueTasks() {
         if (
           isWithinQuietHours(prefs?.quietHoursStart ?? undefined, prefs?.quietHoursEnd ?? undefined)
         ) {
-          console.log(
+          jobsLogger.info(
             `[NotificationJobs] User ${task.userId} is in quiet hours, skipping notification`
           );
           continue;
@@ -120,7 +121,7 @@ export async function checkAndNotifyOverdueTasks() {
             errorMessage: emailResult.error,
           });
 
-          console.log(
+          jobsLogger.info(
             `[NotificationJobs] Email notification sent to ${user.email} for task ${task.id}`
           );
         }
@@ -141,7 +142,7 @@ export async function checkAndNotifyOverdueTasks() {
             errorMessage: smsResult.error,
           });
 
-          console.log(
+          jobsLogger.info(
             `[NotificationJobs] SMS notification sent to ${user.phoneNumber} for task ${task.id}`
           );
         }
@@ -157,16 +158,15 @@ export async function checkAndNotifyOverdueTasks() {
           });
         }
       } catch (error) {
-        console.error(
-          `[NotificationJobs] Error processing task ${task.id}:`,
-          error
+        jobsLogger.error({ err: error },
+          `[NotificationJobs] Error processing task ${task.id}:`
         );
       }
     }
 
-    console.log("[NotificationJobs] Overdue task check completed");
+    jobsLogger.info("[NotificationJobs] Overdue task check completed");
   } catch (error) {
-    console.error("[NotificationJobs] Fatal error in checkAndNotifyOverdueTasks:", error);
+    jobsLogger.error({ err: error }, "[NotificationJobs] Fatal error in checkAndNotifyOverdueTasks");
   }
 }
 
@@ -180,13 +180,13 @@ export async function notifyTaskCompletion(
   completedBy: number
 ) {
   try {
-    console.log(
+    jobsLogger.info(
       `[NotificationJobs] Sending completion notification for task ${taskId}`
     );
 
     const db = await getDb();
     if (!db) {
-      console.error("[NotificationJobs] Database not available");
+      jobsLogger.error("[NotificationJobs] Database not available");
       return;
     }
 
@@ -204,7 +204,7 @@ export async function notifyTaskCompletion(
 
     // Check if user wants completion notifications
     if (!prefs?.completionNotifications) {
-      console.log(
+      jobsLogger.info(
         `[NotificationJobs] User ${userId} has completion notifications disabled`
       );
       return;
@@ -214,7 +214,7 @@ export async function notifyTaskCompletion(
     if (
       isWithinQuietHours(prefs?.quietHoursStart ?? undefined, prefs?.quietHoursEnd ?? undefined)
     ) {
-      console.log(
+      jobsLogger.info(
         `[NotificationJobs] User ${userId} is in quiet hours, skipping notification`
       );
       return;
@@ -260,7 +260,7 @@ export async function notifyTaskCompletion(
         errorMessage: emailResult.error,
       });
 
-      console.log(
+      jobsLogger.info(
         `[NotificationJobs] Completion email sent to ${user.email} for task ${taskId}`
       );
     }
@@ -276,9 +276,8 @@ export async function notifyTaskCompletion(
       });
     }
   } catch (error) {
-    console.error(
-      `[NotificationJobs] Error sending completion notification for task ${taskId}:`,
-      error
+    jobsLogger.error({ err: error },
+      `[NotificationJobs] Error sending completion notification for task ${taskId}:`
     );
   }
 }
@@ -299,7 +298,7 @@ export function scheduleOverdueTaskCheck() {
 
   const delayMs = scheduledTime.getTime() - now.getTime();
 
-  console.log(
+  jobsLogger.info(
     `[NotificationJobs] Scheduling overdue task check in ${Math.round(delayMs / 1000 / 60)} minutes`
   );
 
@@ -361,7 +360,7 @@ export async function checkAndNotifyDelayedDeliveries() {
       await db.update(deliveries).set({ delayNotificationSent: true }).where(eq(deliveries.id, delivery.id));
     }
   } catch (error) {
-    console.error("[NotificationJobs] checkAndNotifyDelayedDeliveries error:", error);
+    jobsLogger.error({ err: error }, "[NotificationJobs] checkAndNotifyDelayedDeliveries error:");
   }
 }
 
@@ -379,7 +378,7 @@ export function scheduleDelayedDeliveryCheck() {
  */
 export async function checkAndNotifyForecasting() {
   try {
-    console.log("[NotificationJobs] Running nightly forecasting check...");
+    jobsLogger.info("[NotificationJobs] Running nightly forecasting check...");
     
     // Auto-generate fresh predictions
     const predictions = await generateForecastPredictions();
@@ -388,7 +387,7 @@ export async function checkAndNotifyForecasting() {
     const criticalShortages = predictions.filter((p: any) => p.daysUntilStockout <= 7);
     
     if (criticalShortages.length > 0) {
-      console.log(`[NotificationJobs] Found ${criticalShortages.length} critical shortages.`);
+      jobsLogger.info(`[NotificationJobs] Found ${criticalShortages.length} critical shortages.`);
       const db = await getDb();
       if (!db) return;
       
@@ -412,9 +411,9 @@ export async function checkAndNotifyForecasting() {
         }
       }
     }
-    console.log("[NotificationJobs] Nightly forecasting check complete.");
+    jobsLogger.info("[NotificationJobs] Nightly forecasting check complete.");
   } catch (error) {
-    console.error("[NotificationJobs] checkAndNotifyForecasting error:", error);
+    jobsLogger.error({ err: error }, "[NotificationJobs] checkAndNotifyForecasting error:");
   }
 }
 
