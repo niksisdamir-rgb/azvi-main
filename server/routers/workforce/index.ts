@@ -6,8 +6,8 @@ import { departmentEnum, employeeStatusEnum } from "../../../drizzle/schema";
 export const employeesRouter = router({
   list: protectedProcedure
     .input(z.object({
-      department: z.string().optional(),
-      status: z.string().optional(),
+      department: z.enum(departmentEnum.enumValues).optional(),
+      status: z.enum(employeeStatusEnum.enumValues).optional(),
     }).optional())
     .query(async ({ input }) => {
       return await db.getEmployees(input);

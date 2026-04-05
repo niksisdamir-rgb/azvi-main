@@ -47,11 +47,11 @@ export async function getDeliveries(filters?: {
   }
 
   if (filters?.startDate) {
-    conditions.push(gte(schema.deliveries.actualDeliveryTime, filters.startDate));
+    conditions.push(gte(schema.deliveries.actualDeliveryTime, Math.floor(filters.startDate.getTime() / 1000)));
   }
 
   if (filters?.endDate) {
-    conditions.push(lt(schema.deliveries.actualDeliveryTime, filters.endDate));
+    conditions.push(lt(schema.deliveries.actualDeliveryTime, Math.floor(filters.endDate.getTime() / 1000)));
   }
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;

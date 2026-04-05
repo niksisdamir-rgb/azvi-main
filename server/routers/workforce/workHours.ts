@@ -8,7 +8,7 @@ export const workHoursRouter = router({
     .input(z.object({
       employeeId: z.number().optional(),
       projectId: z.number().optional(),
-      status: z.string().optional(),
+      status: z.enum(workStatusEnum.enumValues).optional(),
     }).optional())
     .query(async ({ input }) => {
       return await db.getWorkHours(input);

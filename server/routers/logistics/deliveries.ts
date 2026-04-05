@@ -84,7 +84,7 @@ export const deliveriesRouter = router({
   list: protectedProcedure
     .input(z.object({
       projectId: z.number().optional(),
-      status: z.string().optional(),
+      status: z.enum(deliveryStatusEnum.enumValues).optional(),
     }).optional())
     .query(async ({ input }) => {
       return await db.getDeliveries(input);

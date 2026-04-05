@@ -14,7 +14,7 @@ export const purchaseOrdersRouter = router({
   // From server/routers.ts
   getPurchaseOrderHistory: protectedProcedure
     .input(z.object({
-      status: z.string().optional(),
+      status: z.enum(poStatusEnum.enumValues).optional(),
       materialId: z.number().optional(),
     }).optional())
     .query(async ({ input }) => {
