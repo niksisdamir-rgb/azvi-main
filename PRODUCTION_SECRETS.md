@@ -48,6 +48,7 @@ Settings → Secrets and variables → Actions → New repository secret
 | `DATABASE_URL` | PostgreSQL connection | Your hosting provider (Neon, Railway, Supabase, etc.) |
 | `NODE_ENV` | Must be `production` on prod | Hardcode to `production` |
 | `ALLOWED_ORIGINS` | Comma-separated list of allowed CORS origins | Your frontend URL |
+| `METRICS_AUTH_TOKEN` | Bearer token to protect Prometheus `/metrics` | `openssl rand -hex 16` |
 
 ---
 

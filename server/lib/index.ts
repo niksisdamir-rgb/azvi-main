@@ -49,7 +49,16 @@ import { corsMiddleware } from "./cors";
 
   // Prometheus configuration
   client.collectDefaultMetrics();
-  app.get('/metrics', async (_req, res) => {
+  app.get('/metrics', async (req, res) => {
+    const token = ENV.metricsAuthToken;
+    // Require token in production, OR if one is explicitly set in dev
+    if (ENV.isProduction || token) {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || authHeader !== `Bearer ${token}`) {
+        return res.status(401).send("Unauthorized");
+      }
+    }
+    
     try {
       res.set('Content-Type', client.register.contentType);
       res.end(await client.register.metrics());
