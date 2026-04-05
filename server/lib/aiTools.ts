@@ -5,7 +5,7 @@ import { logger } from './logger';
  */
 
 import { getDb } from '../db';
-import { materials, deliveries, documents, qualityTests, forecastPredictions, workHours, machineWorkHours, users } from '../../drizzle/schema';
+import { materials, deliveries, documents, qualityTests, forecastPredictions, workHours, machineWorkHours } from '../../drizzle/schema';
 import { like, eq, and, gte, lte, desc } from 'drizzle-orm';
 import axios from 'axios';
 
@@ -472,8 +472,8 @@ const logWorkHoursTool: Tool = {
       overtimeHours,
       workType: (workType as any) || 'regular',
       notes: notes || null,
-      status: 'pending',
-    }).returning();
+      status: 'pending' as any,
+    } as any).returning();
 
     return {
       success: true,
@@ -627,7 +627,7 @@ const logMachineHoursTool: Tool = {
       operatorId: operatorId || null,
       operatorName: operatorName || null,
       notes: notes || null,
-    }).returning();
+    } as any).returning();
 
     return {
       success: true,
@@ -960,8 +960,8 @@ const detectAnomaliesTool: Tool = {
       const deliveryData = completed.map(d => ({
         id: d.id,
         scheduledTime: d.scheduledTime,
-        estimatedArrival: (d as any).estimatedArrival || null,
-        actualDeliveryTime: d.actualDeliveryTime || null,
+        estimatedArrival: d.estimatedArrival ? new Date(d.estimatedArrival * 1000) : null,
+        actualDeliveryTime: d.actualDeliveryTime ? new Date(d.actualDeliveryTime * 1000) : null,
         driverName: d.driverName || null,
         vehicleNumber: d.vehicleNumber || null,
         projectName: (d as any).projectName || null,
@@ -1016,12 +1016,10 @@ const sensorAnomalyTool: Tool = {
         type: 'string',
         description: 'ID of the sensor to analyze',
       },
-      contamination: {
-        type: 'number',
-        description: 'Expected proportion of anomalies in the data (0.01 to 0.5, default 0.1)',
-        minimum: 0.01,
-        maximum: 0.5,
-      },
+        contamination: {
+          type: 'number',
+          description: 'Expected proportion of anomalies in the data (0.01 to 0.5, default 0.1)',
+        },
     },
     required: ['sensorId'],
   },
@@ -1061,12 +1059,10 @@ const ragQueryTool: Tool = {
         type: 'string',
         description: 'Search query to find relevant documents',
       },
-      k: {
-        type: 'number',
-        description: 'Number of results to return (1-10, default 3)',
-        minimum: 1,
-        maximum: 10,
-      },
+        k: {
+          type: 'number',
+          description: 'Number of results to return (1-10, default 3)',
+        },
     },
     required: ['query'],
   },

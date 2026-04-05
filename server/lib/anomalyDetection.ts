@@ -178,7 +178,7 @@ export function detectQualityAnomalies(
   const dailyCounts = Array.from(dailyFailures.values());
   if (dailyCounts.length >= 3) {
     const { mean, std } = calcMeanStd(dailyCounts);
-    for (const [date, count] of dailyFailures.entries()) {
+    for (const [date, count] of Array.from(dailyFailures.entries())) {
       const zScore = calculateZScore(count, mean, std);
       if (zScore >= 2) {
         anomalies.push({
@@ -194,7 +194,7 @@ export function detectQualityAnomalies(
   }
 
   // --- 3. Per-test-type failure rate ---
-  const testTypes = [...new Set(windowTests.map(t => t.testType))];
+  const testTypes = Array.from(new Set(windowTests.map(t => t.testType)));
   for (const testType of testTypes) {
     const typeTests = windowTests.filter(t => t.testType === testType);
     const typeFailed = typeTests.filter(t => t.status === 'fail').length;
@@ -348,7 +348,7 @@ export function detectConsumptionAnomalies(
     byMaterial.set(c.materialId, existing);
   }
 
-  for (const [materialId, records] of byMaterial.entries()) {
+  for (const [materialId, records] of Array.from(byMaterial.entries())) {
     // Sort by date ascending
     const sorted = [...records].sort(
       (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()

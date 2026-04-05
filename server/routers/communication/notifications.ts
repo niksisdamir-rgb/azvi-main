@@ -142,7 +142,7 @@ export const notificationsRouter = router({
           await createNotification({
             userId: input.userId,
             title: input.title,
-            content: input.content,
+            message: input.content,
             type: input.type,
             link: input.link,
           });

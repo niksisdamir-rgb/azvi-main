@@ -1,6 +1,8 @@
 import { eq, desc, like, and, or, gte, lt, sql } from "drizzle-orm";
 import { drizzle, PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
+// @ts-ignore
+const postgresDefault = postgres.default || postgres;
 import {
   InsertUser, users,
   documents, InsertDocument,
@@ -123,13 +125,13 @@ export async function getDb() {
   if (!_db && connectionString) {
     try {
       dbLogger.info("[DEBUG] Attempting to connect to database...");
-      _client = postgres(connectionString);
+      _client = postgresDefault(connectionString);
       const primaryDb = drizzle(_client, { schema: combinedSchema });
       
       if (replicaUrls && replicaUrls.length > 0) {
         dbLogger.info(`[DEBUG] Configuring ${replicaUrls.length} read replicas...`);
         const readReplicas = replicaUrls.map(url => {
-          const client = postgres(url);
+          const client = postgresDefault(url);
           _replicaClients.push(client);
           return drizzle(client, { schema: combinedSchema });
         });

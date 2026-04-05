@@ -2,6 +2,7 @@ import { logger } from '../lib/logger';
 import { eq, desc, like, and, or, gte, lt, sql, inArray } from "drizzle-orm";
 import * as schema from "../../drizzle/schema";
 import { getDb } from "./setup";
+import { updateMaterial } from "./materials";
 
 // ============ Aggregate Inputs ============
 export async function createAggregateInput(input: schema.InsertAggregateInput) {
