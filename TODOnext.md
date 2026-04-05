@@ -52,8 +52,8 @@
 **Severity:** 🟠 HIGH  
 **Risk:** No CORS = any origin can make API calls. Combined with cookie auth → CSRF is possible.
 
-- [ ] Install `cors` package: `pnpm add cors && pnpm add -D @types/cors`
-- [ ] Create CORS config in `server/lib/cors.ts`:
+- [x] Install `cors` package: `pnpm add cors && pnpm add -D @types/cors`
+- [x] Create CORS config in `server/lib/cors.ts`:
   ```
   Allowed origins:
     - development: http://localhost:4000, http://localhost:3000
@@ -63,11 +63,11 @@
     - methods: ['GET', 'POST', 'OPTIONS']
     - allowedHeaders: ['Content-Type', 'Authorization']
   ```
-- [ ] Mount `app.use(cors(corsConfig))` in `index.ts` before any routes
-- [ ] Add `ALLOWED_ORIGINS` to `PRODUCTION_SECRETS.md`
-- [ ] Add `ALLOWED_ORIGINS` to startup validator as a production warning if empty
-- [ ] Verify Vite dev proxy still works with CORS enabled (test login flow)
-- [ ] Write test: cross-origin request from disallowed origin returns 403
+- [x] Mount `app.use(cors(corsConfig))` in `index.ts` before any routes
+- [x] Add `ALLOWED_ORIGINS` to `PRODUCTION_SECRETS.md`
+- [x] Add `ALLOWED_ORIGINS` to startup validator as a production warning if empty
+- [x] Verify Vite dev proxy still works with CORS enabled (test login flow)
+- [x] Write test: cross-origin request from disallowed origin returns 403
 
 ---
 
