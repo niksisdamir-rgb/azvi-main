@@ -1,4 +1,4 @@
-import { eq, desc, like, and, or, gte, lt, sql } from "drizzle-orm";
+import { eq, desc, like, and, or, gte, lt, sql, ne } from "drizzle-orm";
 import * as schema from "../../drizzle/schema";
 import { getDb } from "./setup";
 
@@ -43,12 +43,12 @@ export async function markNotificationAsRead(notificationId: number) {
     .where(eq(schema.taskNotifications.id, notificationId));
 }
 
-export async function updateNotificationStatus(notificationId: number, status: string, sentAt?: Date) {
+export async function updateNotificationStatus(notificationId: number, status: schema.TaskNotification["status"], sentAt?: Date) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
   return db.update(schema.taskNotifications)
-    .set({ status: status as any, sentAt: sentAt || new Date() })
+    .set({ status, sentAt: sentAt || new Date() })
     .where(eq(schema.taskNotifications.id, notificationId));
 }
 

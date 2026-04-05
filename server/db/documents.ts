@@ -11,18 +11,18 @@ export async function createDocument(doc: schema.InsertDocument) {
   return result;
 }
 
-export async function getDocuments(filters?: { projectId?: number; category?: string; search?: string }) {
+export async function getDocuments(filters?: { projectId?: number; category?: schema.Document["category"]; search?: string }) {
   const db = await getDb();
   if (!db) return [];
 
-  let conditions: any[] = [];
+  const conditions = [];
 
   if (filters?.projectId) {
     conditions.push(eq(schema.documents.projectId, filters.projectId));
   }
 
   if (filters?.category) {
-    conditions.push(eq(schema.documents.category, filters.category as any));
+    conditions.push(eq(schema.documents.category, filters.category));
   }
 
   if (filters?.search) {

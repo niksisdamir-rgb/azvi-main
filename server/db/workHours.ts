@@ -11,7 +11,7 @@ export async function createWorkHour(workHour: schema.InsertWorkHour) {
   return result;
 }
 
-export async function getWorkHours(filters?: { employeeId?: number; projectId?: number; status?: string }) {
+export async function getWorkHours(filters?: { employeeId?: number; projectId?: number; status?: schema.WorkHour["status"] }) {
   const db = await getDb();
   if (!db) return [];
 
@@ -23,7 +23,7 @@ export async function getWorkHours(filters?: { employeeId?: number; projectId?: 
     conditions.push(eq(schema.workHours.projectId, filters.projectId));
   }
   if (filters?.status) {
-    conditions.push(eq(schema.workHours.status, filters.status as any));
+    conditions.push(eq(schema.workHours.status, filters.status));
   }
 
   const result = conditions.length > 0

@@ -11,7 +11,7 @@ export async function createMachine(machine: schema.InsertMachine) {
   return result;
 }
 
-export async function getMachines(filters?: { concreteBaseId?: number; type?: string; status?: string }) {
+export async function getMachines(filters?: { concreteBaseId?: number; type?: schema.Machine["type"]; status?: schema.Machine["status"] }) {
   const db = await getDb();
   if (!db) return [];
 
@@ -20,10 +20,10 @@ export async function getMachines(filters?: { concreteBaseId?: number; type?: st
     conditions.push(eq(schema.machines.concreteBaseId, filters.concreteBaseId));
   }
   if (filters?.type) {
-    conditions.push(eq(schema.machines.type, filters.type as any));
+    conditions.push(eq(schema.machines.type, filters.type));
   }
   if (filters?.status) {
-    conditions.push(eq(schema.machines.status, filters.status as any));
+    conditions.push(eq(schema.machines.status, filters.status));
   }
 
   const result = conditions.length > 0

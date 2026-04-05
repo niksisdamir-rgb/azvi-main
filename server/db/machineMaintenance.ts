@@ -11,7 +11,7 @@ export async function createMachineMaintenance(maintenance: schema.InsertMachine
   return result;
 }
 
-export async function getMachineMaintenance(filters?: { machineId?: number; maintenanceType?: string }) {
+export async function getMachineMaintenance(filters?: { machineId?: number; maintenanceType?: schema.MachineMaintenance["maintenanceType"] }) {
   const db = await getDb();
   if (!db) return [];
 
@@ -20,7 +20,7 @@ export async function getMachineMaintenance(filters?: { machineId?: number; main
     conditions.push(eq(schema.machineMaintenance.machineId, filters.machineId));
   }
   if (filters?.maintenanceType) {
-    conditions.push(eq(schema.machineMaintenance.maintenanceType, filters.maintenanceType as any));
+    conditions.push(eq(schema.machineMaintenance.maintenanceType, filters.maintenanceType));
   }
 
   const result = conditions.length > 0

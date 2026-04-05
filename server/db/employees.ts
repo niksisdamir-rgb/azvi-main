@@ -11,16 +11,16 @@ export async function createEmployee(employee: schema.InsertEmployee) {
   return result;
 }
 
-export async function getEmployees(filters?: { department?: string; status?: string }) {
+export async function getEmployees(filters?: { department?: schema.Employee["department"]; status?: schema.Employee["status"] }) {
   const db = await getDb();
   if (!db) return [];
 
   const conditions = [];
   if (filters?.department) {
-    conditions.push(eq(schema.employees.department, filters.department as any));
+    conditions.push(eq(schema.employees.department, filters.department));
   }
   if (filters?.status) {
-    conditions.push(eq(schema.employees.status, filters.status as any));
+    conditions.push(eq(schema.employees.status, filters.status));
   }
 
   const result = conditions.length > 0

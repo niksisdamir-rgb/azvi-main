@@ -42,21 +42,21 @@ export async function deleteTask(taskId: number) {
   return db.delete(schema.dailyTasks).where(eq(schema.dailyTasks.id, taskId));
 }
 
-export async function getTasksByStatus(userId: number, status: string) {
+export async function getTasksByStatus(userId: number, status: schema.DailyTask["status"]) {
   const db = await getDb();
   if (!db) return [];
 
   return db.select().from(schema.dailyTasks)
-    .where(and(eq(schema.dailyTasks.userId, userId), eq(schema.dailyTasks.status, status as any)))
+    .where(and(eq(schema.dailyTasks.userId, userId), eq(schema.dailyTasks.status, status)))
     .orderBy(desc(schema.dailyTasks.dueDate));
 }
 
-export async function getTasksByPriority(userId: number, priority: string) {
+export async function getTasksByPriority(userId: number, priority: schema.DailyTask["priority"]) {
   const db = await getDb();
   if (!db) return [];
 
   return db.select().from(schema.dailyTasks)
-    .where(and(eq(schema.dailyTasks.userId, userId), eq(schema.dailyTasks.priority, priority as any)))
+    .where(and(eq(schema.dailyTasks.userId, userId), eq(schema.dailyTasks.priority, priority)))
     .orderBy(desc(schema.dailyTasks.dueDate));
 }
 
