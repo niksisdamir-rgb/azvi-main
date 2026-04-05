@@ -1,4 +1,4 @@
-
+import { emailLogger } from "./logger";
 interface EmailOptions {
   to: string;
   subject: string;
@@ -18,9 +18,9 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
     const fromName = process.env.SENDGRID_FROM_NAME || 'AzVirt DMS';
     
     if (!apiKey || !fromEmail) {
-      console.warn('[EMAIL] SendGrid not configured. Email not sent.');
-      console.log(`[EMAIL] To: ${options.to}`);
-      console.log(`[EMAIL] Subject: ${options.subject}`);
+      emailLogger.warn('[EMAIL] SendGrid not configured. Email not sent.');
+      emailLogger.info(`[EMAIL] To: ${options.to}`);
+      emailLogger.info(`[EMAIL] Subject: ${options.subject}`);
       return false;
     }
     
@@ -39,12 +39,12 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
     };
     
     await sgMail.send(msg);
-    console.log(`[EMAIL] Successfully sent to: ${options.to}`);
+    emailLogger.info(`[EMAIL] Successfully sent to: ${options.to}`);
     return true;
   } catch (error: any) {
-    console.error('[EMAIL] Failed to send:', error);
+    emailLogger.error({ err: error }, '[EMAIL] Failed to send');
     if (error.response) {
-      console.error('[EMAIL] SendGrid error:', error.response.body);
+      emailLogger.error({ errDetails: error.response.body }, '[EMAIL] SendGrid error');
     }
     return false;
   }
