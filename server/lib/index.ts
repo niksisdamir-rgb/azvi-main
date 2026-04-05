@@ -54,9 +54,26 @@ async function startServer() {
   // CORS Middleware
   app.use(corsMiddleware);
 
-  // Configure body parser with larger size limit for file uploads
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // Configure body parser with specific limits for different routes
+  // Large payloads for file uploads and bulk operations
+  const uploadRoutes = [
+    "/api/trpc/documents.upload",
+    "/api/trpc/qualityTests.uploadPhoto",
+    "/api/trpc/qualityTests.syncOfflineTests",
+    "/api/trpc/timesheets.bulkUpload",
+    // bulkImport procedures
+    "/api/trpc/bulkImport.previewFile",
+    "/api/trpc/bulkImport.importWorkHours",
+    "/api/trpc/bulkImport.importMaterials",
+    "/api/trpc/bulkImport.importDocuments"
+  ];
+  
+  app.use(uploadRoutes, express.json({ limit: "50mb" }));
+  app.use(uploadRoutes, express.urlencoded({ limit: "50mb", extended: true }));
+
+  // Default global limit for all other routes
+  app.use(express.json({ limit: "2mb" }));
+  app.use(express.urlencoded({ limit: "2mb", extended: true }));
   
   // tRPC API
   app.use(
