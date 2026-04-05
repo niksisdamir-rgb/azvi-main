@@ -1,4 +1,5 @@
 import Redis from "ioredis";
+import { redisLogger } from "./logger";
 
 const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
 
@@ -18,7 +19,7 @@ export const cache = {
       const data = await redis.get(key);
       return data ? JSON.parse(data) : null;
     } catch (e) {
-      console.warn(`[RedisCache] Failed to get key ${key}`, e);
+      redisLogger.warn({ err: e }, `[RedisCache] Failed to get key ${key}`);
       return null;
     }
   },
@@ -29,7 +30,7 @@ export const cache = {
       const data = JSON.stringify(value);
       await redis.set(key, data, "EX", ttlSeconds);
     } catch (e) {
-      console.warn(`[RedisCache] Failed to set key ${key}`, e);
+      redisLogger.warn({ err: e }, `[RedisCache] Failed to set key ${key}`);
     }
   },
 
@@ -47,7 +48,7 @@ export const cache = {
     try {
       await redis.del(key);
     } catch (e) {
-      console.warn(`[RedisCache] Failed to delete key ${key}`, e);
+      redisLogger.warn({ err: e }, `[RedisCache] Failed to delete key ${key}`);
     }
   },
 };
@@ -55,11 +56,11 @@ export const cache = {
 let hasLoggedRedisError = false;
 redis.on("error", (err) => {
   if (!hasLoggedRedisError) {
-    console.warn("[Redis] Connection error (will keep retrying silently):", err.message);
+    redisLogger.warn({ err }, "[Redis] Connection error (will keep retrying silently): %s", err.message);
     hasLoggedRedisError = true;
   }
 });
 
 redis.on("connect", () => {
-  console.log("Connected to Redis");
+  redisLogger.info("Connected to Redis");
 });

@@ -142,7 +142,7 @@ export async function getDb() {
       
       dbLogger.info("[DEBUG] Database connection initialized successfully.");
     } catch (error) {
-      dbLogger.warn("[Database] Failed to connect:", error);
+      dbLogger.warn({ err: error }, "[Database] Failed to connect");
       _db = null;
     }
   } else if (!_db) {
