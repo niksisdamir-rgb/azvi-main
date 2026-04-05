@@ -226,31 +226,31 @@
 **File:** `drizzle/schema.ts`  
 **Severity:** 🟡 MEDIUM
 
-- [ ] Decide on convention: **camelCase** (matches majority of existing columns)
-- [ ] Rename snake_case columns in `materialConsumptionHistory`:
+- [x] Decide on convention: **camelCase** (matches majority of existing columns)
+- [x] Rename snake_case columns in `materialConsumptionHistory`:
   - `material_id` → `materialId`
   - `quantity_used` → `quantityUsed`
   - `delivery_id` → `deliveryId`
-- [ ] Rename snake_case columns in `purchaseOrders`:
+- [x] Rename snake_case columns in `purchaseOrders`:
   - `supplier_id` → `supplierId`
   - `order_date` → `orderDate`
   - `expected_delivery` → `expectedDelivery`
   - `total_cost` → `totalCost`
-- [ ] Rename snake_case columns in `purchaseOrderItems`:
+- [x] Rename snake_case columns in `purchaseOrderItems`:
   - `purchase_order_id` → `purchaseOrderId`
   - `material_id` → `materialId`
   - `unit_price` → `unitPrice`
-- [ ] Rename snake_case columns in `materials`:
+- [x] Rename snake_case columns in `materials`:
   - `lead_time_days` → `leadTimeDays`
   - `reorder_point` → `reorderPoint`
   - `optimal_order_quantity` → `optimalOrderQuantity`
   - `supplier_id` → `supplierId`
   - `last_order_date` → `lastOrderDate`
-- [ ] Rename snake_case columns in `suppliers`:
+- [x] Rename snake_case columns in `suppliers`:
   - `lead_time` → `leadTimeDays` (also rename for clarity)
-- [ ] Generate and review migration
-- [ ] Update all server-side references to match new column names
-- [ ] Run full test suite to validate
+- [x] Generate and review migration
+- [x] Update all server-side references to match new column names
+- [x] Run full test suite to validate
 
 ---
 
