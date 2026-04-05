@@ -173,41 +173,33 @@
 **Files:** Various (see list below)  
 **Severity:** 🟠 HIGH
 
-- [ ] **Auth router** — `auth/index.ts:44, 79`: Fix `.returning()` result type
+- [x] **Auth router** — `auth/index.ts:44, 79`: Fix `.returning()` result type
   - Use `const [result] = await db.createUser(...);` with proper `InsertUser` return type
-- [ ] **SDK** — `sdk.ts:132`: Fix user creation return type
+- [x] **SDK** — `sdk.ts:132`: Fix user creation return type
   - Type the `db.createUser()` return properly
-- [ ] **Notification jobs** — `notificationJobs.ts:100, 240`: Fix `createNotification()` return type
+- [x] **Notification jobs** — `notificationJobs.ts:100, 240`: Fix `createNotification()` return type
   - Add explicit return type to `createNotification()` function
-- [ ] **Notification jobs** — `notificationJobs.ts:352, 406`: Fix `pushSubscription` cast
-  - Create a `PushSubscription` type and use it in the schema's `jsonb` column typing
-- [ ] **Notification jobs** — `notificationJobs.ts:361`: Fix Drizzle `.set()` cast
-  - Pass properly typed partial update object
-- [ ] **DB setup** — `setup.ts:132`: Fix `withReplicas` return type
-  - Create a union type or use Drizzle's built-in replica type
-- [ ] **DB setup** — `setup.ts:64-107`: Create typed mock DB interface
-  - Define `IDbOperations` interface matching used Drizzle methods
-  - Implement mock separately from the Drizzle type
-- [ ] **DB users** — `users.ts:87, 105`: Fix mock user return types
-  - Return properly typed `User` objects from mock functions
-- [ ] **Enum filters** — Create shared Zod schemas that re-use the Drizzle enum arrays:
-  ```typescript
-  // packages/shared-core/enums.ts
-  export const deliveryStatusValues = ["scheduled", "loaded", ...] as const;
-  // drizzle/schema.ts
-  export const deliveryStatusEnum = pgEnum("delivery_status", deliveryStatusValues);
-  // router zod input
-  z.enum(deliveryStatusValues)
-  ```
-  - [ ] `db/deliveries.ts:31`
-  - [ ] `db/qualityTests.ts:29, 33`
-  - [ ] `db/employees.ts:20, 23`
-  - [ ] `db/machines.ts:23, 26`
-  - [ ] `db/documents.ts:25`
-  - [ ] `db/workHours.ts:26`
-  - [ ] `db/aggregateInputs.ts:23`
-  - [ ] `db/dailyTasks.ts:50, 59`
-  - [ ] `db/machineMaintenance.ts:23`
+- [x] **Notification jobs** — `notificationJobs.ts:352, 406`: Fix `pushSubscription` cast
+  - Use `import('web-push').PushSubscription` type in notification jobs
+- [x] **Notification jobs** — `notificationJobs.ts:361`: Fix Drizzle `.set()` cast
+  - `delayNotificationSent: true` is now a typed partial update (schema already has this column)
+- [x] **DB setup** — `setup.ts:132`: Fix `withReplicas` return type
+  - Use tuple spread `[first, ...rest]` to satisfy Drizzle's tuple constraint without `as any`
+- [x] **DB setup** — `setup.ts:64`: Fix implicit any in mockDb transaction callback
+  - Typed the `cb` parameter as `(tx: typeof mockDb) => unknown`
+- [x] **DB users** — `users.ts:87, 105`: Fix mock user return types
+  - Return `satisfies schema.User` objects with all required fields
+- [x] **Enum filters** — Use Drizzle's `$inferSelect` type indexing (`schema.Table["column"]`) to type filter params:
+  - [x] `db/deliveries.ts:31` — `status?: schema.Delivery["status"]`
+  - [x] `db/qualityTests.ts:29, 33` — `testType` and `status` typed from `schema.QualityTest`
+  - [x] `db/employees.ts:20, 23` — `department` and `status` typed from `schema.Employee`
+  - [x] `db/machines.ts:23, 26` — `type` and `status` typed from `schema.Machine`
+  - [x] `db/documents.ts:25` — `category` typed from `schema.Document`
+  - [x] `db/workHours.ts:26` — `status` typed from `schema.WorkHour`
+  - [x] `db/aggregateInputs.ts:23` — `materialType` typed from `schema.AggregateInput`; `purchaseOrders` status typed
+  - [x] `db/dailyTasks.ts:50, 59` — `status` and `priority` typed from `schema.DailyTask`
+  - [x] `db/machineMaintenance.ts:23` — `maintenanceType` typed from `schema.MachineMaintenance`
+  - [x] `db/taskNotifications.ts:51` — `status` param in `updateNotificationStatus` typed from `schema.TaskNotification`
 
 ---
 
