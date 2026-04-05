@@ -84,10 +84,10 @@ export const reportsRouter = router({
       
       const testData = [
         ['Field', 'Value'],
-        ['Test Type', test.type.toUpperCase()],
-        ['Value / Result', test.value || 'N/A'],
+        ['Test Type', test.testType.toUpperCase()],
+        ['Value / Result', test.result || 'N/A'],
         ['Status', test.status.toUpperCase()],
-        ['Inspector', test.inspectorName || 'N/A'],
+        ['Inspector', test.testedBy || 'N/A'],
       ];
 
       let cursorY = 80;

@@ -32,9 +32,9 @@ export const anomalyDetectionRouter = router({
       // Map to detector interface
       const testData: QualityTestData[] = allTests.map((t) => ({
         id: t.id,
-        testType: t.type || "other",
+        testType: t.testType || "other",
         status: t.status,
-        result: t.value || null,
+        result: t.result || null,
         createdAt: t.createdAt,
         deliveryId: t.deliveryId || null,
       }));
@@ -160,9 +160,9 @@ export const anomalyDetectionRouter = router({
       // Quality
       const testData: QualityTestData[] = allTests.map((t) => ({
         id: t.id,
-        testType: t.type || "other",
+        testType: t.testType || "other",
         status: t.status,
-        result: t.value || null,
+        result: t.result || null,
         createdAt: t.createdAt,
         deliveryId: t.deliveryId || null,
       }));
