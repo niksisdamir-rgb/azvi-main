@@ -294,16 +294,16 @@
 **File:** `server/lib/notificationJobs.ts`  
 **Severity:** 🟠 HIGH
 
-- [ ] Refactor `checkAndNotifyOverdueTasks()`:
-  - [ ] Collect unique `userId` values from `overdueTasks`
-  - [ ] Batch fetch all users: `WHERE id IN (...uniqueIds)`
-  - [ ] Batch fetch all notification preferences: `WHERE userId IN (...uniqueIds)`
-  - [ ] Build an in-memory `Map<userId, { user, prefs }>` lookup
-  - [ ] Loop tasks and use the map instead of per-task DB queries
-- [ ] Refactor `checkAndNotifyDelayedDeliveries()`:
-  - [ ] Fetch admins once before the delivery loop (already partially done, verify)
-- [ ] Refactor `checkAndNotifyForecasting()`:
-  - [ ] Same pattern — admins query is already outside loop ✅
+- [x] Refactor `checkAndNotifyOverdueTasks()`:
+  - [x] Collect unique `userId` values from `overdueTasks`
+  - [x] Batch fetch all users: `WHERE id IN (...uniqueIds)`
+  - [x] Batch fetch all notification preferences: `WHERE userId IN (...uniqueIds)`
+  - [x] Build an in-memory `Map<userId, { user, prefs }>` lookup
+  - [x] Loop tasks and use the map instead of per-task DB queries
+- [x] Refactor `checkAndNotifyDelayedDeliveries()`:
+  - [x] Fetch admins once before the delivery loop (already partially done, verify)
+- [x] Refactor `checkAndNotifyForecasting()`:
+  - [x] Same pattern — admins query is already outside loop ✅
 - [ ] Write performance test: simulate 100 overdue tasks, assert ≤ 5 DB queries total
 
 ---
@@ -399,23 +399,23 @@
 
 **Severity:** 🟠 HIGH (for .bak files)
 
-- [ ] Delete backup files:
-  - [ ] `server/lib/notificationJobs.ts.bak`
-  - [ ] `server/db/setup.ts.bak`
-- [ ] Delete development screenshots:
-  - [ ] `screenshot.png`
-  - [ ] `screenshot_fixed.png`
-  - [ ] `final_check.png`
-  - [ ] `screenshot.js`
-- [ ] Delete one-time scripts (or move to `archive/scripts/` with README):
-  - [ ] `refactor.js`
-  - [ ] `refactor_db.ts`
-  - [ ] `patch_deliveries.cjs`
+- [x] Delete backup files:
+  - [x] `server/lib/notificationJobs.ts.bak`
+  - [x] `server/db/setup.ts.bak`
+- [x] Delete development screenshots:
+  - [x] `screenshot.png`
+  - [x] `screenshot_fixed.png`
+  - [x] `final_check.png`
+  - [x] `screenshot.js`
+- [x] Delete one-time scripts (or move to `archive/scripts/` with README):
+  - [x] `refactor.js`
+  - [x] `refactor_db.ts`
+  - [x] `patch_deliveries.cjs`
 - [ ] Delete stray SQLite database:
   - [ ] `db/custom.db`
 - [ ] Delete empty placeholder:
   - [ ] `.gitkeep` (root level — check if directory needs it)
-- [ ] Add `*.bak` to `.gitignore`
+- [x] Add `*.bak` to `.gitignore`
 
 ---
 
