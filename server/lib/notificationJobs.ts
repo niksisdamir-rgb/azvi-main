@@ -97,7 +97,7 @@ export async function checkAndNotifyOverdueTasks() {
           message,
           channels: JSON.stringify(channels),
           status: "pending",
-        }) as any;
+        });
 
         const notificationId = notification.id || 0;
 
@@ -237,7 +237,7 @@ export async function notifyTaskCompletion(
       message,
       channels: JSON.stringify(channels),
       status: "pending",
-    }) as any;
+    });
 
     const notificationId = notification.id || 0;
 
@@ -349,7 +349,7 @@ export async function checkAndNotifyDelayedDeliveries() {
       for (const admin of admins) {
         // Send Web Push if subscribed
         if (admin.pushSubscription) {
-          await sendWebPush(admin.pushSubscription as any, {
+          await sendWebPush(admin.pushSubscription as import('web-push').PushSubscription, {
             title: `Delayed Delivery Warning`,
             body: message,
             url: `/deliveries`
@@ -358,7 +358,7 @@ export async function checkAndNotifyDelayedDeliveries() {
       }
 
       // Mark that we alerted on this delivery delay
-      await db.update(deliveries).set({ delayNotificationSent: true } as any).where(eq(deliveries.id, delivery.id));
+      await db.update(deliveries).set({ delayNotificationSent: true }).where(eq(deliveries.id, delivery.id));
     }
   } catch (error) {
     console.error("[NotificationJobs] checkAndNotifyDelayedDeliveries error:", error);
@@ -398,12 +398,12 @@ export async function checkAndNotifyForecasting() {
         const message = formatNotificationMessage('stockout_warning', `Critical Stock: ${shortage.materialName}`, {
           daysLeft: `${shortage.daysUntilStockout} days`,
           currentStock: shortage.currentStock.toString(),
-          reorderPoint: (shortage as any).reorderPoint?.toString() ?? 'N/A'
+          reorderPoint: 'N/A' // Note: reorderPoint is not included in ForecastPrediction output
         });
         
         for (const admin of admins) {
           if (admin.pushSubscription) {
-            await sendWebPush(admin.pushSubscription as any, {
+            await sendWebPush(admin.pushSubscription as import('web-push').PushSubscription, {
               title: `Critical Shortage: ${shortage.materialName}`,
               body: message,
               url: `/forecasting`
