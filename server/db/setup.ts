@@ -36,6 +36,7 @@ import {
 import * as schema from "../../drizzle/schema";
 import * as relations from "../../drizzle/relations";
 import { ENV } from '../lib/env';
+import { dbLogger } from "../lib/logger";
 
 const combinedSchema = { ...schema, ...relations };
 
@@ -121,12 +122,12 @@ export async function getDb() {
 
   if (!_db && connectionString) {
     try {
-      console.log("[DEBUG] Attempting to connect to database...");
+      dbLogger.info("[DEBUG] Attempting to connect to database...");
       _client = postgres(connectionString);
       const primaryDb = drizzle(_client, { schema: combinedSchema });
       
       if (replicaUrls && replicaUrls.length > 0) {
-        console.log(`[DEBUG] Configuring ${replicaUrls.length} read replicas...`);
+        dbLogger.info(`[DEBUG] Configuring ${replicaUrls.length} read replicas...`);
         const readReplicas = replicaUrls.map(url => {
           const client = postgres(url);
           _replicaClients.push(client);
@@ -139,13 +140,13 @@ export async function getDb() {
         _db = primaryDb;
       }
       
-      console.log("[DEBUG] Database connection initialized successfully.");
+      dbLogger.info("[DEBUG] Database connection initialized successfully.");
     } catch (error) {
-      console.warn("[Database] Failed to connect:", error);
+      dbLogger.warn("[Database] Failed to connect:", error);
       _db = null;
     }
   } else if (!_db) {
-    console.log("[DEBUG] _db is null and connectionString is empty.");
+    dbLogger.info("[DEBUG] _db is null and connectionString is empty.");
   }
 
   return _db;
