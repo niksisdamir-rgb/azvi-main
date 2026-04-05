@@ -36,8 +36,8 @@ export async function checkAndNotifyOverdueTasks() {
       .where(
         and(
           lt(dailyTasks.dueDate, new Date()),
-          ne(dailyTasks.status, "completed"),
-          ne(dailyTasks.status, "cancelled")
+          (dailyTasks.status as any) !== "completed",
+          (dailyTasks.status as any) !== "cancelled"
         )
       );
 
@@ -104,7 +104,7 @@ export async function checkAndNotifyOverdueTasks() {
           title: `Task Overdue: ${task.title}`,
           message,
           channels: JSON.stringify(channels),
-          status: "pending",
+          status: 'pending' as any,
         });
 
         const notificationId = notification.id || 0;
@@ -242,7 +242,7 @@ export async function notifyTaskCompletion(
       title: `Task Completed: ${taskTitle}`,
       message,
       channels: JSON.stringify(channels),
-      status: "pending",
+      status: 'pending' as any,
     });
 
     const notificationId = notification.id || 0;

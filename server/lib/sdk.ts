@@ -118,7 +118,7 @@ class SDKServer {
         if (user) {
           // Link existing user to Auth0 openId
           authLogger.info(`[Auth] Linking existing user ${user.id} to Auth0 sub: ${sub}`);
-          await db.updateUser(user.id, { openId: sub, loginMethod: "auth0" });
+          await db.updateUser(user.id, { openId: sub, loginMethod: "auth0" as any });
           await invalidateUserCaches(user.id);
         } else {
           // Auto-provision new user
@@ -128,8 +128,8 @@ class SDKServer {
             username,
             name,
             email: email || null,
-            role: "user",
-            loginMethod: "auth0",
+            role: "user" as any,
+            loginMethod: "auth0" as any,
           });
           user = newUser;
         }
