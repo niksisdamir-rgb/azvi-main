@@ -41,6 +41,7 @@ export const users = pgTable("users", {
   email: varchar("email", { length: 320 }),
   loginMethod: varchar("loginMethod", { length: 64 }),
   role: userRoleEnum("role").default("user").notNull(),
+  forcePasswordChange: boolean("forcePasswordChange").default(false).notNull(),
   phoneNumber: varchar("phoneNumber", { length: 50 }),
   smsNotificationsEnabled: boolean("smsNotificationsEnabled").default(false).notNull(),
   pushSubscription: jsonb("pushSubscription"),

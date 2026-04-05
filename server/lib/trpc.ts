@@ -96,10 +96,18 @@ const authRateLimitMiddleware = t.middleware(async ({ ctx, next }) => {
 export const authRateLimitProcedure = publicProcedure.use(authRateLimitMiddleware);
 
 const requireUser = t.middleware(async opts => {
-  const { ctx, next } = opts;
+  const { ctx, next, path } = opts;
 
   if (!ctx.user) {
     throw new TRPCError({ code: "UNAUTHORIZED", message: UNAUTHED_ERR_MSG });
+  }
+
+  // Prevent accessing protected routes if password change is forced
+  if (ctx.user.forcePasswordChange && path !== "auth.changePassword" && path !== "auth.logout" && path !== "auth.me") {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "PASSWORD_CHANGE_REQUIRED"
+    });
   }
 
   return next({

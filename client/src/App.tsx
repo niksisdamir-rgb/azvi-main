@@ -34,6 +34,7 @@ const NotificationTemplatesAdmin = lazy(() => import("./pages/NotificationTempla
 const DriverApp = lazy(() => import("./pages/DriverApp"));
 const Suppliers = lazy(() => import("./pages/Suppliers"));
 const DesignSystem = lazy(() => import("./pages/DesignSystem"));
+const ChangePassword = lazy(() => import("./pages/ChangePassword"));
 
 const Fallback = () => (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -73,6 +74,7 @@ function Router() {
         <Route path={"/notification-triggers"} component={NotificationTriggersAdmin} />
         <Route path={"/notification-templates"} component={NotificationTemplatesAdmin} />
         <Route path={"/design-system"} component={DesignSystem} />
+        <Route path={"/change-password"} component={ChangePassword} />
         <Route path={"/404"} component={NotFound} />
         <Route component={NotFound} />
       </Switch>

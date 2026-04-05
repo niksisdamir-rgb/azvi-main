@@ -61,7 +61,7 @@ export const authRouter = router({
       // Developer bypass is strictly restricted to local development only.
       // NODE_ENV must be "development" — test/staging are explicitly excluded.
       const isLocalDev = process.env.NODE_ENV === "development";
-      const isBypassEnabled = process.env.VITE_ENABLE_DEV_BYPASS === "true";
+      const isBypassEnabled = process.env.SERVER_ENABLE_DEV_BYPASS === "true";
       const devBypassUser = process.env.DEV_BYPASS_USERNAME;
       const devBypassPass = process.env.DEV_BYPASS_PASSWORD;
       
@@ -132,5 +132,30 @@ export const authRouter = router({
       );
       await invalidateUserCaches(ctx.user.id);
       return { success };
+    }),
+
+  changePassword: protectedProcedure
+    .input(z.object({
+      oldPassword: z.string(),
+      newPassword: z.string().min(12),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const user = await db.getUserById(ctx.user.id);
+      if (!user || !user.passwordHash) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid user" });
+      }
+
+      const isValid = verifyPassword(input.oldPassword, user.passwordHash);
+      if (!isValid) {
+         throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid old password" });
+      }
+      
+      const passwordHash = hashPassword(input.newPassword);
+      await db.updateUser(ctx.user.id, { 
+        passwordHash, 
+        forcePasswordChange: false 
+      });
+      
+      return { success: true };
     }),
 });

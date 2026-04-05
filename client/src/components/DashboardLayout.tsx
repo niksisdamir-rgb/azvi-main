@@ -106,6 +106,11 @@ export default function DashboardLayout({
     );
   }
 
+  if (user?.forcePasswordChange && location !== '/change-password') {
+    setTimeout(() => setLocation('/change-password'), 0);
+    return null;
+  }
+
   return (
     <SidebarProvider
       style={
@@ -271,12 +276,6 @@ function DashboardLayoutContent({
       <SidebarInset>
         {!isMobile && (
           <header className="flex border-b h-14 items-center justify-end bg-black/40 px-4 backdrop-blur-md supports-[backdrop-filter]:backdrop-blur border-b-white/5 sticky top-0 z-40">
-            {import.meta.env.VITE_ENABLE_DEV_BYPASS === 'true' && (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-orange-500/20 border border-orange-500/30 rounded-full text-orange-500 text-xs font-semibold uppercase tracking-wider mr-3">
-                <Bot className="w-3 h-3" />
-                Dev Mode
-              </div>
-            )}
             <LanguageSwitcher />
           </header>
         )}
@@ -293,12 +292,6 @@ function DashboardLayoutContent({
               </div>
             </div>
             <div className="flex items-center">
-              {import.meta.env.VITE_ENABLE_DEV_BYPASS === 'true' && (
-                <div className="flex items-center gap-1 px-2 py-0.5 bg-orange-500/20 border border-orange-500/30 rounded-full text-orange-500 text-[10px] font-semibold uppercase tracking-wider mr-2">
-                  <Bot className="w-2.5 h-2.5" />
-                  Dev Mode
-                </div>
-              )}
               <LanguageSwitcher />
             </div>
           </header>

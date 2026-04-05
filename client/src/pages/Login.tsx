@@ -136,19 +136,6 @@ export default function Login() {
                 </GlassCardContent>
 
                 <CardFooter className="flex flex-col space-y-4 pt-6 pb-8">
-                    {import.meta.env.VITE_ENABLE_DEV_BYPASS === 'true' && (
-                        <div className="w-full group">
-                            <button
-                                type="button"
-                                onClick={() => loginMutation.mutate({ username: "developer", password: "4433" })}
-                                className="w-full py-2 text-[10px] text-orange-500/50 hover:text-orange-500 font-bold uppercase tracking-[0.2em] transition-all border-t border-white/5 pt-4"
-                                disabled={loginMutation.isPending}
-                            >
-                                [ Internal Dev Bypass ]
-                            </button>
-                        </div>
-                    )}
-                    
                     <div className="text-[11px] text-gray-500 text-center w-full uppercase tracking-tighter">
                         Proprietary System — AzVirt LLC. © {new Date().getFullYear()}
                     </div>

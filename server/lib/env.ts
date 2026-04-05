@@ -14,7 +14,7 @@ function validateEnvironment(): void {
   const useMocks  = process.env.DMS_USE_MOCKS === "true";
   const jwtSecret = process.env.JWT_SECRET;
   const dbUrl     = process.env.DATABASE_URL ?? process.env.NETLIFY_DATABASE_URL ?? "";
-  const bypassOn  = process.env.VITE_ENABLE_DEV_BYPASS === "true";
+  const bypassOn  = process.env.SERVER_ENABLE_DEV_BYPASS === "true";
 
   // ── Guard 1: JWT_SECRET must always be set ──────────────────────────────────
   if (!jwtSecret || jwtSecret.trim() === "") {
@@ -25,12 +25,11 @@ function validateEnvironment(): void {
     );
   }
 
-  // ── Guard 2: Dev bypass must never reach production ─────────────────────────
   if (bypassOn && isProduction) {
     errors.push(
-      "VITE_ENABLE_DEV_BYPASS is 'true' in a production environment. " +
+      "SERVER_ENABLE_DEV_BYPASS is 'true' in a production environment. " +
       "This flag disables real authentication and grants admin access using environment-provided credentials. " +
-      "Set VITE_ENABLE_DEV_BYPASS=false in your production environment immediately."
+      "Set SERVER_ENABLE_DEV_BYPASS=false in your production environment immediately."
     );
   }
 
@@ -53,10 +52,9 @@ function validateEnvironment(): void {
     warnings.push("Mock mode is enabled (DMS_USE_MOCKS=true). Fine for development, NOT for production.");
   }
 
-  // ── Guard 5 (warning): Dev bypass outside dev should at least log ───────────
   if (bypassOn && !isProduction) {
     warnings.push(
-      "VITE_ENABLE_DEV_BYPASS=true — environment-based dev credentials are active. " +
+      "SERVER_ENABLE_DEV_BYPASS=true — environment-based dev credentials are active. " +
       "Do NOT enable this flag in staging or shared environments."
     );
   }
