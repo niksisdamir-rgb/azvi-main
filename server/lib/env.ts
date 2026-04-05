@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { logger } from "./logger";
 
 // =============================================================================
 // HARDENED STARTUP VALIDATOR
@@ -69,18 +70,17 @@ function validateEnvironment(): void {
 
   // ── Emit warnings ────────────────────────────────────────────────────────────
   if (warnings.length > 0) {
-    console.warn("\n⚠️  AzVirt DMS — Environment Warnings:");
-    warnings.forEach(w => console.warn(`   • ${w}`));
-    console.warn("");
+    logger.warn("⚠️  AzVirt DMS — Environment Warnings:");
+    warnings.forEach(w => logger.warn(`   • ${w}`));
   }
 
   // ── Throw on any hard error ──────────────────────────────────────────────────
   if (errors.length > 0) {
     const divider = "═".repeat(68);
-    console.error(`\n╔${divider}╗`);
-    console.error(`║  🚨  FATAL: AzVirt DMS CANNOT START — Environment misconfigured  ║`);
-    console.error(`╚${divider}╝\n`);
-    errors.forEach((e, i) => console.error(`  [${i + 1}] ${e}\n`));
+    logger.error(`╔${divider}╗`);
+    logger.error(`║  🚨  FATAL: AzVirt DMS CANNOT START — Environment misconfigured  ║`);
+    logger.error(`╚${divider}╝`);
+    errors.forEach((e, i) => logger.error(`  [${i + 1}] ${e}`));
     throw new Error(
       `Server startup aborted due to ${errors.length} critical environment error(s). See output above.`
     );
