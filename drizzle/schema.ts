@@ -1,5 +1,4 @@
 import { pgEnum, pgTable, serial, text, timestamp, varchar, boolean, integer, jsonb, doublePrecision, index } from "drizzle-orm/pg-core";
-import { sql } from "drizzle-orm";
 
 // Enums
 export const userRoleEnum = pgEnum("user_role", ["user", "admin"]);
@@ -811,6 +810,8 @@ export const timesheetUploadHistory = pgTable("timesheetUploadHistory", {
   errors: jsonb("errors").default([]),                 // UploadError[]
   status: varchar("status", { length: 32 }).notNull().default("completed"), // completed | partial | failed
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-});export type TimesheetUploadHistory = typeof timesheetUploadHistory.$inferSelect;
-export type InsertTimesheetUploadHistory = typeof timesheetUploadHistory.$inferInsert;);
+});
+
+export type TimesheetUploadHistory = typeof timesheetUploadHistory.$inferSelect;
+export type InsertTimesheetUploadHistory = typeof timesheetUploadHistory.$inferInsert;
 
