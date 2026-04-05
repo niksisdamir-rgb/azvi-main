@@ -239,7 +239,7 @@ export function startAnalyticsWorker() {
     );
 
     worker.on("failed", (job, err) => {
-      logger.error(`[AnalyticsWorker] Job ${job?.id} failed:`, err.message);
+      logger.error({ err }, `[AnalyticsWorker] Job ${job?.id} failed`);
     });
 
     worker.on("completed", (job) => {

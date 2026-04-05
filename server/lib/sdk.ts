@@ -171,7 +171,7 @@ class SDKServer {
     let user: User | null = cachedUser || null;
 
     if (!user) {
-      user = await db.getUserById(session.userId);
+      user = (await db.getUserById(session.userId)) || null;
 
       if (!user) {
         authLogger.warn(`[Auth] Authentication failed: User ID ${session.userId} not found in database`);

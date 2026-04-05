@@ -36,8 +36,8 @@ export async function checkAndNotifyOverdueTasks() {
       .where(
         and(
           lt(dailyTasks.dueDate, new Date()),
-          (dailyTasks.status as any) !== "completed",
-          (dailyTasks.status as any) !== "cancelled"
+          ne(dailyTasks.status, "completed"),
+          ne(dailyTasks.status, "cancelled")
         )
       );
 
@@ -46,7 +46,7 @@ export async function checkAndNotifyOverdueTasks() {
     );
 
     // 1. Batch fetch all unique users involved
-    const userIds = [...new Set(overdueTasks.map(t => t.userId))].filter(id => id !== null) as number[];
+    const userIds = Array.from(new Set(overdueTasks.map(t => t.userId))).filter(id => id !== null) as number[];
     if (userIds.length === 0) {
       jobsLogger.info("[NotificationJobs] No users to notify for overdue tasks");
       return;
@@ -353,7 +353,7 @@ export async function checkAndNotifyForecasting() {
     const predictions = await generateForecastPredictions();
     
     // Filter for anything ≤ 7 days
-    const criticalShortages = predictions.filter(p => p.daysUntilStockout <= 7);
+    const criticalShortages = predictions.filter(p => p.daysUntilStockout !== null && p.daysUntilStockout !== undefined && p.daysUntilStockout <= 7);
     
     if (criticalShortages.length > 0) {
       jobsLogger.info(`[NotificationJobs] Found ${criticalShortages.length} critical shortages.`);

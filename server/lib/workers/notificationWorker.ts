@@ -84,7 +84,7 @@ export async function startNotificationWorker() {
     }, 10000);
 
     worker.on("failed", (job, err) => {
-      jobsLogger.error(`[NotificationWorker] Job ${job?.id} failed:`, err.message);
+      jobsLogger.error({ err }, `[NotificationWorker] Job ${job?.id} failed`);
     });
 
     worker.on("completed", (job) => {

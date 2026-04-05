@@ -78,8 +78,8 @@ export const anomalyDetectionRouter = router({
       const deliveryData: DeliveryData[] = windowDeliveries.map((d) => ({
         id: d.id,
         scheduledTime: d.scheduledTime,
-        estimatedArrival: d.estimatedArrival || null,
-        actualDeliveryTime: d.actualDeliveryTime || null,
+        estimatedArrival: d.estimatedArrival ? new Date(d.estimatedArrival * 1000) : null,
+        actualDeliveryTime: d.actualDeliveryTime ? new Date(d.actualDeliveryTime * 1000) : null,
         driverName: d.driverName || null,
         vehicleNumber: d.vehicleNumber || null,
         projectName: d.projectName || null,
@@ -176,8 +176,8 @@ export const anomalyDetectionRouter = router({
       const deliveryData: DeliveryData[] = windowDeliveries.map((d) => ({
         id: d.id,
         scheduledTime: d.scheduledTime,
-        estimatedArrival: d.estimatedArrival || null,
-        actualDeliveryTime: d.actualDeliveryTime || null,
+        estimatedArrival: d.estimatedArrival ? new Date(d.estimatedArrival * 1000) : null,
+        actualDeliveryTime: d.actualDeliveryTime ? new Date(d.actualDeliveryTime * 1000) : null,
         driverName: d.driverName || null,
         vehicleNumber: d.vehicleNumber || null,
         projectName: d.projectName || null,
