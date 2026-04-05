@@ -25,7 +25,7 @@ export const taskPriorityEnum = pgEnum("task_priority", ["low", "medium", "high"
 export const taskStatusEnum = pgEnum("task_status", ["pending", "in_progress", "completed", "cancelled"]);
 export const notificationTypeEnum = pgEnum("notification_type", ["overdue_reminder", "completion_confirmation", "assignment", "status_change", "comment"]);
 export const notificationStatusEnum = pgEnum("notification_status", ["pending", "sent", "failed", "read"]);
-export const channelEnum = pgEnum("channel", ["email", "sms", "in_app"]);
+export const channelEnum = pgEnum("channel", ["email", "sms", "push", "in_app"]);
 export const historyStatusEnum = pgEnum("history_status", ["sent", "failed", "bounced", "opened"]);
 
 /**

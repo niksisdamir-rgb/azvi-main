@@ -4,7 +4,7 @@ import { router, protectedProcedure } from "../../lib/trpc";
 import { TRPCError } from "@trpc/server";
 import { eq, desc, and } from "drizzle-orm";
 import { getDb } from "../../db";
-import { purchaseOrders, purchaseOrderItems, materials, suppliers } from "../../../drizzle/schema";
+import { purchaseOrders, purchaseOrderItems, materials, suppliers, poStatusEnum } from "../../../drizzle/schema";
 import { sendEmail } from "../../lib/email";
 import { sendSMS } from "../../lib/sms";
 import * as db from "../../db";
@@ -24,7 +24,7 @@ export const purchaseOrdersRouter = router({
   updatePurchaseOrderStatus: protectedProcedure
     .input(z.object({
       orderId: z.number(),
-      status: z.enum(['pending', 'approved', 'ordered', 'received', 'cancelled']).optional(),
+      status: z.enum(poStatusEnum.enumValues).optional(),
       expectedDelivery: z.date().optional(),
       actualDelivery: z.date().optional(),
       totalCost: z.number().optional(),
@@ -229,7 +229,7 @@ export const purchaseOrdersRouter = router({
 
   getOrders: protectedProcedure
     .input(z.object({
-      status: z.enum(['pending', 'approved', 'ordered', 'received', 'cancelled']).optional(),
+      status: z.enum(poStatusEnum.enumValues).optional(),
       supplierId: z.number().optional(),
     }).optional())
     .query(async ({ input }) => {

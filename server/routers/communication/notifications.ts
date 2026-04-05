@@ -15,6 +15,7 @@ import {
   sendSmsNotification,
 } from "../../lib/notificationService";
 import { TRPCError } from "@trpc/server";
+import { notificationTypeEnum, channelEnum } from "../../../drizzle/schema";
 
 const notificationTemplateStore = new Map<number, any>();
 const notificationTriggerStore = new Map<number, any>();
@@ -129,9 +130,9 @@ export const notificationsRouter = router({
         userId: z.number(),
         title: z.string(),
         content: z.string(),
-        type: z.enum(["overdue_reminder", "completion_confirmation", "assignment", "status_change", "comment"]).default("status_change"),
+        type: z.enum(notificationTypeEnum.enumValues).default("status_change"),
         link: z.string().optional(),
-        channels: z.array(z.enum(["email", "sms", "push", "in_app"])).default(["in_app"]),
+        channels: z.array(z.enum(channelEnum.enumValues)).default(["in_app"]),
       })
     )
     .mutation(async ({ input }) => {
@@ -190,7 +191,7 @@ export const notificationsRouter = router({
         name: z.string(),
         subject: z.string(),
         body: z.string(),
-        channels: z.array(z.enum(['email', 'sms', 'in_app'])).default(['email']),
+        channels: z.array(z.enum(channelEnum.enumValues)).default(['email']),
       }))
       .mutation(async ({ input }) => {
         const id = input.id ?? Date.now();
