@@ -1,4 +1,4 @@
-import { logger } from '../logger';
+import { jobsLogger } from '../logger';
 import { Worker } from "bullmq";
 import { redisConnection, getNotificationsQueue } from "../queue";
 import { 
@@ -19,7 +19,7 @@ export async function startNotificationWorker() {
       "notifications",
       async (job) => {
         const jobName = job.name;
-        logger.info(`[NotificationWorker] Processing job: ${jobName}`);
+        jobsLogger.info(`[NotificationWorker] Processing job: ${jobName}`);
 
         switch (jobName) {
           case "overdue-tasks":
@@ -84,17 +84,17 @@ export async function startNotificationWorker() {
     }, 10000);
 
     worker.on("failed", (job, err) => {
-      logger.error(`[NotificationWorker] Job ${job?.id} failed:`, err.message);
+      jobsLogger.error(`[NotificationWorker] Job ${job?.id} failed:`, err.message);
     });
 
     worker.on("completed", (job) => {
-      logger.info(`[NotificationWorker] Job ${job.id} completed`);
+      jobsLogger.info(`[NotificationWorker] Job ${job.id} completed`);
     });
 
-    logger.info("[NotificationWorker] Started successfully with repeatable jobs");
+    jobsLogger.info("[NotificationWorker] Started successfully with repeatable jobs");
     return worker;
   } catch (err) {
-    logger.warn({ err: err }, "[NotificationWorker] Failed to start (Redis may be unavailable):");
+    jobsLogger.warn({ err: err }, "[NotificationWorker] Failed to start (Redis may be unavailable):");
     return null;
   }
 }

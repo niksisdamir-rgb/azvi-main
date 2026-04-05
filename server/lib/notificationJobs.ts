@@ -1,6 +1,6 @@
 import { getDb } from "../db";
 import { jobsLogger } from "./logger";
-import { users, dailyTasks } from "../../drizzle/schema";
+import { users, dailyTasks, deliveries, notificationPreferences } from "../../drizzle/schema";
 import { eq, lt, and, ne, inArray } from "drizzle-orm";
 import {
   sendEmailNotification,
@@ -14,7 +14,6 @@ import {
   recordNotificationHistory,
   generateForecastPredictions,
 } from "../db";
-import { deliveries } from "../../drizzle/schema";
 import { sendWebPush } from "./pushService";
 
 /**
@@ -56,10 +55,7 @@ export async function checkAndNotifyOverdueTasks() {
     const allUsers = await db.select().from(users).where(inArray(users.id, userIds));
     const userMap = new Map(allUsers.map(u => [u.id, u]));
 
-    // 2. Batch fetch ALL preferences for these users (getNotificationPreferences currently only takes one ID)
-    // We'll use the recordNotifyHistory-style query logic or just map getNotificationPreferences
-    // Actually, let's just fetch them in bulk here
-    const { notificationPreferences } = await import("../../drizzle/schema");
+    // 2. Batch fetch ALL preferences for these users
     const allPrefs = await db.select().from(notificationPreferences).where(inArray(notificationPreferences.userId, userIds));
     const prefsMap = new Map(allPrefs.map(p => [p.userId, p]));
 
@@ -292,6 +288,98 @@ export async function notifyTaskCompletion(
   }
 }
 
+/**
+ * Check for delayed deliveries and send Web Push + notifications
+ */
+export async function checkAndNotifyDelayedDeliveries() {
+  try {
+    const db = await getDb();
+    if (!db) return;
+
+    // Get deliveries that are en route and past ETAs (by 15 min threshold)
+    const now = Math.floor(Date.now() / 1000); // unix timestamp
+    const delayedDeliveries = await db.select().from(deliveries).where(
+      and(
+        eq(deliveries.status, 'en_route'),
+        lt(deliveries.estimatedArrival, now - 15 * 60)
+      )
+    );
+
+    // Batch fetch admins
+    const admins = await db.select().from(users).where(eq(users.role, 'admin'));
+    if (admins.length === 0) {
+      jobsLogger.info("[NotificationJobs] No admins found to notify for delayed deliveries");
+      return;
+    }
+
+    for (const delivery of delayedDeliveries) {
+      if (delivery.delayNotificationSent) continue; // Avoid spamming
+      
+      const delayDuration = Math.round((now - (delivery.estimatedArrival || now)) / 60);
+
+      const message = formatNotificationMessage('delivery_delayed', `Delivery #${delivery.id}`, {
+        driverName: delivery.driverName || 'Unknown',
+        concreteType: delivery.concreteType || 'Unknown mix',
+        delayDuration: `${delayDuration} mins`
+      });
+
+      for (const admin of admins) {
+        // Send Web Push if subscribed
+        if (admin.pushSubscription) {
+          await sendWebPush(admin.pushSubscription as import('web-push').PushSubscription, {
+            title: `Delayed Delivery Warning`,
+            body: message,
+            url: `/deliveries`
+          });
+        }
+      }
+
+      // Mark that we alerted on this delivery delay
+      await db.update(deliveries).set({ delayNotificationSent: true }).where(eq(deliveries.id, delivery.id));
+    }
+  } catch (error) {
+    jobsLogger.error({ err: error }, "[NotificationJobs] checkAndNotifyDelayedDeliveries error:");
+  }
+}
+
+/**
+ * Check for impending stockouts and alert logistics
+ */
+export async function checkAndNotifyForecasting() {
+  try {
+    jobsLogger.info("[NotificationJobs] Running nightly forecasting check...");
+    
+    // Auto-generate fresh predictions
+    const predictions = await generateForecastPredictions();
+    
+    // Filter for anything ≤ 7 days
+    const criticalShortages = predictions.filter(p => p.daysUntilStockout <= 7);
+    
+    if (criticalShortages.length > 0) {
+      jobsLogger.info(`[NotificationJobs] Found ${criticalShortages.length} critical shortages.`);
+      const db = await getDb();
+      if (!db) return;
+      
+      const admins = await db.select().from(users).where(eq(users.role, 'admin'));
+      
+      for (const shortage of criticalShortages) {
+        const message = formatNotificationMessage('stockout_warning', `Critical Stock: ${shortage.materialName}`, {
+          daysLeft: `${shortage.daysUntilStockout} days`,
+          currentStock: shortage.currentStock.toString(),
+          reorderPoint: 'N/A' // Note: reorderPoint is not included in ForecastPrediction output
+        });
+        
+        for (const admin of admins) {
+          if (admin.pushSubscription) {
+            await sendWebPush(admin.pushSubscription as import('web-push').PushSubscription, {
+              title: `Critical Shortage: ${shortage.materialName}`,
+              body: message,
+              url: `/forecasting`
+            });
+          }
+        }
+      }
+    }
     jobsLogger.info("[NotificationJobs] Nightly forecasting check complete.");
   } catch (error) {
     jobsLogger.error({ err: error }, "[NotificationJobs] checkAndNotifyForecasting error:");
