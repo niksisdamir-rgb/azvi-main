@@ -10,7 +10,7 @@ export const aggregateInputsRouter = router({
       materialType: z.string().optional(),
     }).optional())
     .query(async ({ input }) => {
-      return await db.getAggregateInputs(input);
+      return await db.getAggregateInputs(input as any);
     }),
 
   create: protectedProcedure

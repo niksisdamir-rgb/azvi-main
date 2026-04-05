@@ -62,7 +62,7 @@ export const machinesRouter = router({
         maintenanceType: z.string().optional(),
       }).optional())
       .query(async ({ input }) => {
-        return await db.getMachineMaintenance(input);
+        return await db.getMachineMaintenance(input as any);
       }),
 
     create: protectedProcedure
