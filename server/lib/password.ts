@@ -1,4 +1,5 @@
 import { scryptSync, randomBytes, timingSafeEqual } from "node:crypto";
+import { authLogger } from "./logger";
 
 /**
  * Hashes a password using scrypt.
@@ -23,7 +24,7 @@ export const verifyPassword = (password: string, storedHash: string): boolean =>
             Buffer.from(hashToVerify, "hex")
         );
     } catch (error) {
-        console.error("[Password] Verification error:", error);
+        authLogger.error("[Password] Verification error (details masked for security)");
         return false;
     }
 };
