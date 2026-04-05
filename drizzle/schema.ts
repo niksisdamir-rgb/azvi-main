@@ -453,15 +453,15 @@ export type InsertPurchaseOrderItem = typeof purchaseOrderItems.$inferInsert;
  */
 export const forecastPredictions = pgTable("forecast_predictions", {
   id: serial("id").primaryKey(),
-  materialId: integer("materialId").notNull(),
-  materialName: varchar("materialName", { length: 255 }).notNull(),
-  currentStock: integer("currentStock").notNull(),
-  dailyConsumptionRate: integer("dailyConsumptionRate").notNull(),
-  predictedRunoutDate: timestamp("predictedRunoutDate"),
-  daysUntilStockout: integer("daysUntilStockout"),
-  recommendedOrderQty: integer("recommendedOrderQty"),
+  materialId: integer("material_id").notNull(),
+  materialName: varchar("material_name", { length: 255 }).notNull(),
+  currentStock: integer("current_stock").notNull(),
+  dailyConsumptionRate: integer("daily_consumption_rate").notNull(),
+  predictedRunoutDate: timestamp("predicted_runout_date"),
+  daysUntilStockout: integer("days_until_stockout"),
+  recommendedOrderQty: integer("recommended_order_qty"),
   confidence: integer("confidence"),
-  calculatedAt: timestamp("calculatedAt").defaultNow().notNull(),
+  calculatedAt: timestamp("calculated_at").defaultNow().notNull(),
 });
 
 export type ForecastPrediction = typeof forecastPredictions.$inferSelect;
