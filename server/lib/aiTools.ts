@@ -470,7 +470,7 @@ const logWorkHoursTool: Tool = {
       endTime: endTime ? new Date(endTime) : null,
       hoursWorked,
       overtimeHours,
-      workType: workType || 'regular',
+      workType: (workType as any) || 'regular',
       notes: notes || null,
       status: 'pending',
     }).returning();
@@ -681,7 +681,7 @@ const updateDocumentTool: Tool = {
     const updates: any = { updatedAt: new Date() };
     if (name) updates.name = name;
     if (description) updates.description = description;
-    if (category) updates.category = category;
+    if (category) updates.category = category as any;
     if (projectId !== undefined) updates.projectId = projectId;
 
     await db
@@ -779,7 +779,7 @@ const createMaterialTool: Tool = {
 
     const [result] = await db.insert(materials).values({
       name,
-      category: category || 'other',
+      category: (category as any) || 'other',
       unit,
       quantity: quantity || 0,
       minStock: minStock || 0,
@@ -941,9 +941,9 @@ const detectAnomaliesTool: Tool = {
       const allTests = await db.select().from(qualityTests);
       const testData = allTests.map(t => ({
         id: t.id,
-        testType: t.type || 'other',
+        testType: t.testType || 'other',
         status: t.status,
-        result: t.value || null,
+        result: t.result || null,
         createdAt: t.createdAt,
         deliveryId: t.deliveryId || null,
       }));
