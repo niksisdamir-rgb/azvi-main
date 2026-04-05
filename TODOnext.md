@@ -208,16 +208,16 @@
 **File:** `drizzle/relations.ts`  
 **Severity:** 🟠 HIGH
 
-- [ ] Add `usersRelations` (projects, deliveries, tasks, notifications, conversations, documents)
-- [ ] Add `projectsRelations` (deliveries, qualityTests, documents, workHours)
-- [ ] Add `deliveriesRelations` (qualityTests, statusHistory, project, creator)
-- [ ] Add `employeesRelations` (workHours, machineWorkHours)
-- [ ] Add `machinesRelations` (maintenance, workHours, concreteBase)
-- [ ] Add `concreteBasesRelations` (machines, aggregateInputs)
-- [ ] Add `dailyTasksRelations` (assignments, statusHistory, notifications, user)
-- [ ] Add `aiConversationsRelations` (messages, user)
-- [ ] Add `notificationTriggersRelations` (template, executionLog)
-- [ ] Verify new relations work with `db.query.*.findMany({ with: { ... } })`
+- [x] Add `usersRelations` (projects, deliveries, tasks, notifications, conversations, documents)
+- [x] Add `projectsRelations` (deliveries, qualityTests, documents, workHours)
+- [x] Add `deliveriesRelations` (qualityTests, statusHistory, project, creator)
+- [x] Add `employeesRelations` (workHours, machineWorkHours)
+- [x] Add `machinesRelations` (maintenance, workHours, concreteBase)
+- [x] Add `concreteBasesRelations` (machines, aggregateInputs)
+- [x] Add `dailyTasksRelations` (assignments, statusHistory, notifications, user)
+- [x] Add `aiConversationsRelations` (messages, user)
+- [x] Add `notificationTriggersRelations` (template, executionLog)
+- [x] Verify new relations work with `db.query.*.findMany({ with: { ... } })`
 
 ---
 
