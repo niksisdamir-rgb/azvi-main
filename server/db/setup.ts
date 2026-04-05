@@ -61,7 +61,7 @@ const getTableName = (table: any): string => {
   return table?._?.name || table?.name || "unknown";
 };
 
-const mockDb = { transaction: (cb) => cb(mockDb),
+const mockDb = { transaction: (cb: (tx: typeof mockDb) => unknown) => cb(mockDb),
   select: () => ({
     from: (table: any) => {
       const tableName = getTableName(table);
@@ -129,7 +129,8 @@ export async function getDb() {
           return drizzle(client);
         });
         
-        _db = withReplicas(primaryDb, readReplicas);
+        const [first, ...rest] = readReplicas;
+        _db = withReplicas(primaryDb, [first, ...rest]);
       } else {
         _db = primaryDb;
       }
