@@ -50,6 +50,8 @@ Settings → Secrets and variables → Actions → New repository secret
 | `ALLOWED_ORIGINS` | Comma-separated list of allowed CORS origins | Your frontend URL |
 | `METRICS_AUTH_TOKEN` | Bearer token to protect Prometheus `/metrics` | `openssl rand -hex 16` |
 
+> **Prometheus Setup:** When configuring your Prometheus `scrape_config`, ensure you include `bearer_token: "YOUR_TOKEN"` for the `azvirt-dms` target to successfully scrape the protected `/metrics` endpoint.
+
 ---
 
 ## Application Identity

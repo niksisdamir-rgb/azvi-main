@@ -77,13 +77,13 @@
 **Severity:** 🟠 HIGH  
 **Risk:** Internal server metrics (memory, CPU, event loop, request counts) exposed publicly.
 
-- [ ] Add `METRICS_AUTH_TOKEN` env var
-- [ ] Create middleware that checks `Authorization: Bearer <METRICS_AUTH_TOKEN>` header
-- [ ] Apply middleware to `/metrics` route only
-- [ ] In development: allow unauthenticated access if `METRICS_AUTH_TOKEN` is not set
-- [ ] Add `METRICS_AUTH_TOKEN` to `PRODUCTION_SECRETS.md`
-- [ ] Update Prometheus scrape config documentation to include the auth token
-- [ ] Write test: unauthenticated request to `/metrics` returns 401 in production mode
+- [x] Add `METRICS_AUTH_TOKEN` env var
+- [x] Create middleware that checks `Authorization: Bearer <METRICS_AUTH_TOKEN>` header
+- [x] Apply middleware to `/metrics` route only
+- [x] In development: allow unauthenticated access if `METRICS_AUTH_TOKEN` is not set
+- [x] Add `METRICS_AUTH_TOKEN` to `PRODUCTION_SECRETS.md`
+- [x] Update Prometheus scrape config documentation to include the auth token
+- [x] Write test: unauthenticated request to `/metrics` returns 401 in production mode
 
 ---
 
