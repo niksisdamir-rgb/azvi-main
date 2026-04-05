@@ -13,7 +13,7 @@ export type TrpcContext = {
 export async function createContext(
   opts: CreateExpressContextOptions
 ): Promise<TrpcContext> {
-  logger.info({ reqMethod: opts.req.method, reqUrl: opts.req.url }, "TRPC Context Creation Start");
+  logger.debug({ reqMethod: opts.req.method, reqUrl: opts.req.url }, "TRPC Context Creation Start");
   let user: User | null = null;
   let permissions: string[] = [];
 
@@ -28,7 +28,7 @@ export async function createContext(
     permissions = [];
   }
   
-  logger.info({ userPresent: !!user }, "TRPC Context Created. User Status:");
+  logger.debug({ userPresent: !!user }, "TRPC Context Created. User Status:");
 
   return {
     req: opts.req,
