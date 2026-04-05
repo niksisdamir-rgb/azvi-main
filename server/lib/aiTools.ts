@@ -5,7 +5,7 @@ import { logger } from './logger';
  */
 
 import { getDb } from '../db';
-import { materials, deliveries, documents, qualityTests, forecastPredictions } from '../../drizzle/schema';
+import { materials, deliveries, documents, qualityTests, forecastPredictions, workHours, machineWorkHours, users } from '../../drizzle/schema';
 import { like, eq, and, gte, lte, desc } from 'drizzle-orm';
 import axios from 'axios';
 

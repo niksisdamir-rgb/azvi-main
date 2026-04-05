@@ -1,4 +1,4 @@
-import pino from "pino";
+import { pino } from "pino";
 
 // Define the transport for pretty logging in development, standard JSON otherwise
 const isDev = process.env.NODE_ENV !== "production";
