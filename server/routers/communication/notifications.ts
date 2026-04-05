@@ -149,20 +149,26 @@ export const notificationsRouter = router({
         }
 
         // 2. Send other channel notifications based on user preferences
+        const user = await db.getUserById(input.userId);
+        if (!user) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "User not found",
+          });
+        }
+
         const preferences = await getNotificationPreferences(input.userId);
         if (!preferences) return { success: true, warning: "User has no preferences set" };
 
         const results = [];
 
-        if (input.channels.includes("email") && preferences.emailEnabled) {
-          // Note: sendEmailNotification might expect more args, keeping it simple or matching its signature if known.
-          // Based on previous error, it expects 5 args. Let's assume it's (userId, title, content, type, link)
-          results.push(sendEmailNotification(input.userId, input.title, input.content, input.type, input.link));
+        if (input.channels.includes("email") && preferences.emailEnabled && user.email) {
+          results.push(sendEmailNotification(user.email, input.title, input.content, 0, input.type));
         }
 
-        if (input.channels.includes("sms") && preferences.smsEnabled) {
-          // sendSmsNotification expects string for phone? Or userId? 
-          // Based on previous error, it expects string. Let's assume it's phone number.
+        if (input.channels.includes("sms") && preferences.smsEnabled && user.phoneNumber) {
+          results.push(sendSmsNotification(user.phoneNumber, `${input.title}: ${input.content}`));
+        }
           // We need to fetch user phone number first.
           const user = await db.getUserById(input.userId);
           if (user && user.phoneNumber) {

@@ -9,8 +9,8 @@ export const machinesRouter = router({
   list: protectedProcedure
     .input(z.object({
       concreteBaseId: z.number().optional(),
-      type: z.string().optional(),
-      status: z.string().optional(),
+      type: z.enum(machineTypeEnum.enumValues).optional(),
+      status: z.enum(machineStatusEnum.enumValues).optional(),
     }).optional())
     .query(async ({ input }) => {
       return await db.getMachines(input);
