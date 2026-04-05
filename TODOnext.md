@@ -265,7 +265,7 @@
 **Files:** All server files using `console.log/warn/error`  
 **Severity:** 🟠 HIGH
 
-- [ ] Create child loggers for each module in `server/lib/logger.ts`:
+- [x] Create child loggers for each module in `server/lib/logger.ts`:
   ```typescript
   export const dbLogger = logger.child({ module: "db" });
   export const authLogger = logger.child({ module: "auth" });
@@ -274,18 +274,18 @@
   export const smsLogger = logger.child({ module: "sms" });
   export const jobsLogger = logger.child({ module: "jobs" });
   ```
-- [ ] Replace in `server/db/setup.ts` — all `console.log/warn` → `dbLogger.info/warn`
-- [ ] Replace in `server/lib/redis.ts` — `console.warn/log` → `redisLogger.warn/info`
-- [ ] Replace in `server/lib/email.ts` — `console.warn/log/error` → `emailLogger.*`
-- [ ] Replace in `server/lib/sms.ts` — `console.warn` → `smsLogger.warn`
-- [ ] Replace in `server/lib/sdk.ts` — `console.warn/info/error` → `authLogger.*`
-- [ ] Replace in `server/lib/password.ts` — `console.error` → `authLogger.error` (mask error details)
-- [ ] Replace in `server/lib/notificationJobs.ts` — all `console.*` → `jobsLogger.*`
-- [ ] Replace in `server/lib/env.ts` — `console.warn/error` → plain `logger.*`
-- [ ] Replace in `server/db/users.ts` — `console.warn/error` → `dbLogger.*`
-- [ ] Replace in `server/storage.ts` — any `console.*` → `logger.*`
-- [ ] Add ESLint rule `no-console: "error"` to prevent regression (server directory only)
-- [ ] Reduce context.ts logging from `info` to `debug` level
+- [x] Replace in `server/db/setup.ts` — all `console.log/warn` → `dbLogger.info/warn`
+- [x] Replace in `server/lib/redis.ts` — `console.warn/log` → `redisLogger.warn/info`
+- [x] Replace in `server/lib/email.ts` — `console.warn/log/error` → `emailLogger.*`
+- [x] Replace in `server/lib/sms.ts` — `console.warn` → `smsLogger.warn`
+- [x] Replace in `server/lib/sdk.ts` — `console.warn/info/error` → `authLogger.*`
+- [x] Replace in `server/lib/password.ts` — `console.error` → `authLogger.error` (mask error details)
+- [x] Replace in `server/lib/notificationJobs.ts` — all `console.*` → `jobsLogger.*`
+- [x] Replace in `server/lib/env.ts` — `console.warn/error` → plain `logger.*`
+- [x] Replace in `server/db/users.ts` — `console.warn/error` → `dbLogger.*`
+- [x] Replace in `server/storage.ts` — any `console.*` → `logger.*`
+- [x] Add ESLint rule `no-console: "error"` to prevent regression (server directory only)
+- [x] Reduce context.ts logging from `info` to `debug` level
 
 ---
 
@@ -593,8 +593,8 @@
 - [ ] Add pre-commit hook:
   - [ ] `pnpm check` on staged `.ts/.tsx` files
   - [ ] `pnpm format --check` for formatting
-- [ ] Add `no-console` ESLint rule for `server/` directory
-- [ ] Add `no-explicit-any` ESLint rule with `warn` level (track progress toward zero)
+- [x] Add `no-console` ESLint rule for `server/` directory
+- [x] Add `no-explicit-any` ESLint rule with `warn` level (track progress toward zero)
 
 ---
 

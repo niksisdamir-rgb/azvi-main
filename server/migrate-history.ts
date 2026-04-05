@@ -1,5 +1,5 @@
 import { logger } from './lib/logger';
-import { db } from "./db/setup";
+import { getDb } from "./db/setup";
 import { timesheetUploadHistory } from "../drizzle/schema";
 import { sql } from "drizzle-orm";
 
@@ -12,6 +12,8 @@ async function main() {
   logger.info("Connected to database, running migration...");
 
   try {
+    const db = await getDb();
+    if (!db) throw new Error("Database connection failed");
     await db.execute(sql`
       CREATE TABLE IF NOT EXISTS "timesheetUploadHistory" (
         "id" serial PRIMARY KEY NOT NULL,
