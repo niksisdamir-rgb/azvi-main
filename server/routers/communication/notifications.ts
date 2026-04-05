@@ -169,12 +169,6 @@ export const notificationsRouter = router({
         if (input.channels.includes("sms") && preferences.smsEnabled && user.phoneNumber) {
           results.push(sendSmsNotification(user.phoneNumber, `${input.title}: ${input.content}`));
         }
-          // We need to fetch user phone number first.
-          const user = await db.getUserById(input.userId);
-          if (user && user.phoneNumber) {
-            results.push(sendSmsNotification(user.phoneNumber, input.content));
-          }
-        }
 
         await Promise.all(results);
         return { success: true };
