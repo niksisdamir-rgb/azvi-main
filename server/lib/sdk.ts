@@ -1,4 +1,5 @@
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { authLogger } from "./logger";
 import { ForbiddenError, UnauthorizedError } from "@shared/lib/errors";
 import { parse as parseCookieHeader } from "cookie";
 import type { Request } from "express";
@@ -31,7 +32,7 @@ class SDKServer {
         cookies.set(key, value);
       }
     } catch (e) {
-      console.warn("[Auth] Failed to parse cookies", e);
+      authLogger.warn({ err: e }, "[Auth] Failed to parse cookies");
     }
     return cookies;
   }
@@ -62,13 +63,13 @@ class SDKServer {
       const { userId } = payload as Record<string, unknown>;
 
       if (typeof userId !== "number") {
-        console.warn("[Auth] Session payload missing userId");
+        authLogger.warn("[Auth] Session payload missing userId");
         return null;
       }
 
       return { userId };
     } catch (error) {
-      console.warn("[Auth] Session verification failed", String(error));
+      authLogger.warn({ err: error }, "[Auth] Session verification failed");
       return null;
     }
   }
@@ -85,7 +86,7 @@ class SDKServer {
   async verifyAuth0Token(token: string): Promise<{ user: User; permissions: string[] } | null> {
     const JWKS = this.getJWKS();
     if (!JWKS) {
-      console.warn("[Auth] Auth0 JWKS not initialized. Check AUTH0_DOMAIN.");
+      authLogger.warn("[Auth] Auth0 JWKS not initialized. Check AUTH0_DOMAIN.");
       return null;
     }
 
@@ -116,12 +117,12 @@ class SDKServer {
 
         if (user) {
           // Link existing user to Auth0 openId
-          console.info(`[Auth] Linking existing user ${user.id} to Auth0 sub: ${sub}`);
+          authLogger.info(`[Auth] Linking existing user ${user.id} to Auth0 sub: ${sub}`);
           await db.updateUser(user.id, { openId: sub, loginMethod: "auth0" });
           await invalidateUserCaches(user.id);
         } else {
           // Auto-provision new user
-          console.info(`[Auth] Provisioning new user from Auth0 sub: ${sub}`);
+          authLogger.info(`[Auth] Provisioning new user from Auth0 sub: ${sub}`);
           const [newUser] = await db.createUser({
             openId: sub,
             username,
@@ -140,7 +141,7 @@ class SDKServer {
 
       return user ? { user, permissions } : null;
     } catch (error) {
-      console.error("[Auth] Auth0 token verification failed:", error instanceof Error ? error.message : String(error));
+      authLogger.error({ err: error }, "[Auth] Auth0 token verification failed");
       return null;
     }
   }
@@ -160,7 +161,7 @@ class SDKServer {
     const session = await this.verifySession(sessionCookie);
 
     if (!session) {
-      console.warn(`[Auth] Authentication failed: Missing or invalid session cookie/token for path ${req.path}`);
+      authLogger.warn(`[Auth] Authentication failed: Missing or invalid session cookie/token for path ${req.path}`);
       throw UnauthorizedError("Invalid session cookie or token");
     }
 
@@ -173,7 +174,7 @@ class SDKServer {
       user = await db.getUserById(session.userId);
 
       if (!user) {
-        console.warn(`[Auth] Authentication failed: User ID ${session.userId} not found in database`);
+        authLogger.warn(`[Auth] Authentication failed: User ID ${session.userId} not found in database`);
         throw UnauthorizedError("User not found");
       }
 
