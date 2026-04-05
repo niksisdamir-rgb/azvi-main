@@ -143,32 +143,32 @@ export type InsertMaterial = typeof materials.$inferInsert;
  */
 export const deliveries = pgTable("deliveries", {
   id: serial("id").primaryKey(),
-  projectId: integer("projectId").references(() => projects.id),
-  projectName: varchar("projectName", { length: 255 }).notNull(),
-  concreteType: varchar("concreteType", { length: 100 }).notNull(),
+  projectId: integer("project_id").references(() => projects.id),
+  projectName: varchar("project_name", { length: 255 }).notNull(),
+  concreteType: varchar("concrete_type", { length: 100 }).notNull(),
   volume: integer("volume").notNull(),
-  scheduledTime: timestamp("scheduledTime").notNull(),
-  actualTime: timestamp("actualTime"),
+  scheduledTime: timestamp("scheduled_time").notNull(),
+  actualTime: timestamp("actual_time"),
   status: deliveryStatusEnum("status").default("scheduled").notNull(),
-  driverName: varchar("driverName", { length: 255 }),
-  vehicleNumber: varchar("vehicleNumber", { length: 100 }),
+  driverName: varchar("driver_name", { length: 255 }),
+  vehicleNumber: varchar("vehicle_number", { length: 100 }),
   notes: text("notes"),
-  gpsLocation: varchar("gpsLocation", { length: 100 }), // "lat,lng"
+  gpsLocation: varchar("gps_location", { length: 100 }), // "lat,lng"
   latitude: doublePrecision("latitude"),
   longitude: doublePrecision("longitude"),
-  deliveryPhotos: jsonb("deliveryPhotos"), // JSON array of photo URLs
-  estimatedArrival: integer("estimatedArrival"), // Unix timestamp (seconds)
-  etaUpdatedAt: timestamp("etaUpdatedAt"),
-  actualArrivalTime: integer("actualArrivalTime"),
-  actualDeliveryTime: integer("actualDeliveryTime"),
-  driverNotes: text("driverNotes"),
-  customerName: varchar("customerName", { length: 255 }),
-  customerPhone: varchar("customerPhone", { length: 50 }),
-  smsNotificationSent: boolean("smsNotificationSent").default(false),
-  delayNotificationSent: boolean("delayNotificationSent").default(false),
-  createdBy: integer("createdBy").references(() => users.id).notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  deliveryPhotos: jsonb("delivery_photos"), // JSON array of photo URLs
+  estimatedArrival: integer("estimated_arrival"), // Unix timestamp (seconds)
+  etaUpdatedAt: timestamp("eta_updated_at"),
+  actualArrivalTime: integer("actual_arrival_time"),
+  actualDeliveryTime: integer("actual_delivery_time"),
+  driverNotes: text("driver_notes"),
+  customerName: varchar("customer_name", { length: 255 }),
+  customerPhone: varchar("customer_phone", { length: 50 }),
+  smsNotificationSent: boolean("sms_notification_sent").default(false),
+  delayNotificationSent: boolean("delay_notification_sent").default(false),
+  createdBy: integer("created_by").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => {
   return {
     statusScheduledTimeIdx: index("delivery_status_scheduled_time_idx").on(table.status, table.scheduledTime),
@@ -186,11 +186,11 @@ export type InsertDelivery = typeof deliveries.$inferInsert;
  */
 export const deliveryStatusHistory = pgTable("delivery_status_history", {
   id: serial("id").primaryKey(),
-  deliveryId: integer("deliveryId").references(() => deliveries.id).notNull(),
-  userId: integer("userId"),    // who made the status change (null = driver app)
+  deliveryId: integer("delivery_id").references(() => deliveries.id).notNull(),
+  userId: integer("user_id"),    // who made the status change (null = driver app)
   status: varchar("status", { length: 50 }).notNull(),
   timestamp: timestamp("timestamp").defaultNow().notNull(),
-  gpsLocation: varchar("gpsLocation", { length: 100 }),
+  gpsLocation: varchar("gps_location", { length: 100 }),
   latitude: doublePrecision("latitude"),
   longitude: doublePrecision("longitude"),
   notes: text("notes"),
@@ -202,25 +202,25 @@ export type InsertDeliveryStatusHistory = typeof deliveryStatusHistory.$inferIns
 /**
  * Quality tests table for QC records
  */
-export const qualityTests = pgTable("qualityTests", {
+export const qualityTests = pgTable("quality_tests", {
   id: serial("id").primaryKey(),
-  testName: varchar("testName", { length: 255 }).notNull(),
-  testType: testTypeEnum("testType").default("other").notNull(),
+  testName: varchar("test_name", { length: 255 }).notNull(),
+  testType: testTypeEnum("test_type").default("other").notNull(),
   result: varchar("result", { length: 255 }).notNull(),
   unit: varchar("unit", { length: 50 }),
   status: testStatusEnum("status").default("pending").notNull(),
-  deliveryId: integer("deliveryId").references(() => deliveries.id),
-  projectId: integer("projectId").references(() => projects.id),
-  testedBy: varchar("testedBy", { length: 255 }),
+  deliveryId: integer("delivery_id").references(() => deliveries.id),
+  projectId: integer("project_id").references(() => projects.id),
+  testedBy: varchar("tested_by", { length: 255 }),
   notes: text("notes"),
-  photoUrls: text("photoUrls"), // JSON array of S3 photo URLs
-  inspectorSignature: text("inspectorSignature"), // Base64 signature image
-  supervisorSignature: text("supervisorSignature"), // Base64 signature image
-  testLocation: varchar("testLocation", { length: 100 }), // GPS coordinates "lat,lng"
-  complianceStandard: varchar("complianceStandard", { length: 50 }), // EN 206, ASTM C94, etc.
-  offlineSyncStatus: offlineSyncStatusEnum("offlineSyncStatus").default("synced"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  photoUrls: text("photo_urls"), // JSON array of S3 photo URLs
+  inspectorSignature: text("inspector_signature"), // Base64 signature image
+  supervisorSignature: text("supervisor_signature"), // Base64 signature image
+  testLocation: varchar("test_location", { length: 100 }), // GPS coordinates "lat,lng"
+  complianceStandard: varchar("compliance_standard", { length: 50 }), // EN 206, ASTM C94, etc.
+  offlineSyncStatus: offlineSyncStatusEnum("offline_sync_status").default("synced"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => {
   return {
     projectIdIdx: index("quality_test_project_id_idx").on(table.projectId),
