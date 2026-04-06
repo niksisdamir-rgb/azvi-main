@@ -8,6 +8,8 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AdminRoute } from "./components/AdminRoute";
 // Lazy loaded feature routes
 const Documents = lazy(() => import("./pages/Documents"));
 const Projects = lazy(() => import("./pages/Projects"));
@@ -46,35 +48,38 @@ function Router() {
   return (
     <Suspense fallback={<Fallback />}>
       <Switch>
-        <Route path={"/"} component={Home} />
         <Route path={"/login"} component={Login} />
         <Route path={"/register"} component={Register} />
-        <Route path={"/documents"} component={Documents} />
-        <Route path={"/projects"} component={Projects} />
-        <Route path={"/materials"} component={Materials} />
-        <Route path={"/forecasting"} component={ForecastingDashboard} />
-        <Route path={"/purchase-orders"} component={PurchaseOrders} />
-        <Route path={"/suppliers"} component={Suppliers} />
-        <Route path={"/deliveries"} component={Deliveries} />
-        <Route path={"/driver-deliveries"} component={DriverDeliveries} />
         <Route path={"/driver-app"} component={DriverApp} />
-        <Route path={"/quality"} component={QualityControl} />
-        <Route path={"/employees"} component={Employees} />
-        <Route path={"/machines"} component={Machines} />
-        <Route path={"/timesheets"} component={Timesheets} />
-        <Route path={"/timesheet-summary"} component={TimesheetSummary} />
-        <Route path={"/settings"} component={Settings} />
-        <Route path={"/report-settings"} component={ReportSettings} />
-        <Route path={"/email-branding"} component={EmailBrandingSettings} />
-        <Route path={"/ai-assistant"} component={AIAssistant} />
-        <Route path={"/dashboard-custom"} component={CustomizableDashboard} />
-        <Route path={"/concrete-base"} component={ConcreteBaseDashboard} />
-        <Route path={"/aggregate-inputs"} component={AggregateInputs} />
-        <Route path={"/email-templates"} component={EmailTemplateEditor} />
-        <Route path={"/notification-triggers"} component={NotificationTriggersAdmin} />
-        <Route path={"/notification-templates"} component={NotificationTemplatesAdmin} />
-        <Route path={"/design-system"} component={DesignSystem} />
-        <Route path={"/change-password"} component={ChangePassword} />
+
+        <Route path={"/"} component={() => <ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path={"/documents"} component={() => <ProtectedRoute><Documents /></ProtectedRoute>} />
+        <Route path={"/projects"} component={() => <ProtectedRoute><Projects /></ProtectedRoute>} />
+        <Route path={"/materials"} component={() => <ProtectedRoute><Materials /></ProtectedRoute>} />
+        <Route path={"/forecasting"} component={() => <ProtectedRoute><ForecastingDashboard /></ProtectedRoute>} />
+        <Route path={"/purchase-orders"} component={() => <ProtectedRoute><PurchaseOrders /></ProtectedRoute>} />
+        <Route path={"/suppliers"} component={() => <ProtectedRoute><Suppliers /></ProtectedRoute>} />
+        <Route path={"/deliveries"} component={() => <ProtectedRoute><Deliveries /></ProtectedRoute>} />
+        <Route path={"/driver-deliveries"} component={() => <ProtectedRoute><DriverDeliveries /></ProtectedRoute>} />
+        <Route path={"/quality"} component={() => <ProtectedRoute><QualityControl /></ProtectedRoute>} />
+        <Route path={"/employees"} component={() => <ProtectedRoute><Employees /></ProtectedRoute>} />
+        <Route path={"/machines"} component={() => <ProtectedRoute><Machines /></ProtectedRoute>} />
+        <Route path={"/timesheets"} component={() => <ProtectedRoute><Timesheets /></ProtectedRoute>} />
+        <Route path={"/timesheet-summary"} component={() => <ProtectedRoute><TimesheetSummary /></ProtectedRoute>} />
+        <Route path={"/ai-assistant"} component={() => <ProtectedRoute><AIAssistant /></ProtectedRoute>} />
+        <Route path={"/dashboard-custom"} component={() => <ProtectedRoute><CustomizableDashboard /></ProtectedRoute>} />
+        <Route path={"/concrete-base"} component={() => <ProtectedRoute><ConcreteBaseDashboard /></ProtectedRoute>} />
+        <Route path={"/aggregate-inputs"} component={() => <ProtectedRoute><AggregateInputs /></ProtectedRoute>} />
+        <Route path={"/design-system"} component={() => <ProtectedRoute><DesignSystem /></ProtectedRoute>} />
+        <Route path={"/change-password"} component={() => <ProtectedRoute><ChangePassword /></ProtectedRoute>} />
+
+        <Route path={"/settings"} component={() => <AdminRoute><Settings /></AdminRoute>} />
+        <Route path={"/report-settings"} component={() => <AdminRoute><ReportSettings /></AdminRoute>} />
+        <Route path={"/email-branding"} component={() => <AdminRoute><EmailBrandingSettings /></AdminRoute>} />
+        <Route path={"/email-templates"} component={() => <AdminRoute><EmailTemplateEditor /></AdminRoute>} />
+        <Route path={"/notification-triggers"} component={() => <AdminRoute><NotificationTriggersAdmin /></AdminRoute>} />
+        <Route path={"/notification-templates"} component={() => <AdminRoute><NotificationTemplatesAdmin /></AdminRoute>} />
+
         <Route path={"/404"} component={NotFound} />
         <Route component={NotFound} />
       </Switch>

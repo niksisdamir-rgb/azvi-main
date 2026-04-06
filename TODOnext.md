@@ -391,10 +391,10 @@
   - [x] `refactor.js`
   - [x] `refactor_db.ts`
   - [x] `patch_deliveries.cjs`
-- [ ] Delete stray SQLite database:
-  - [ ] `db/custom.db`
-- [ ] Delete empty placeholder:
-  - [ ] `.gitkeep` (root level — check if directory needs it)
+- [x] Delete stray SQLite database:
+  - [x] `db/custom.db`
+- [x] Delete empty placeholder:
+  - [x] `.gitkeep` (root level — check if directory needs it)
 - [x] Add `*.bak` to `.gitignore`
 
 ---

@@ -11,6 +11,7 @@ node_modules
 !.yarn/versions
 
 # testing
+package-lock.json
 /coverage
 
 # next.js
