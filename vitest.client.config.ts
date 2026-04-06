@@ -19,6 +19,7 @@ export default defineConfig({
     include: ["client/tests/**/*.test.{ts,tsx}", "client/tests/**/*.spec.{ts,tsx}"],
     setupFiles: ["client/tests/setup.ts"],
     globals: true,
+    pool: "vmForks",
     typecheck: {
       tsconfig: "./tsconfig.test.json",
     },
