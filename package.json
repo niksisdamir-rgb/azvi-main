@@ -11,6 +11,9 @@
     "check": "tsc --noEmit",
     "format": "prettier --write .",
     "test": "vitest run",
+    "test:client": "vitest run --config vitest.client.config.ts",
+    "test:client:watch": "vitest --config vitest.client.config.ts",
+    "test:client:coverage": "vitest run --config vitest.client.config.ts --coverage",
     "db:push": "drizzle-kit generate && drizzle-kit migrate",
     "demo:sdk": "tsx scripts/demo-client.ts"
   },

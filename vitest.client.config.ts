@@ -19,6 +19,9 @@ export default defineConfig({
     include: ["client/tests/**/*.test.{ts,tsx}", "client/tests/**/*.spec.{ts,tsx}"],
     setupFiles: ["client/tests/setup.ts"],
     globals: true,
+    typecheck: {
+      tsconfig: "./tsconfig.test.json",
+    },
     coverage: {
       provider: "v8",
       include: ["client/src/**/*.{ts,tsx}"],
