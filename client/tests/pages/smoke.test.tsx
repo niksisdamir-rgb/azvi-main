@@ -96,6 +96,7 @@ vi.mock("@/components/MaterialConsumptionChart", () => ({
   MaterialConsumptionChart: () => <Noop testId="mock-material-chart" />,
 }));
 vi.mock("@/components/DeliveryTrendsChart", () => ({
+  default: () => <Noop testId="mock-delivery-trends" />,
   DeliveryTrendsChart: () => <Noop testId="mock-delivery-trends" />,
 }));
 vi.mock("@/components/DeliveryTimeline", () => ({
@@ -160,6 +161,40 @@ vi.mock("@/components/SignatureCanvas", () => ({
 }));
 vi.mock("@/components/DeliveryPhotoGallery", () => ({
   DeliveryPhotoGallery: () => <Noop testId="mock-photo-gallery" />,
+}));
+
+// Mock framer-motion to avoid IntersectionObserver constructor issues
+vi.mock("framer-motion", () => ({
+  motion: new Proxy({}, {
+    get: (_: any, tag: string) => {
+      const comp = ({ children, ...props }: any) => React.createElement(tag, props, children);
+      comp.displayName = `motion.${tag}`;
+      return comp;
+    },
+  }),
+  AnimatePresence: ({ children }: any) => <>{children}</>,
+  useAnimation: () => ({ start: vi.fn(), stop: vi.fn() }),
+  useMotionValue: (v: any) => ({ get: () => v, set: vi.fn() }),
+  useTransform: () => ({ get: vi.fn() }),
+  useSpring: () => ({ get: vi.fn() }),
+  useInView: () => true,
+  animate: vi.fn(),
+  LayoutGroup: ({ children }: any) => <>{children}</>,
+}));
+
+// Mock @radix-ui TooltipProvider at module level so ComponentShowcase works
+vi.mock("@/components/ui/tooltip", () => ({
+  Tooltip: ({ children }: any) => <>{children}</>,
+  TooltipTrigger: ({ children }: any) => <>{children}</>,
+  TooltipContent: ({ children }: any) => <div>{children}</div>,
+  TooltipProvider: ({ children }: any) => <>{children}</>,
+}));
+
+// Mock Hover Card (used in ComponentShowcase)
+vi.mock("@/components/ui/hover-card", () => ({
+  HoverCard: ({ children }: any) => <>{children}</>,
+  HoverCardTrigger: ({ children }: any) => <>{children}</>,
+  HoverCardContent: ({ children }: any) => <div>{children}</div>,
 }));
 
 // Mock ThemeProvider / LanguageContext
