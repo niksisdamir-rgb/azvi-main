@@ -4,11 +4,12 @@ import { vi } from "vitest";
 // ── Browser API stubs ────────────────────────────────────────────────────────
 
 // ResizeObserver – needed by many Radix UI / chart components
-globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+class ResizeObserverMock {
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+}
+globalThis.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver;
 
 // matchMedia – needed by next-themes and media-query hooks
 Object.defineProperty(window, "matchMedia", {

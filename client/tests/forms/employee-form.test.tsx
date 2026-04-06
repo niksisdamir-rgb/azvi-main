@@ -115,6 +115,13 @@ describe("Employee Creation Form", () => {
     await user.type(screen.getByLabelText(/last name/i), "Marković");
     await user.type(screen.getByLabelText(/employee number/i), "EMP-001");
     await user.type(screen.getByLabelText(/^position/i), "Engineer");
+
+    // Select standard Radix Select dropdown
+    const selectTrigger = screen.getByRole("combobox");
+    await user.click(selectTrigger);
+    const option = await screen.findByRole("option", { name: /construction/i });
+    await user.click(option);
+
     await user.type(screen.getByLabelText(/phone number/i), "+38761000111");
     await user.type(screen.getByLabelText(/^email$/i), "marko@example.com");
     await user.type(screen.getByLabelText(/hourly rate/i), "15.50");
@@ -132,6 +139,7 @@ describe("Employee Creation Form", () => {
         lastName: "Marković",
         employeeNumber: "EMP-001",
         position: "Engineer",
+        department: "construction",
         phoneNumber: "+38761000111",
         email: "marko@example.com",
         hourlyRate: 15.5,
