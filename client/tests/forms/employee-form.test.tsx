@@ -100,13 +100,16 @@ describe("Employee Creation Form", () => {
 
   it("valid form submission calls mutation with correct employee data", async () => {
     const mockMutate = vi.fn();
+    // Must set this BEFORE rendering, so the component's useMutation returns the mock
     vi.mocked(trpc.employees.create.useMutation).mockReturnValue({
       mutate: mockMutate,
       isPending: false,
       error: null,
     } as any);
 
-    await openAddEmployeeDialog();
+    render(<Employees />);
+    const addBtn = screen.getByRole("button", { name: /add employee/i });
+    await user.click(addBtn);
 
     await user.type(screen.getByLabelText(/first name/i), "Marko");
     await user.type(screen.getByLabelText(/last name/i), "Marković");
