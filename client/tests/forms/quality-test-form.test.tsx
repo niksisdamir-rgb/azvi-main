@@ -106,12 +106,21 @@ describe("Quality Test Submission Form", () => {
       error: null,
     } as any);
 
-    await openRecordTestDialog();
+    render(<QualityControl />);
+    const recordBtn = screen.getByRole("button", { name: /record test/i });
+    await user.click(recordBtn);
 
     await user.type(screen.getByLabelText(/test name/i), "Compressive Strength Test");
     await user.type(screen.getByLabelText(/^result$/i), "35");
     await user.type(screen.getByLabelText(/unit/i), "MPa");
     await user.type(screen.getByLabelText(/tested by/i), "Lab Tech 1");
+
+    // Select the required testType via Radix combobox
+    const comboboxes = screen.getAllByRole("combobox");
+    // First combobox is testType
+    await user.click(comboboxes[0]);
+    const strengthOption = await screen.findByRole("option", { name: /strength test/i });
+    await user.click(strengthOption);
 
     const submitBtn = screen.getByRole("button", { name: /^record test$/i });
     await user.click(submitBtn);
@@ -123,6 +132,7 @@ describe("Quality Test Submission Form", () => {
     expect(mockMutate).toHaveBeenCalledWith(
       expect.objectContaining({
         testName: "Compressive Strength Test",
+        testType: "strength",
         result: "35",
         unit: "MPa",
         testedBy: "Lab Tech 1",
@@ -132,7 +142,7 @@ describe("Quality Test Submission Form", () => {
 
   it("status field defaults to 'pending'", async () => {
     await openRecordTestDialog();
-    expect(screen.getByText(/pending/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/pending/i).length).toBeGreaterThan(0);
   });
 
   it("submit button shows 'Recording...' and is disabled when pending", async () => {

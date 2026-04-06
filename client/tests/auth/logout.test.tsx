@@ -105,16 +105,21 @@ describe("Logout Flow", () => {
   });
 
   it("local logout: calls logout mutateAsync once", async () => {
+    const mockMutateAsync = vi.fn().mockResolvedValue(undefined);
+    vi.mocked(trpc.auth.logout.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      mutateAsync: mockMutateAsync,
+      isPending: false,
+      error: null,
+    } as any);
+
     const { result } = renderHook(() => useAuth());
 
     await act(async () => {
       await result.current.logout();
     });
 
-    const utils = vi.mocked(trpc.useUtils)();
-    expect(
-      vi.mocked(trpc.auth.logout.useMutation)().mutateAsync
-    ).toHaveBeenCalledTimes(1);
+    expect(mockMutateAsync).toHaveBeenCalledTimes(1);
   });
 
   it("local logout: clears me cache via setData(undefined, null) in finally block", async () => {
