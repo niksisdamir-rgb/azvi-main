@@ -404,15 +404,15 @@
 **Files:** `package.json`, `package-lock.json`  
 **Severity:** 🟡 MEDIUM
 
-- [ ] Delete `package-lock.json` (project uses pnpm)
-- [ ] Add `package-lock.json` to `.gitignore`
-- [ ] Remove accidental `"add": "^2.0.6"` from devDependencies
-- [ ] Fix `wouter` patch version mismatch:
-  - [ ] Check actual installed version: `pnpm why wouter`
-  - [ ] Update `patchedDependencies` key to match installed version, or
-  - [ ] Update `wouter` dependency to `^3.7.1` to match the patch
-- [ ] Run `pnpm install` and verify clean install
-- [ ] Run `pnpm audit` and address any vulnerability findings
+- [x] Delete `package-lock.json` (project uses pnpm)
+- [x] Add `package-lock.json` to `.gitignore`
+- [x] Remove accidental `"add": "^2.0.6"` from devDependencies
+- [x] Fix `wouter` patch version mismatch:
+  - [x] Check actual installed version: `pnpm why wouter`
+  - [x] Update `patchedDependencies` key to match installed version, or
+  - [x] Update `wouter` dependency to `^3.7.1` to match the patch
+- [x] Run `pnpm install` and verify clean install
+- [x] Run `pnpm audit` and address any vulnerability findings
 
 ---
 
@@ -421,24 +421,24 @@
 **File:** `client/src/App.tsx`  
 **Severity:** 🟡 MEDIUM
 
-- [ ] Create `client/src/components/ProtectedRoute.tsx`:
+- [x] Create `client/src/components/ProtectedRoute.tsx`:
   ```
   - Wraps children with auth check via useAuth()
   - Shows loading spinner while auth state resolves
   - Redirects to /login if unauthenticated
   - Optionally accepts requiredRole prop for admin-only routes
   ```
-- [ ] Create `client/src/components/AdminRoute.tsx`:
+- [x] Create `client/src/components/AdminRoute.tsx`:
   ```
   - Extends ProtectedRoute with role === "admin" check
   - Shows 403 page or redirects if not admin
   ```
-- [ ] Wrap protected routes in `App.tsx`:
+- [x] Wrap protected routes in `App.tsx`:
   - Public: `/login`, `/register`, `/driver-app`
   - Protected (any user): `/`, `/documents`, `/projects`, `/materials`, etc.
   - Admin only: `/settings`, `/notification-triggers`, `/notification-templates`, `/email-branding`, `/email-templates`, `/report-settings`
-- [ ] Write test: unauthenticated user accessing `/materials` → redirect to `/login`
-- [ ] Write test: non-admin user accessing `/settings` → redirect or 403
+- [x] Write test: unauthenticated user accessing `/materials` → redirect to `/login`
+- [x] Write test: non-admin user accessing `/settings` → redirect or 403
 
 ---
 
