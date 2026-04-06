@@ -45,7 +45,7 @@ export default function Machines() {
   const { data: concreteBases } = trpc.concreteBases.list.useQuery();
   
   // Fetch maintenance records only when report is open for a selected machine
-  const { data: maintenanceRecords } = trpc.machineMaintenance.list.useQuery(
+  const { data: maintenanceRecords } = trpc.machines.maintenance.list.useQuery(
     { machineId: selectedMachineForReport?.id },
     { enabled: !!selectedMachineForReport && reportOpen }
   );
@@ -61,7 +61,7 @@ export default function Machines() {
     },
   });
 
-  const createMaintenanceMutation = trpc.machineMaintenance.create.useMutation({
+  const createMaintenanceMutation = trpc.machines.maintenance.create.useMutation({
     onSuccess: () => {
       toast.success("Maintenance record added successfully");
       setIsMaintenanceDialogOpen(false);
@@ -72,7 +72,7 @@ export default function Machines() {
     },
   });
 
-  const createWorkHourMutation = trpc.machineWorkHours.create.useMutation({
+  const createWorkHourMutation = trpc.machines.workHours.create.useMutation({
     onSuccess: () => {
       toast.success("Working hours logged successfully");
       setIsLogHoursDialogOpen(false);

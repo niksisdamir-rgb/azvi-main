@@ -4,7 +4,7 @@ import { Truck, CheckCircle, Clock } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 
 export const DeliveryAnalyticsDashboard = React.memo(function DeliveryAnalyticsDashboard() {
-  const { data: analytics, isLoading } = trpc.tracking.getDeliveryAnalytics.useQuery(undefined, {
+  const { data: analytics, isLoading } = trpc.deliveries.getDeliveryAnalytics.useQuery(undefined, {
     refetchInterval: 15000 // refresh every 15 seconds for more "live" feel
   });
 

@@ -110,20 +110,20 @@ export default function DriverApp() {
   }, []);
 
   // queries
-  const { data: deliveries, isLoading, refetch } = trpc.tracking.getAllDeliveries.useQuery(
+  const { data: deliveries, isLoading, refetch } = trpc.deliveries.getAllDeliveries.useQuery(
     { statusFilter: 'active' }, { refetchInterval: 15_000 }
   );
-  const { data: selected, refetch: refetchOne } = trpc.tracking.getById.useQuery(
+  const { data: selected, refetch: refetchOne } = trpc.deliveries.getById.useQuery(
     { id: selectedId! },
     { enabled: selectedId !== null, refetchInterval: 10_000 }
   );
-  const { data: history } = trpc.tracking.getDeliveryHistory.useQuery(
+  const { data: history } = trpc.deliveries.getDeliveryHistory.useQuery(
     { deliveryId: selectedId! },
     { enabled: selectedId !== null }
   );
 
   // mutations
-  const updateStatus = trpc.tracking.updateDeliveryStatus.useMutation({
+  const updateStatus = trpc.deliveries.updateDeliveryStatus.useMutation({
     onSuccess: (_, vars) => {
       toast.success(`Status → ${vars.status.replace('_', ' ').toUpperCase()}`);
       refetch(); refetchOne();
@@ -131,14 +131,14 @@ export default function DriverApp() {
     onError: (e) => toast.error(e.message),
   });
 
-  const calcETA = trpc.tracking.calculateETA.useMutation({
+  const calcETA = trpc.deliveries.calculateETA.useMutation({
     onSuccess: (data) => {
       toast.success(`ETA updated: ${formatETA(data.estimatedArrival)}`);
       refetchOne();
     },
   });
 
-  const uploadPhoto = trpc.tracking.uploadDeliveryPhoto.useMutation({
+  const uploadPhoto = trpc.deliveries.uploadDeliveryPhoto.useMutation({
     onSuccess: () => {
       toast.success('Photo uploaded');
       setPhotoPreview(null);

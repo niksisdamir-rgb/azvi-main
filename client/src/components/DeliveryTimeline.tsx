@@ -3,7 +3,7 @@ import { trpc } from '@/lib/trpc';
 import { format } from 'date-fns';
 
 export function DeliveryTimeline({ deliveryId }: { deliveryId: number }) {
-  const { data: history, isLoading } = trpc.tracking.getDeliveryHistory.useQuery({ deliveryId });
+  const { data: history, isLoading } = trpc.deliveries.getDeliveryHistory.useQuery({ deliveryId });
 
   if (isLoading) {
     return <div className="p-4 text-center text-sm text-muted-foreground animate-pulse">Loading timeline...</div>;

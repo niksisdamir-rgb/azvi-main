@@ -33,8 +33,7 @@ export const appRouter = router({
   ai: aiAssistantRouter,
   bulkImport: bulkImportRouter,
   notifications: notificationsRouter,
-  tracking: deliveriesRouter,
-  deliveries: deliveriesRouter, // Backward compatibility or alias
+  deliveries: deliveriesRouter,
   push: pushRouter,
   forecasting: forecastingRouter,
   inventoryAnalytics: inventoryAnalyticsRouter,
@@ -50,8 +49,6 @@ export const appRouter = router({
   timesheets: timesheetsRouter,
   concreteBases: concreteBasesRouter,
   machines: machinesRouter,
-  machineMaintenance: machinesRouter.maintenance, // Alias if needed
-  machineWorkHours: machinesRouter.workHours, // Alias if needed
   aggregateInputs: aggregateInputsRouter,
   reports: reportsRouter,
   branding: brandingRouter,

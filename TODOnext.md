@@ -447,13 +447,13 @@
 **Files:** `server/routers.ts`, `server/lib/index.ts`  
 **Severity:** 🟡 MEDIUM
 
-- [ ] Remove `tracking:` alias in `routers.ts` (keep `deliveries:` only)
-  - [ ] Search client for `trpc.tracking.*` references and replace with `trpc.deliveries.*`
-- [ ] Remove `machineMaintenance:` and `machineWorkHours:` sub-router aliases
-  - [ ] Update client to use `trpc.machines.maintenance.*` and `trpc.machines.workHours.*`
-- [ ] Delete dead function `findAvailablePort()` from `server/lib/index.ts`
-- [ ] Delete dead statement `null;` from `server/lib/index.ts:91`
-- [ ] Re-enable or permanently remove `scheduleForecastingJob()` call (currently commented out / replaced with `null;`)
+- [x] Remove `tracking:` alias in `routers.ts` (keep `deliveries:` only)
+  - [x] Search client for `trpc.tracking.*` references and replace with `trpc.deliveries.*`
+- [x] Remove `machineMaintenance:` and `machineWorkHours:` sub-router aliases
+  - [x] Update client to use `trpc.machines.maintenance.*` and `trpc.machines.workHours.*`
+- [x] Delete dead function `findAvailablePort()` from `server/lib/index.ts`
+- [x] Delete dead statement `null;` from `server/lib/index.ts:91`
+- [x] Re-enable or permanently remove `scheduleForecastingJob()` call (currently commented out / replaced with `null;`)
 
 ---
 

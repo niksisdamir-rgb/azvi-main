@@ -48,10 +48,10 @@ export default function ConcreteBaseDashboard() {
   const { data: bases = [], isLoading: basesLoading, refetch: refetchBases } =
     trpc.concreteBases.list.useQuery();
   const { data: machines = [], refetch: refetchMachines } = trpc.machines.list.useQuery();
-  const { data: machineHours = [], refetch: refetchHours } = trpc.machineWorkHours.list.useQuery();
+  const { data: machineHours = [], refetch: refetchHours } = trpc.machines.workHours.list.useQuery();
   const { data: aggregateInputs = [] } = trpc.aggregateInputs.list.useQuery();
   
-  const { data: maintenanceRecords } = trpc.machineMaintenance.list.useQuery(
+  const { data: maintenanceRecords } = trpc.machines.maintenance.list.useQuery(
     { machineId: selectedMachineForReport?.id },
     { enabled: !!selectedMachineForReport && reportOpen }
   );
@@ -65,7 +65,7 @@ export default function ConcreteBaseDashboard() {
     onError: (e) => toast.error(`Greška: ${e.message}`),
   });
 
-  const createWorkHourMutation = trpc.machineWorkHours.create.useMutation({
+  const createWorkHourMutation = trpc.machines.workHours.create.useMutation({
     onSuccess: () => {
       toast.success("Radni sati uspješno evidentirani");
       setIsLogHoursDialogOpen(false);

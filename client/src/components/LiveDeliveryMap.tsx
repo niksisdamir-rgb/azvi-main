@@ -11,13 +11,13 @@ import { DeliveryPhotoGallery } from './DeliveryPhotoGallery';
 
 export const LiveDeliveryMap = React.memo(function LiveDeliveryMap() {
   const [filter, setFilter] = useState<'all' | 'active' | 'completed' | 'delayed'>('active');
-  const { data: deliveries, refetch } = trpc.tracking.getAllDeliveries.useQuery({ statusFilter: filter });
+  const { data: deliveries, refetch } = trpc.deliveries.getAllDeliveries.useQuery({ statusFilter: filter });
   const [autoRefresh, setAutoRefresh] = useState(true);
   
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
   
-  const sendNotification = trpc.tracking.sendCustomerNotification.useMutation({
+  const sendNotification = trpc.deliveries.sendCustomerNotification.useMutation({
     onSuccess: () => {
       toast.success('SMS notification sent to customer');
       refetch();
