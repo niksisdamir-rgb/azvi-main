@@ -509,13 +509,13 @@
 
 **Severity:** 🔵 LOW
 
-- [ ] Remove `"add": "^2.0.6"` from `devDependencies`
-- [ ] Remove commented-out domain logic in `server/lib/cookies.ts` (lines 27-40)
-- [ ] Remove `ONE_YEAR_MS` from `packages/shared-core/const.ts` if unused
-  - [ ] `grep -r "ONE_YEAR_MS" .` to check usage
-- [ ] Clean up `server/lib/types/` directory — remove duplicate types
-- [ ] Remove `mini-services/.gitkeep` if directory is empty and unused
-- [ ] Remove `archive/` directory or document its purpose in README
+- [x] Remove `"add": "^2.0.6"` from `devDependencies`
+- [x] Remove commented-out domain logic in `server/lib/cookies.ts` (lines 27-40)
+- [x] Remove `ONE_YEAR_MS` from `packages/shared-core/const.ts` if unused
+  - [x] `grep -r "ONE_YEAR_MS" .` to check usage
+- [x] Clean up `server/lib/types/` directory — remove duplicate types
+- [x] Remove `mini-services/.gitkeep` if directory is empty and unused
+- [x] Remove `archive/` directory or document its purpose in README
 
 ---
 

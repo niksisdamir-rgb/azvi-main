@@ -1,4 +1,4 @@
-import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { COOKIE_NAME } from "@shared/const";
 import { authLogger } from "./logger";
 import { ForbiddenError, UnauthorizedError } from "@shared/lib/errors";
 import { parse as parseCookieHeader } from "cookie";
