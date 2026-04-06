@@ -87,12 +87,14 @@ vi.mock("@/components/EquipmentHealthFusion", () => ({
   EquipmentHealthFusion: () => <Noop testId="mock-equipment-health" />,
 }));
 vi.mock("@/components/InventoryAnalytics", () => ({
+  default: () => <Noop testId="mock-inventory-analytics" />,
   InventoryAnalytics: () => <Noop testId="mock-inventory-analytics" />,
 }));
 vi.mock("@/components/MaterialBundlingSuggestions", () => ({
   MaterialBundlingSuggestions: () => <Noop testId="mock-bundling" />,
 }));
 vi.mock("@/components/MaterialConsumptionChart", () => ({
+  default: () => <Noop testId="mock-material-chart" />,
   MaterialConsumptionChart: () => <Noop testId="mock-material-chart" />,
 }));
 vi.mock("@/components/DeliveryTrendsChart", () => ({

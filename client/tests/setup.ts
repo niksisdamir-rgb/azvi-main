@@ -41,3 +41,16 @@ window.HTMLElement.prototype.scrollIntoView = vi.fn();
 window.HTMLElement.prototype.setPointerCapture = vi.fn();
 window.HTMLElement.prototype.releasePointerCapture = vi.fn();
 window.HTMLElement.prototype.hasPointerCapture = vi.fn(() => false);
+
+// Notification API – needed by Settings page push subscription feature
+if (typeof globalThis.Notification === "undefined") {
+  Object.defineProperty(globalThis, "Notification", {
+    writable: true,
+    configurable: true,
+    value: class MockNotification {
+      static permission: string = "default";
+      static requestPermission = vi.fn().mockResolvedValue("granted");
+      constructor(title: string, options?: object) {}
+    },
+  });
+}
