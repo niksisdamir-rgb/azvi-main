@@ -48,6 +48,44 @@ let _db: PostgresJsDatabase<typeof combinedSchema> | null = null;
 let _client: any = null;
 let _replicaClients: any[] = [];
 
+export interface SelectBuilder {
+  from(table: any): {
+    where: (condition: any) => {
+      limit: (n: number) => Promise<any[]>;
+      orderBy: (order: any) => Promise<any[]>;
+    };
+    orderBy: (order: any) => Promise<any[]>;
+    limit: (n: number) => Promise<any[]>;
+    execute: () => Promise<any[]>;
+    then: (onfulfilled: any) => Promise<any>;
+  };
+}
+
+export interface InsertBuilder {
+  values(values: any): {
+    onConflictDoUpdate: (config: any) => Promise<any[]>;
+    returning: () => Promise<any[]>;
+  };
+}
+
+export interface UpdateBuilder {
+  set(values: any): {
+    where: (condition: any) => Promise<void>;
+  };
+}
+
+export interface DeleteBuilder {
+  where: (condition: any) => Promise<void>;
+}
+
+export interface IDbOperations {
+  select(): SelectBuilder;
+  insert(table: any): InsertBuilder;
+  update(table: any): UpdateBuilder;
+  delete(table: any): DeleteBuilder;
+  transaction<T>(cb: (tx: IDbOperations) => Promise<T>): Promise<T>;
+}
+
 // Mock DB implementation for testing in restricted environments
 const mockData: Record<string, any[]> = {
   users: [],
@@ -68,52 +106,88 @@ const getTableName = (table: any): string => {
   return table?._?.name || table?.name || "unknown";
 };
 
-const mockDb = { transaction: (cb: (tx: typeof mockDb) => unknown) => cb(mockDb),
-  select: () => ({
-    from: (table: any) => {
-      const tableName = getTableName(table);
-      const data = mockData[tableName] || [];
-      return {
-        where: (condition: any) => ({
-          limit: (n: number) => Promise.resolve(data.slice(0, n)),
-          orderBy: (order: any) => Promise.resolve([...data]),
-        }),
-        orderBy: (order: any) => Promise.resolve([...data]),
-        limit: (n: number) => Promise.resolve(data.slice(0, n)),
-        execute: () => Promise.resolve([...data]),
-        then: (onfulfilled: any) => Promise.resolve([...data]).then(onfulfilled),
-      };
-    },
-  }),
-  insert: (table: any) => ({
-    values: (values: any) => ({
-      onConflictDoUpdate: (config: any) => {
-        const tableName = getTableName(table);
-        if (!mockData[tableName]) mockData[tableName] = [];
-        const result = { ...values, id: Math.floor(Math.random() * 10000) };
-        mockData[tableName].push(result);
-        return Promise.resolve([result]);
-      },
-      returning: () => {
-        const tableName = getTableName(table);
-        if (!mockData[tableName]) mockData[tableName] = [];
-        const result = { ...values, id: Math.floor(Math.random() * 10000) };
-        mockData[tableName].push(result);
-        return Promise.resolve([result]);
-      },
-    }),
-  }),
-  update: (table: any) => ({
-    set: (values: any) => ({
-      where: (condition: any) => Promise.resolve(),
-    }),
-  }),
-  delete: (table: any) => ({
-    where: (condition: any) => Promise.resolve(),
-  }),
-} as unknown as PostgresJsDatabase<typeof combinedSchema>;
+let _idCounter = 1;
+const generateId = () => _idCounter++;
 
-export async function getDb() {
+class MockDb implements IDbOperations {
+  transaction<T>(cb: (tx: IDbOperations) => Promise<T>): Promise<T> {
+    return cb(this);
+  }
+
+  select(): SelectBuilder {
+    return {
+      from: (table: any) => {
+        const tableName = getTableName(table);
+        const data = mockData[tableName] || [];
+        return {
+          where: (condition: any) => ({
+            limit: (n: number) => Promise.resolve(data.slice(0, n)),
+            orderBy: (order: any) => Promise.resolve([...data]),
+          }),
+          orderBy: (order: any) => Promise.resolve([...data]),
+          limit: (n: number) => Promise.resolve(data.slice(0, n)),
+          execute: () => Promise.resolve([...data]),
+          then: (onfulfilled: any) => Promise.resolve([...data]).then(onfulfilled),
+        };
+      },
+    };
+  }
+
+  insert(table: any): InsertBuilder {
+    return {
+      values: (values: any) => ({
+        onConflictDoUpdate: (config: any) => {
+          const tableName = getTableName(table);
+          if (!mockData[tableName]) mockData[tableName] = [];
+          const result = { id: generateId(), ...values };
+          mockData[tableName].push(result);
+          return Promise.resolve([result]);
+        },
+        returning: () => {
+          const tableName = getTableName(table);
+          if (!mockData[tableName]) mockData[tableName] = [];
+
+          // Schema constraint enforcement
+          const columns = table?._?.columns || {};
+          for (const [colName, colDef] of Object.entries(columns)) {
+            const c = colDef as any;
+            if (c.notNull && !c.hasDefault && values[c.name] === undefined) {
+               return Promise.reject(new Error(`null value in column "${c.name}" of relation "${tableName}" violates not-null constraint`));
+            }
+            if (c.isUnique) {
+               const existing = mockData[tableName].find(row => row[c.name] === values[c.name]);
+               if (existing) {
+                  return Promise.reject(new Error(`duplicate key value violates unique constraint on column "${c.name}"`));
+               }
+            }
+          }
+
+          const result = { id: generateId(), ...values };
+          mockData[tableName].push(result);
+          return Promise.resolve([result]);
+        },
+      }),
+    };
+  }
+
+  update(table: any): UpdateBuilder {
+    return {
+      set: (values: any) => ({
+        where: (condition: any) => Promise.resolve(),
+      }),
+    };
+  }
+
+  delete(table: any): DeleteBuilder {
+    return {
+      where: (condition: any) => Promise.resolve(),
+    };
+  }
+}
+
+const mockDb = new MockDb();
+
+export async function getDb(): Promise<PostgresJsDatabase<typeof combinedSchema> | any> {
   const useMocks = process.env.DMS_USE_MOCKS === "true";
   if (useMocks) {
     return mockDb;

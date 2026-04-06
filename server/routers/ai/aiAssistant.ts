@@ -7,7 +7,7 @@ import { executeTool } from "../../lib/aiTools";
 import { transcribeAudio } from "../../lib/voiceTranscription";
 import { storagePut } from "../../storage";
 import { summarizationService } from "../../lib/summarization";
-import { PROMPT_TEMPLATES, getTemplatesByCategory, searchTemplates, getTemplateById, type TemplateCategory } from "../../../packages/shared-core/promptTemplates";
+import { PROMPT_TEMPLATES, getTemplatesByCategory, searchTemplates, getTemplateById, type TemplateCategory } from "@shared/promptTemplates";
 import axios from "axios";
 
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || "http://localhost:8000";

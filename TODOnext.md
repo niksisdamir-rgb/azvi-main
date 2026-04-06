@@ -474,12 +474,12 @@
 **Files:** Various server files  
 **Severity:** 🟡 MEDIUM
 
-- [ ] Replace all direct `../../../packages/shared-core/...` imports with `@shared/...` alias:
-  - [ ] `server/routers/auth/index.ts:3` — uses direct path
-  - [ ] Search: `grep -r "packages/shared-core" server/`
-  - [ ] Replace each with `@shared/...`
-- [ ] Verify `tsconfig.json` paths are correctly configured for server-side resolution
-- [ ] Verify `vite.config.ts` alias matches for client-side resolution
+- [x] Replace all direct `../../../packages/shared-core/...` imports with `@shared/...` alias:
+  - [x] `server/routers/auth/index.ts:3` — uses direct path
+  - [x] Search: `grep -r "packages/shared-core" server/`
+  - [x] Replace each with `@shared/...`
+- [x] Verify `tsconfig.json` paths are correctly configured for server-side resolution
+- [x] Verify `vite.config.ts` alias matches for client-side resolution
 
 ---
 
@@ -488,7 +488,7 @@
 **File:** `server/db/setup.ts`  
 **Severity:** 🟡 MEDIUM
 
-- [ ] Define `IDbOperations` interface with the methods actually used:
+- [x] Define `IDbOperations` interface with the methods actually used:
   ```typescript
   interface IDbOperations {
     select(): SelectBuilder;
@@ -498,10 +498,10 @@
     transaction<T>(cb: (tx: IDbOperations) => Promise<T>): Promise<T>;
   }
   ```
-- [ ] Implement mock against the interface (not `as unknown as ...`)
-- [ ] Use `nanoid` or atomic counter for ID generation (not `Math.random()`)
-- [ ] Add schema constraint enforcement to mock `insert` (at minimum: unique, notNull)
-- [ ] Consider using `better-sqlite3` in-memory DB for testing instead of hand-rolled mock
+- [x] Implement mock against the interface (not `as unknown as ...`)
+- [x] Use `nanoid` or atomic counter for ID generation (not `Math.random()`)
+- [x] Add schema constraint enforcement to mock `insert` (at minimum: unique, notNull)
+- [x] Consider using `better-sqlite3` in-memory DB for testing instead of hand-rolled mock
 
 ---
 

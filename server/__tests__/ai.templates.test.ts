@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { appRouter } from '../routers';
-import { PROMPT_TEMPLATES } from '../../packages/shared-core/promptTemplates';
+import { PROMPT_TEMPLATES } from '@shared/promptTemplates';
 
 /**
  * AI Prompt Templates Tests
