@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
-import { useDashboardWidgets } from "./useDashboardWidgets";
+import { useDashboardWidgets } from "@/hooks/useDashboardWidgets";
 
 // Mock localStorage
 const localStorageMock = (() => {
