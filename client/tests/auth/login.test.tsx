@@ -1,54 +1,38 @@
 /**
  * Login flow integration tests.
- *
- * Tests the Login page component for:
- *  - Happy path: credentials submitted → mutation called → toast.success → redirect
- *  - Error state: mutation error → toast.error → no redirect
- *  - Auth0 SSO: button click → loginWithRedirect called
- *  - Loading states: pending mutation disables button
  */
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { makeTrpcMock, makeMutationStub } from "../__mocks__/trpc.mock";
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
 
-const mockMutate = vi.fn();
-const mockSetLocation = vi.fn();
-const mockLoginWithRedirect = vi.fn();
-const mockToastSuccess = vi.fn();
-const mockToastError = vi.fn();
-const mockInvalidate = vi.fn();
-
-// We need trpc to be configurable per-test, so we keep a mutable ref
-let mutationReturn = makeMutationStub({ mutate: mockMutate });
-
-vi.mock("@/lib/trpc", () => {
-  const proxy = makeTrpcMock();
-  return { trpc: proxy };
-});
-
-// Override the login mutation on the proxy for each test
 vi.mock("@/lib/trpc", () => ({
   trpc: {
     auth: {
       login: {
-        useMutation: vi.fn(() => mutationReturn),
+        useMutation: vi.fn(() => ({
+          mutate: vi.fn(),
+          isPending: false,
+          error: null,
+        })),
       },
       me: {
         useQuery: vi.fn(() => ({ data: null, isLoading: false })),
-        invalidate: mockInvalidate,
       },
       logout: {
-        useMutation: vi.fn(() => makeMutationStub()),
+        useMutation: vi.fn(() => ({
+          mutate: vi.fn(),
+          mutateAsync: vi.fn().mockResolvedValue(undefined),
+          isPending: false,
+        })),
       },
     },
     useUtils: vi.fn(() => ({
       auth: {
         me: {
-          invalidate: mockInvalidate,
+          invalidate: vi.fn().mockResolvedValue(undefined),
           setData: vi.fn(),
         },
       },
@@ -57,7 +41,7 @@ vi.mock("@/lib/trpc", () => ({
 }));
 
 vi.mock("wouter", () => ({
-  useLocation: vi.fn(() => ["/login", mockSetLocation]),
+  useLocation: vi.fn(() => ["/login", vi.fn()]),
   Link: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   ),
@@ -65,12 +49,12 @@ vi.mock("wouter", () => ({
 }));
 
 vi.mock("sonner", () => ({
-  toast: { success: mockToastSuccess, error: mockToastError },
+  toast: { success: vi.fn(), error: vi.fn() },
 }));
 
 vi.mock("@auth0/auth0-react", () => ({
   useAuth0: vi.fn(() => ({
-    loginWithRedirect: mockLoginWithRedirect,
+    loginWithRedirect: vi.fn(),
     isLoading: false,
     isAuthenticated: false,
   })),
@@ -81,7 +65,6 @@ vi.mock("@/const", () => ({
   LOGIN_PATH: "/login",
 }));
 
-// Mock GlassCard components used in Login
 vi.mock("@/components/ui/GlassCard", () => ({
   GlassCard: ({ children }: any) => <div>{children}</div>,
   GlassCardContent: ({ children }: any) => <div>{children}</div>,
@@ -97,16 +80,19 @@ vi.mock("@/components/ui/card", () => ({
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 import Login from "@/pages/Login";
+import { trpc } from "@/lib/trpc";
+import { useAuth0 } from "@auth0/auth0-react";
+import { toast } from "sonner";
 
 describe("Login Page", () => {
+  const user = userEvent.setup();
+
   beforeEach(() => {
     vi.clearAllMocks();
-    mutationReturn = makeMutationStub({ mutate: mockMutate });
   });
 
   it("renders login form with username, password fields and submit button", () => {
     render(<Login />);
-
     expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
     expect(
@@ -122,7 +108,13 @@ describe("Login Page", () => {
   });
 
   it("happy path: fills form and submits → mutation.mutate called with credentials", async () => {
-    const user = userEvent.setup();
+    const mockMutate = vi.fn();
+    vi.mocked(trpc.auth.login.useMutation).mockReturnValue({
+      mutate: mockMutate,
+      isPending: false,
+      error: null,
+    } as any);
+
     render(<Login />);
 
     await user.type(screen.getByLabelText(/username/i), "johndoe");
@@ -136,7 +128,13 @@ describe("Login Page", () => {
   });
 
   it("calls loginWithRedirect when Auth0 SSO button is clicked", async () => {
-    const user = userEvent.setup();
+    const mockLoginWithRedirect = vi.fn();
+    vi.mocked(useAuth0).mockReturnValue({
+      loginWithRedirect: mockLoginWithRedirect,
+      isLoading: false,
+      isAuthenticated: false,
+    } as any);
+
     render(<Login />);
 
     await user.click(
@@ -147,15 +145,30 @@ describe("Login Page", () => {
   });
 
   it("disables legacy button while mutation is pending", () => {
-    mutationReturn = makeMutationStub({ mutate: mockMutate, isPending: true });
-
-    // Re-import with updated mock state by directly overriding
-    const { trpc } = require("@/lib/trpc");
-    trpc.auth.login.useMutation.mockReturnValue(mutationReturn);
+    vi.mocked(trpc.auth.login.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      isPending: true,
+      error: null,
+    } as any);
 
     render(<Login />);
 
     const submitBtn = screen.getByRole("button", { name: /connecting/i });
+    expect(submitBtn).toBeInTheDocument();
     expect(submitBtn).toBeDisabled();
+  });
+
+  it("Auth0 SSO button is disabled while Auth0 is loading", () => {
+    vi.mocked(useAuth0).mockReturnValue({
+      loginWithRedirect: vi.fn(),
+      isLoading: true,
+      isAuthenticated: false,
+    } as any);
+
+    render(<Login />);
+
+    // The Auth0 button shows 'Initializing...' when isLoading is true
+    const ssoBtn = screen.getByRole("button", { name: /initializing/i });
+    expect(ssoBtn).toBeDisabled();
   });
 });

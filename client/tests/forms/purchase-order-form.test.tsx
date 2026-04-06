@@ -1,23 +1,12 @@
 /**
  * Purchase Order form validation tests.
- *
- * Tests the create dialog in PurchaseOrders page:
- *  - Submit without selecting material → toast.error
- *  - Submit with material but no valid supplier → toast.error
- *  - Valid form → createPO.mutate called with correct supplierId and items
- *  - Submit button disabled when mutation pending
  */
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
-
-const mockCreatePOMutate = vi.fn();
-const mockToastSuccess = vi.fn();
-const mockToastError = vi.fn();
-const mockRefetch = vi.fn();
 
 const mockMaterials = [
   {
@@ -30,23 +19,19 @@ const mockMaterials = [
   },
 ];
 
-const mockSuppliers = [
-  { id: 10, name: "SupplierA", email: "a@supplier.com" },
-];
+const mockSuppliers = [{ id: 10, name: "SupplierA", email: "a@supplier.com" }];
 
-const mockForecasts = [
-  { materialId: 1, recommendedOrderQty: 50 },
-];
+const mockForecasts = [{ materialId: 1, recommendedOrderQty: 50 }];
 
 vi.mock("@/lib/trpc", () => ({
   trpc: {
     purchaseOrders: {
       getPurchaseOrderHistory: {
-        useQuery: vi.fn(() => ({ data: [], refetch: mockRefetch })),
+        useQuery: vi.fn(() => ({ data: [], refetch: vi.fn() })),
       },
       generatePurchaseOrder: {
         useMutation: vi.fn(() => ({
-          mutate: mockCreatePOMutate,
+          mutate: vi.fn(),
           isPending: false,
           error: null,
         })),
@@ -87,7 +72,7 @@ vi.mock("@/hooks/useAuth", () => ({
 }));
 
 vi.mock("sonner", () => ({
-  toast: { success: mockToastSuccess, error: mockToastError, info: vi.fn() },
+  toast: { success: vi.fn(), error: vi.fn(), info: vi.fn() },
 }));
 
 vi.mock("@/components/DashboardLayout", () => ({
@@ -97,6 +82,8 @@ vi.mock("@/components/DashboardLayout", () => ({
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 import PurchaseOrders from "@/pages/PurchaseOrders";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
 describe("Purchase Order Form", () => {
   const user = userEvent.setup();
@@ -122,7 +109,6 @@ describe("Purchase Order Form", () => {
 
   it("opens create dialog when button clicked", async () => {
     await openCreateDialog();
-    // Dialog title should appear
     expect(
       screen.getAllByText(/create purchase order/i).length
     ).toBeGreaterThanOrEqual(1);
@@ -131,22 +117,19 @@ describe("Purchase Order Form", () => {
   it("shows error toast when submitting without selecting a material", async () => {
     await openCreateDialog();
 
-    // Click 'Create Purchase Order' inside the dialog footer without selecting material
-    const dialogSubmitBtn = screen
-      .getAllByRole("button", { name: /create purchase order/i })
-      .find((btn) => btn.closest('[role="dialog"]') || btn.closest(".dialog"));
-    // Find the dialog footer button
+    // Click the dialog footer submit button
     const allCreateBtns = screen.getAllByRole("button", {
       name: /create purchase order/i,
     });
-    // The second one should be inside the dialog
     const submitBtn = allCreateBtns[allCreateBtns.length - 1];
     await user.click(submitBtn);
 
     await waitFor(() => {
-      expect(mockToastError).toHaveBeenCalledWith("Please select a material");
+      expect(vi.mocked(toast.error)).toHaveBeenCalledWith(
+        "Please select a material"
+      );
     });
-    expect(mockCreatePOMutate).not.toHaveBeenCalled();
+    expect(vi.mocked(trpc.purchaseOrders.generatePurchaseOrder.useMutation)().mutate).not.toHaveBeenCalled();
   });
 
   it("shows quantity field in the dialog", async () => {
@@ -168,5 +151,12 @@ describe("Purchase Order Form", () => {
     await openCreateDialog();
     expect(screen.getByLabelText(/^supplier$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/supplier email/i)).toBeInTheDocument();
+  });
+
+  it("shows 'No purchase orders found' empty state", () => {
+    render(<PurchaseOrders />);
+    expect(
+      screen.getByText(/no purchase orders found/i)
+    ).toBeInTheDocument();
   });
 });

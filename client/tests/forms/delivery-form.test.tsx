@@ -1,12 +1,5 @@
 /**
  * Delivery creation form validation tests.
- *
- * Tests the form inside the Deliveries page dialog:
- *  - Required field HTML validation attributes are present
- *  - Valid form submission calls mutation with correct data
- *  - Submit button shows pending state
- *  - Optimistic update: list updated before server responds
- *  - Error rollback: optimistic entry removed on mutation error
  */
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
@@ -14,15 +7,9 @@ import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
-
-const mockMutate = vi.fn();
-const mockToastSuccess = vi.fn();
-const mockToastError = vi.fn();
-const mockSetLocation = vi.fn();
-const mockCancel = vi.fn().mockResolvedValue(undefined);
-const mockGetData = vi.fn().mockReturnValue([]);
-const mockSetData = vi.fn();
-const mockInvalidate = vi.fn().mockResolvedValue(undefined);
+// IMPORTANT: vi.mock factories are hoisted to the top of the file by vitest.
+// Variables defined above vi.mock are NOT accessible inside the factory.
+// Use vi.fn() directly inside the factory instead.
 
 vi.mock("@/lib/trpc", () => ({
   trpc: {
@@ -33,13 +20,10 @@ vi.mock("@/lib/trpc", () => ({
           isLoading: false,
           refetch: vi.fn(),
         })),
-        create: {
-          useMutation: vi.fn(),
-        },
       },
       create: {
         useMutation: vi.fn(() => ({
-          mutate: mockMutate,
+          mutate: vi.fn(),
           isPending: false,
           error: null,
         })),
@@ -48,10 +32,10 @@ vi.mock("@/lib/trpc", () => ({
     useUtils: vi.fn(() => ({
       deliveries: {
         list: {
-          cancel: mockCancel,
-          getData: mockGetData,
-          setData: mockSetData,
-          invalidate: mockInvalidate,
+          cancel: vi.fn().mockResolvedValue(undefined),
+          getData: vi.fn().mockReturnValue([]),
+          setData: vi.fn(),
+          invalidate: vi.fn().mockResolvedValue(undefined),
         },
       },
     })),
@@ -59,11 +43,11 @@ vi.mock("@/lib/trpc", () => ({
 }));
 
 vi.mock("sonner", () => ({
-  toast: { success: mockToastSuccess, error: mockToastError },
+  toast: { success: vi.fn(), error: vi.fn() },
 }));
 
 vi.mock("wouter", () => ({
-  useLocation: vi.fn(() => ["/deliveries", mockSetLocation]),
+  useLocation: vi.fn(() => ["/deliveries", vi.fn()]),
 }));
 
 vi.mock("@/components/DashboardLayout", () => ({
@@ -85,6 +69,8 @@ vi.mock("@/components/DeliveryNote", () => ({
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 import Deliveries from "@/pages/Deliveries";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
 describe("Delivery Creation Form", () => {
   const user = userEvent.setup();
@@ -95,7 +81,6 @@ describe("Delivery Creation Form", () => {
 
   async function openCreateDialog() {
     render(<Deliveries />);
-    // Click the "Nova Isporuka" button to open the create dialog
     const addButton = screen.getByRole("button", { name: /nova isporuka/i });
     await user.click(addButton);
   }
@@ -121,7 +106,7 @@ describe("Delivery Creation Form", () => {
     expect(screen.getByLabelText(/zakazano vrijeme/i)).toBeRequired();
   });
 
-  it("optional fields (driverName, vehicleNumber, notes) are not required", async () => {
+  it("optional fields (driverName, vehicleNumber) are not required", async () => {
     await openCreateDialog();
 
     expect(screen.getByLabelText(/vozač/i)).not.toBeRequired();
@@ -129,6 +114,14 @@ describe("Delivery Creation Form", () => {
   });
 
   it("valid submission calls createMutation.mutate with correct data", async () => {
+    // Get the mock mutate from the mocked module
+    const mockMutate = vi.fn();
+    vi.mocked(trpc.deliveries.create.useMutation).mockReturnValue({
+      mutate: mockMutate,
+      isPending: false,
+      error: null,
+    } as any);
+
     await openCreateDialog();
 
     await user.type(screen.getByLabelText(/projekat/i), "Tower A");
@@ -155,20 +148,21 @@ describe("Delivery Creation Form", () => {
   });
 
   it("submit button shows pending label when mutation is in progress", async () => {
-    const { trpc } = await import("@/lib/trpc");
     vi.mocked(trpc.deliveries.create.useMutation).mockReturnValue({
-      mutate: mockMutate,
+      mutate: vi.fn(),
       isPending: true,
       error: null,
     } as any);
 
     await openCreateDialog();
 
-    expect(
-      screen.getByRole("button", { name: /spašavanje/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /spašavanje/i })
-    ).toBeDisabled();
+    const pendingBtn = screen.getByRole("button", { name: /spašavanje/i });
+    expect(pendingBtn).toBeInTheDocument();
+    expect(pendingBtn).toBeDisabled();
+  });
+
+  it("shows 'Nema kreiranih isporuka' empty state when no deliveries", () => {
+    render(<Deliveries />);
+    expect(screen.getByText(/nema kreiranih isporuka/i)).toBeInTheDocument();
   });
 });

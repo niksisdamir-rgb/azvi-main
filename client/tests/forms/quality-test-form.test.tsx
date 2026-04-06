@@ -1,23 +1,12 @@
 /**
  * Quality Test submission form validation tests.
- *
- * Tests the "Record Test" dialog in QualityControl page:
- *  - Dialog opens when "Record Test" button is clicked
- *  - testName field is required
- *  - Valid submission calls mutation with all fields mapped correctly
- *  - Submit button shows "Recording..." and is disabled when mutation pending
  */
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
-
-const mockMutate = vi.fn();
-const mockToastSuccess = vi.fn();
-const mockToastError = vi.fn();
-const mockRefetch = vi.fn();
 
 vi.mock("@/lib/trpc", () => ({
   trpc: {
@@ -26,12 +15,12 @@ vi.mock("@/lib/trpc", () => ({
         useQuery: vi.fn(() => ({
           data: [],
           isLoading: false,
-          refetch: mockRefetch,
+          refetch: vi.fn(),
         })),
       },
       create: {
         useMutation: vi.fn(() => ({
-          mutate: mockMutate,
+          mutate: vi.fn(),
           isPending: false,
           error: null,
         })),
@@ -42,7 +31,7 @@ vi.mock("@/lib/trpc", () => ({
 }));
 
 vi.mock("sonner", () => ({
-  toast: { success: mockToastSuccess, error: mockToastError },
+  toast: { success: vi.fn(), error: vi.fn() },
 }));
 
 vi.mock("@/components/DashboardLayout", () => ({
@@ -72,6 +61,7 @@ vi.mock("@/components/ComplianceCertificate", () => ({
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 import QualityControl from "@/pages/QualityControl";
+import { trpc } from "@/lib/trpc";
 
 describe("Quality Test Submission Form", () => {
   const user = userEvent.setup();
@@ -109,6 +99,13 @@ describe("Quality Test Submission Form", () => {
   });
 
   it("valid submission calls mutation with correct form data", async () => {
+    const mockMutate = vi.fn();
+    vi.mocked(trpc.qualityTests.create.useMutation).mockReturnValue({
+      mutate: mockMutate,
+      isPending: false,
+      error: null,
+    } as any);
+
     await openRecordTestDialog();
 
     await user.type(screen.getByLabelText(/test name/i), "Compressive Strength Test");
@@ -135,15 +132,12 @@ describe("Quality Test Submission Form", () => {
 
   it("status field defaults to 'pending'", async () => {
     await openRecordTestDialog();
-    // The Select with name="status" has defaultValue="pending"
-    // In the dialog we should see a trigger that shows "Pending"
     expect(screen.getByText(/pending/i)).toBeInTheDocument();
   });
 
   it("submit button shows 'Recording...' and is disabled when pending", async () => {
-    const { trpc } = await import("@/lib/trpc");
     vi.mocked(trpc.qualityTests.create.useMutation).mockReturnValue({
-      mutate: mockMutate,
+      mutate: vi.fn(),
       isPending: true,
       error: null,
     } as any);
@@ -153,7 +147,7 @@ describe("Quality Test Submission Form", () => {
     expect(screen.getByRole("button", { name: /recording/i })).toBeDisabled();
   });
 
-  it("shows 'Add your first test' empty state when no tests", () => {
+  it("shows 'No test results found' empty state when no tests", () => {
     render(<QualityControl />);
     expect(
       screen.getByText(/no test results found/i)

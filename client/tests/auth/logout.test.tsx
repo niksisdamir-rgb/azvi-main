@@ -9,14 +9,10 @@
 import { renderHook, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const mockMutateAsync = vi.fn().mockResolvedValue(undefined);
-const mockLogoutMutate = vi.fn();
-const mockSetData = vi.fn();
-const mockInvalidate = vi.fn().mockResolvedValue(undefined);
-const mockRefetch = vi.fn();
-const mockAuth0Logout = vi.fn();
-
-let isAuth0Authenticated = false;
+// ── vi.mock declarations ─────────────────────────────────────────────────────
+// All vi.mock factories are hoisted to top of file by vitest.
+// Variables declared with var/const before vi.mock are NOT accessible inside.
+// We use vi.fn() inline inside factories and retrieve mocks via import.
 
 vi.mock("@/lib/trpc", () => ({
   trpc: {
@@ -26,13 +22,15 @@ vi.mock("@/lib/trpc", () => ({
           data: { id: 1, username: "testuser", role: "user" },
           isLoading: false,
           error: null,
-          refetch: mockRefetch,
+          refetch: vi.fn(),
         })),
       },
       logout: {
-        useMutation: vi.fn(() => ({
-          mutate: mockLogoutMutate,
-          mutateAsync: mockMutateAsync,
+        useMutation: vi.fn((opts?: { onSuccess?: () => void }) => ({
+          mutate: vi.fn(),
+          mutateAsync: vi.fn(async () => {
+            opts?.onSuccess?.();
+          }),
           isPending: false,
           error: null,
         })),
@@ -41,8 +39,8 @@ vi.mock("@/lib/trpc", () => ({
     useUtils: vi.fn(() => ({
       auth: {
         me: {
-          setData: mockSetData,
-          invalidate: mockInvalidate,
+          setData: vi.fn(),
+          invalidate: vi.fn().mockResolvedValue(undefined),
         },
       },
     })),
@@ -51,8 +49,8 @@ vi.mock("@/lib/trpc", () => ({
 
 vi.mock("@auth0/auth0-react", () => ({
   useAuth0: vi.fn(() => ({
-    logout: mockAuth0Logout,
-    isAuthenticated: isAuth0Authenticated,
+    logout: vi.fn(),
+    isAuthenticated: false,
     isLoading: false,
     getAccessTokenSilently: vi.fn(),
   })),
@@ -62,27 +60,94 @@ vi.mock("@/const", () => ({
   LOGIN_PATH: "/login",
 }));
 
+// ── Import after vi.mock declarations ─────────────────────────────────────────
+
 import { useAuth } from "@/hooks/useAuth";
+import { trpc } from "@/lib/trpc";
+import { useAuth0 } from "@auth0/auth0-react";
+
+// ── Tests ─────────────────────────────────────────────────────────────────────
 
 describe("Logout Flow", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    isAuth0Authenticated = false;
-    mockMutateAsync.mockResolvedValue(undefined);
+    // Restore default implementations after clearAllMocks
+    vi.mocked(trpc.auth.logout.useMutation).mockImplementation(
+      (opts?: { onSuccess?: () => void }) => ({
+        mutate: vi.fn(),
+        mutateAsync: vi.fn(async () => {
+          opts?.onSuccess?.();
+        }),
+        isPending: false,
+        error: null,
+      }) as any
+    );
+    vi.mocked(trpc.useUtils).mockReturnValue({
+      auth: {
+        me: {
+          setData: vi.fn(),
+          invalidate: vi.fn().mockResolvedValue(undefined),
+        },
+      },
+    } as any);
+    vi.mocked(trpc.auth.me.useQuery).mockReturnValue({
+      data: { id: 1, username: "testuser", role: "user" },
+      isLoading: false,
+      error: null,
+      refetch: vi.fn(),
+    } as any);
+    vi.mocked(useAuth0).mockReturnValue({
+      logout: vi.fn(),
+      isAuthenticated: false,
+      isLoading: false,
+      getAccessTokenSilently: vi.fn(),
+    } as any);
   });
 
-  it("local logout: calls logout mutation and clears me cache", async () => {
+  it("local logout: calls logout mutateAsync once", async () => {
     const { result } = renderHook(() => useAuth());
 
     await act(async () => {
       await result.current.logout();
     });
 
-    expect(mockMutateAsync).toHaveBeenCalledTimes(1);
+    const utils = vi.mocked(trpc.useUtils)();
+    expect(
+      vi.mocked(trpc.auth.logout.useMutation)().mutateAsync
+    ).toHaveBeenCalledTimes(1);
+  });
+
+  it("local logout: clears me cache via setData(undefined, null) in finally block", async () => {
+    const mockSetData = vi.fn();
+    vi.mocked(trpc.useUtils).mockReturnValue({
+      auth: {
+        me: {
+          setData: mockSetData,
+          invalidate: vi.fn().mockResolvedValue(undefined),
+        },
+      },
+    } as any);
+
+    const { result } = renderHook(() => useAuth());
+
+    await act(async () => {
+      await result.current.logout();
+    });
+
     expect(mockSetData).toHaveBeenCalledWith(undefined, null);
   });
 
   it("local logout: invalidates auth.me query after logout", async () => {
+    const mockInvalidate = vi.fn().mockResolvedValue(undefined);
+    vi.mocked(trpc.useUtils).mockReturnValue({
+      auth: {
+        me: {
+          setData: vi.fn(),
+          invalidate: mockInvalidate,
+        },
+      },
+    } as any);
+
     const { result } = renderHook(() => useAuth());
 
     await act(async () => {
@@ -93,16 +158,21 @@ describe("Logout Flow", () => {
   });
 
   it("Auth0 logout: calls Auth0 logout with returnTo origin when Auth0 session active", async () => {
-    isAuth0Authenticated = true;
-    // Re-apply the mock with updated isAuthenticated
-    const { useAuth0 } = await import("@auth0/auth0-react");
+    const mockAuth0Logout = vi.fn();
     vi.mocked(useAuth0).mockReturnValue({
       logout: mockAuth0Logout,
       isAuthenticated: true,
       isLoading: false,
-      loginWithRedirect: vi.fn(),
       getAccessTokenSilently: vi.fn(),
-      user: undefined,
+      loginWithRedirect: vi.fn(),
+    } as any);
+
+    const mockMutateAsync = vi.fn().mockResolvedValue(undefined);
+    vi.mocked(trpc.auth.logout.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      mutateAsync: mockMutateAsync,
+      isPending: false,
+      error: null,
     } as any);
 
     const { result } = renderHook(() => useAuth());
@@ -114,31 +184,27 @@ describe("Logout Flow", () => {
     expect(mockAuth0Logout).toHaveBeenCalledWith({
       logoutParams: { returnTo: window.location.origin },
     });
-    // Local mutation should NOT be called when using Auth0
+    // Local mutation NOT called when Auth0 session
     expect(mockMutateAsync).not.toHaveBeenCalled();
   });
 
-  it("local logout: handles UNAUTHORIZED error gracefully (already logged out)", async () => {
+  it("local logout: handles UNAUTHORIZED TRPCClientError gracefully", async () => {
     const { TRPCClientError } = await import("@trpc/client");
     const unauthorizedError = new TRPCClientError("UNAUTHORIZED");
     (unauthorizedError as any).data = { code: "UNAUTHORIZED" };
-    mockMutateAsync.mockRejectedValue(unauthorizedError);
+
+    vi.mocked(trpc.auth.logout.useMutation).mockReturnValue({
+      mutate: vi.fn(),
+      mutateAsync: vi.fn().mockRejectedValue(unauthorizedError),
+      isPending: false,
+      error: null,
+    } as any);
 
     const { result } = renderHook(() => useAuth());
 
-    // Should not throw
+    // Should resolve without throwing
     await act(async () => {
-      await expect(result.current.logout()).resolves.not.toThrow();
+      await expect(result.current.logout()).resolves.toBeUndefined();
     });
-  });
-
-  it("logout clears user from me cache immediately (setData called with null)", async () => {
-    const { result } = renderHook(() => useAuth());
-
-    await act(async () => {
-      await result.current.logout();
-    });
-
-    expect(mockSetData).toHaveBeenCalledWith(undefined, null);
   });
 });
