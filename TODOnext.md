@@ -548,16 +548,16 @@
 
 **Severity:** 🟡 MEDIUM
 
-- [ ] Add Playwright E2E tests for critical user journeys:
-  - [ ] Admin login → Dashboard → View deliveries → Create delivery
-  - [ ] Admin login → Materials → Low stock alert → Create purchase order
-  - [ ] Admin login → Quality control → Submit test → View results
-  - [ ] Driver app: update delivery status flow
-  - [ ] Notification preferences: toggle channels, set quiet hours
-- [ ] Add E2E tests for edge cases:
-  - [ ] Session expiry → redirect to login
-  - [ ] Network error handling (offline banner)
-  - [ ] Role-based access (non-admin tries admin page)
+- [x] Add Playwright E2E tests for critical user journeys:
+  - [x] Admin login → Dashboard → View deliveries → Create delivery
+  - [x] Admin login → Materials → Low stock alert → Create purchase order
+  - [x] Admin login → Quality control → Submit test → View results
+  - [x] Driver app: update delivery status flow
+  - [x] Notification preferences: toggle channels, set quiet hours
+- [x] Add E2E tests for edge cases:
+  - [x] Session expiry → redirect to login
+  - [x] Network error handling (offline banner)
+  - [x] Role-based access (non-admin tries admin page)
 
 ---
 
