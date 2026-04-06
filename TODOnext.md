@@ -565,14 +565,14 @@
 
 **Severity:** 🟡 MEDIUM
 
-- [ ] Add GitHub Actions workflow (or update existing):
-  - [ ] `pnpm check` (TypeScript type checking)
-  - [ ] `pnpm test` (Vitest unit tests)
-  - [ ] `npx playwright test` (E2E tests)
-  - [ ] `pnpm build` (verify production build succeeds)
-- [ ] Add pre-commit hook:
-  - [ ] `pnpm check` on staged `.ts/.tsx` files
-  - [ ] `pnpm format --check` for formatting
+- [x] Add GitHub Actions workflow (or update existing):
+  - [x] `pnpm check` (TypeScript type checking)
+  - [x] `pnpm test` (Vitest unit tests)
+  - [x] `npx playwright test` (E2E tests)
+  - [x] `pnpm build` (verify production build succeeds)
+- [x] Add pre-commit hook:
+  - [x] `pnpm check` on staged `.ts/.tsx` files
+  - [x] `pnpm format --check` for formatting
 - [x] Add `no-console` ESLint rule for `server/` directory
 - [x] Add `no-explicit-any` ESLint rule with `warn` level (track progress toward zero)
 
