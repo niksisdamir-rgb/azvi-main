@@ -178,8 +178,20 @@ vi.mock("framer-motion", () => ({
   useTransform: () => ({ get: vi.fn() }),
   useSpring: () => ({ get: vi.fn() }),
   useInView: () => true,
+  useScroll: () => ({
+    scrollY: { get: () => 0, set: vi.fn() },
+    scrollX: { get: () => 0, set: vi.fn() },
+    scrollYProgress: { get: () => 0, set: vi.fn() },
+    scrollXProgress: { get: () => 0, set: vi.fn() },
+  }),
+  useVelocity: () => ({ get: () => 0, set: vi.fn() }),
   animate: vi.fn(),
   LayoutGroup: ({ children }: any) => <>{children}</>,
+  Reorder: {
+    Group: ({ children }: any) => <>{children}</>,
+    Item: ({ children }: any) => <>{children}</>,
+  },
+  useDragControls: () => ({ start: vi.fn() }),
 }));
 
 // Mock @radix-ui TooltipProvider at module level so ComponentShowcase works
