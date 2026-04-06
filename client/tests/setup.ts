@@ -25,12 +25,13 @@ Object.defineProperty(window, "matchMedia", {
   })),
 });
 
-// IntersectionObserver – needed by virtual lists, scroll components
-const IntersectionObserverMock = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+// IntersectionObserver – needed by framer-motion, input-otp, and virtual lists
+class IntersectionObserverMock {
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+  constructor(public callback: IntersectionObserverCallback, public options?: IntersectionObserverInit) {}
+}
 globalThis.IntersectionObserver = IntersectionObserverMock as unknown as typeof IntersectionObserver;
 
 // scrollIntoView – missing in jsdom
